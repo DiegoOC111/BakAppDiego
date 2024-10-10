@@ -1,0 +1,22 @@
+﻿@page "/LoginDatos"
+
+<div class=" body2 ">
+	<div class="main2">
+		<input type="checkbox" id="chk" aria-hidden="true">
+
+			<label class="label-con-imagen" style=" font-size:small ; ">
+				<img src="images/key.png" alt="Imagen" class="imagen">
+				Ingrese su contraseña
+			</label>
+
+		<input @ref="passwordInput" placeholder="Contraseña" @bind="password" />
+			
+
+		
+		<button @onclick="Validate"  class="button-19" style=" margin-top: 10px; width: 100%; border-radius: 10px;">
+			Enviar
+		</button>
+	</div>
+
+</div>
+

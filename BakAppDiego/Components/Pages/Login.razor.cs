@@ -16,9 +16,14 @@ namespace BakAppDiego.Components.Pages
     {
         private string responseMessage = string.Empty;
         private string buttonColor = "gray"; // Color inicial del botón
-
+        [Inject]
+        private NavigationManager NavigationManager { get; set; }
         [Inject] private HttpClient HttpClient { get; set; }
-
+        async Task IrALog()
+        {
+            // here're other async action calls
+            NavigationManager.NavigateTo("/LoginDatos", true);
+        }
         private async Task CallSoapService()
         {
             var soapEnvelope =

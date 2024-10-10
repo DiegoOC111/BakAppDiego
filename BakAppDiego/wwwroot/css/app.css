@@ -120,7 +120,7 @@ h1:focus {
 }
 
 .footer {
-    position: absolute; /* Posiciona el footer de manera absoluta */
+    position: fixed; /* Posiciona el footer de manera absoluta */
     bottom: 0; /* Coloca el footer en la parte inferior */
     left: 50%; /* Centra el footer horizontalmente */
     transform: translateX(-50%); /* Ajusta para centrar el footer */
