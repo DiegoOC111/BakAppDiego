@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.TablasBackApp
 {
-    internal class TABFU
+    public class TABFU
 
 
     {

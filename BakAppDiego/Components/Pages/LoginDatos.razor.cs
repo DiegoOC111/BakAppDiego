@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 using BakAppDiego.Components.Globals.TablasBackApp;
+using BakAppDiego.Components.Globals.Statics;
 
 namespace BakAppDiego.Components.Pages
 {
@@ -89,7 +90,10 @@ namespace BakAppDiego.Components.Pages
             try
             {
                 // Deserializar el JSON a un objeto TabfuResponse
-                var response = JsonConvert.DeserializeObject<TabfuResponse>(soapResponse);
+                TabfuResponse response = JsonConvert.DeserializeObject<TabfuResponse>(soapResponse);
+                TABFU Respuesta = response.Table[0];
+                GlobalData.usuario = Respuesta;
+                GlobalData.GuardarTABFU();
                 return response; // Retorna el objeto que contiene la lista de Tabfu
             }
             catch (JsonException ex)

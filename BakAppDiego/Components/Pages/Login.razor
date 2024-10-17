@@ -1,5 +1,6 @@
 ﻿@page "/"
-
+@using BakAppDiego.Components.Dialogs
+@inject DialogInterface DialogoService
 <div class="top-row">
     
 </div>
@@ -24,15 +25,17 @@
             </label>
         </div>
         <div @onclick="IrALog" class="itemD"><button class="button-19" role="button">Ingresar</button></div>
-        <div class="itemD"><button class="button-19" role="button">Configuracion y conexion local</button></div>
+        <div class="itemD">
+            <button @onclick="Contraseña" class="button-19" role="button" >Configuración y conexión local</button>
+        </div>
+        
         
         
     </div>
     
 </body>
+<LoadingPopUp @ref="loadingPopup" />
 
-<h3>Conexión SOAP a Ws_BakApp</h3>
 
-<button @onclick="CallSoapService" style="background-color:@buttonColor">Conectar al Servicio Web</button>
 
-<p>@responseMessage</p>
+

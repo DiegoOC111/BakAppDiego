@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using BakAppDiego.Components.Dialogs;
+using Microsoft.Extensions.Logging;
 
 namespace BakAppDiego
 {
@@ -17,11 +18,11 @@ namespace BakAppDiego
             builder.Services.AddMauiBlazorWebView();
 
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
-    		builder.Logging.AddDebug();
+            builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Logging.AddDebug();
 #endif
             builder.Services.AddSingleton(new HttpClient());
-
+            builder.Services.AddSingleton<DialogInterface, DialogoService>();
             return builder.Build();
         }
     }
