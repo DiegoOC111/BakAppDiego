@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using BakAppDiego.Components.Dialogs;
 using BakAppDiego.Components.Globals.Statics;
+using BakAppDiego.Components.Globals.Modelos;
+
 
 namespace BakAppDiego.Components.Pages
 {
@@ -27,8 +29,9 @@ namespace BakAppDiego.Components.Pages
         [Inject]
         private NavigationManager NavigationManager { get; set; }
         [Inject] private HttpClient HttpClient { get; set; }
+        private PopUpConfirmar PopUp;
 
-       
+
         async Task IrALog()
         {
             // here're other async action calls
@@ -48,17 +51,19 @@ namespace BakAppDiego.Components.Pages
             if (Respuesta == "971364")
             {
 
-                await PruebaIP();
-                if (Mensaje.EsCorrecto)
+                MensajeAsync Msg =  await PruebaIP();
+                if (Msg.EsCorrecto)
                 {
-                    bool res = await Dialogo.DisplayConfirm("Conexion Exitosa ", "", "Aceptar", "Cerrar");
+                    bool res = await MostrarPopUp("Proceso exitoso", "Ip Valida, conectado a WebsService", "Aceptar", " Usar otro", false);
 
+                    Console.WriteLine(Msg.Msg);
                 }
                 else
                 {
 
+                    bool res = await MostrarPopUp("Error de conexion ", "No se pudo conectar al WebsService", "Aceptar", " Usar otro", false);
 
-
+                    Console.WriteLine(Msg.Msg);
 
                 }
 
@@ -70,38 +75,57 @@ namespace BakAppDiego.Components.Pages
             else {
 
 
-                bool res = await Dialogo.DisplayConfirm("Error ", "Contraseña incorrecta", "Aceptar", "Cerrar");
-
+                bool res = await MostrarPopUp("Error ", "Contraseña incorrecta", "Aceptar", "Cerrar",false);
+                
             }
             
             
 
 
         }
+        private async Task<bool> MostrarPopUp(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
+        {
+            
+            // Configura el popup
+            PopUp.crear(titulo, mensaje, btnStr, CancelarStr, Visible);
 
-        private async Task PruebaIP()
+            // Espera hasta que el usuario presione un botón
+            bool resultado = await PopUp.ShowAsync();
+
+            // Aquí puedes manejar el resultado
+            if (resultado)
+            {
+                // El usuario presionó "Aceptar"
+                Console.WriteLine("El usuario aceptó.");
+            }
+            else
+            {
+                // El usuario presionó "Cancelar"
+                Console.WriteLine("El usuario canceló.");
+            }
+            return resultado;
+        }
+        private async Task<MensajeAsync> PruebaIP()
         {
             Dialogo = new DialogoService();
+            
             string Respuesta = await Dialogo.DisplayText("Ingrese la IP ", "IP", "Aceptar", "Cerrar");
             if (Respuesta == null | Respuesta == "" ) {
 
             }
-            await CallSoapService(Respuesta);
-            if (Mensaje.EsCorrecto)
+            MensajeAsync Msg =  await CallSoapService(Respuesta);
+            if (Msg.EsCorrecto)
             {
 
+
                 GlobalData.GuardarIP();
-                Mensaje.EsCorrecto = true;
-                Mensaje.Msg = "Conexion a ip exitosa";
-                Console.WriteLine(Mensaje.Msg);
+                
+                return Msg;
+
             }
             else {
-
-                Console.WriteLine(Mensaje.Msg);
-                Mensaje.EsCorrecto = false;
-                Mensaje.Msg = "Conexion a ip fallida";
-                bool res = await Dialogo.DisplayConfirm("Conexion Fallida ", "", "Aceptar", "Cerrar");
-                
+               
+                return Msg;
             }
 
 
@@ -111,10 +135,11 @@ namespace BakAppDiego.Components.Pages
         }
 
 
-        private async Task<bool> CallSoapService(string newIp )
+        private async Task<MensajeAsync> CallSoapService(string newIp )
         {
             loadingPopup.Show();
             await Task.Delay(3000);
+            MensajeAsync auxAsync = new MensajeAsync();
             var soapEnvelope =
                 @"<?xml version=""1.0"" encoding=""utf-8""?>
           <soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance""
@@ -136,18 +161,18 @@ namespace BakAppDiego.Components.Pages
                     loadingPopup.Hide();
 
                     GlobalData.Ip_Wb = "http://" + newIp;
-                    Mensaje.EsCorrecto = true;
-                    Mensaje.Msg = "Conexion exitosa";
+                    auxAsync.EsCorrecto = true;
+                    auxAsync.Msg = "Conexion exitosa";
                     //buttonColor = "green"; // Cambiar el color del botón a verde
-                    return true;
+                    return auxAsync;
                 }
                 else
                 loadingPopup.Hide();
                 {
-                    Mensaje.EsCorrecto = false;
-                    Mensaje.Msg = "Conexion fallida";
+                    auxAsync.EsCorrecto = false;
+                    auxAsync.Msg = "Conexion fallida";
 
-                    return false;
+                    return auxAsync;
 
                 }
             }
@@ -155,9 +180,9 @@ namespace BakAppDiego.Components.Pages
             {
                 loadingPopup.Hide();
 
-                Mensaje.EsCorrecto = false;
-                Mensaje.Msg = "Conexion fallida" + ex;
-                return false;
+                auxAsync.EsCorrecto = false;
+                auxAsync.Msg = "Conexion fallida" + ex;
+                return auxAsync;
 
 
             }

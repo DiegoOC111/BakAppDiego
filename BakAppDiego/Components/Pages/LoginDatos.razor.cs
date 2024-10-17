@@ -11,6 +11,8 @@ using BakAppDiego.Components.Globals.TablasBackApp;
 using BakAppDiego.Components.Globals.Statics;
 using BakAppDiego.Components.Dialogs;
 
+using BakAppDiego.Components.Globals.Modelos;
+
 
 namespace BakAppDiego.Components.Pages
 {
@@ -23,6 +25,9 @@ namespace BakAppDiego.Components.Pages
         private ElementReference passwordInput;
         private DialogoService Dialogo;
         private PopUpConfirmar PopUp;
+        
+        public MensajeAsync Msj;
+        
         protected override void OnInitialized()
         {
 
@@ -34,22 +39,24 @@ namespace BakAppDiego.Components.Pages
             if (firstRender)
             {
                 await passwordInput.FocusAsync(); // Establecer el foco en el input
-            }
-            if (GlobalData.usuario != null)
-            {
-                string mensaje = "Hay un usuario activo : " + GlobalData.usuario.NoKofu;
-                bool res = await MostrarPopUp("Usuario Activo", mensaje, "Iniciar", " Usar otro", true);
-                if (res)
+                if (GlobalData.usuario != null)
                 {
+                    string mensaje = "Hay un usuario activo : " + GlobalData.usuario.NoKofu;
+                    bool res = await MostrarPopUp("Usuario Activo", mensaje, "Iniciar", " Usar otro", true);
+                    if (res)
+                    {
+
+
+                    }
+                    else
+                    {
+
+                    }
 
 
                 }
-                else { 
-                
-                }
-
-
             }
+            
         }
 
         private async void Validate()
@@ -58,11 +65,30 @@ namespace BakAppDiego.Components.Pages
             Console.WriteLine($"Contraseña ingresada: {password}");
 
             // Llamar al método para realizar el login mediante SOAP
-            await log();
+            MensajeAsync mensajeAsync =  await Login();
+            if (mensajeAsync.EsCorrecto)
+            {
+                await MostrarPopUp("Operacion exitosa", "Usuario ingresado bienvenido " + GlobalData.usuario.NoKofu, "Seguir", " Cancelar", false);
+
+                Console.WriteLine(mensajeAsync.Msg);
+
+            }
+            else {
+                await MostrarPopUp("Operacion fallida", "Contraseña incorrecta", "Seguir", " Cancelar", true);
+
+                Console.WriteLine(mensajeAsync.Msg);
+
+            }
+
+            // mensaje = Login
+            // si mensaje.esCorrecto.
+            //....
+
         }
 
-        private async Task log()
+        private async Task<MensajeAsync> Login()
         {
+
             // Crear el XML del cuerpo de la solicitud SOAP
             var soapRequest = $@"<?xml version=""1.0"" encoding=""utf-8""?>
 <soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
@@ -73,6 +99,7 @@ namespace BakAppDiego.Components.Pages
   </soap:Body>
 </soap:Envelope>";
 
+            MensajeAsync AuxAsync  = new MensajeAsync();
             using (var client = new HttpClient())
             {
                 // Establecer la URL del servicio web
@@ -93,23 +120,20 @@ namespace BakAppDiego.Components.Pages
                     string a = "{\"Table\":[]}";
                     if (responseContent == a)
                     {
-                        Mensaje.EsCorrecto = false;
-                        Mensaje.Msg = "LogIn fallido, contrasela incorrecta";
-                        await MostrarPopUp("Operacion fallida", "Contraseña incorrecta", "Seguir", " Cancelar", true);
+                        AuxAsync.EsCorrecto = false;
+                        AuxAsync.Msg = "LogIn fallido, contrasela incorrecta";
 
                     }
                     else
                     {
+                                               
 
-                        Mensaje.EsCorrecto = true;
-                        Mensaje.Msg = "LogIn correcto";
-                        await MostrarPopUp("Operacion exitosa", "Usuario ingresado", "Seguir", " Cancelar", false);
-
-                        var loginResponse = ParseSoapResponse(responseContent);
+                        MensajeAsync mensajeAsync = ParseSoapResponse(responseContent);
 
 
+                        AuxAsync = mensajeAsync;
                         // Aquí puedes usar el objeto usuario
-                        Console.WriteLine($"Resultado del login: {loginResponse}");
+                        Console.WriteLine($"Resultado del login: {mensajeAsync}");
 
 
                     }
@@ -120,22 +144,23 @@ namespace BakAppDiego.Components.Pages
                 
                 catch (HttpRequestException e)
                 {
-                    Mensaje.EsCorrecto = false;
-                    Mensaje.Msg = $"LogIn fallido, fallo de conexion: {e.Message}";
-                    Mensaje.ErrorDeConexionSQL = true;
+                    AuxAsync.EsCorrecto = false;
+                    AuxAsync.Msg = $"LogIn fallido, fallo de conexion: {e.Message}";
+                    AuxAsync.ErrorDeConexionSQL = true;
                     await MostrarPopUp("Operacion fallida", "Fallo de conexion", "Seguir", " Cancelar", true);
 
                     Console.WriteLine($"Error al enviar la solicitud: {e.Message}");
                 }
                 catch (Exception ex)
                 {
-                    Mensaje.EsCorrecto = false;
-                    Mensaje.Msg = $"LogIn fallido, fallo de codigo: {ex.Message}";
-                    Mensaje.ErrorDeConexionSQL = false;
+                    AuxAsync.EsCorrecto = false;
+                    AuxAsync.Msg = $"LogIn fallido, fallo de codigo: {ex.Message}";
+                    AuxAsync.ErrorDeConexionSQL = false;
                     await MostrarPopUp("Operacion fallida", "Fallo de codigo", "Seguir", " Cancelar", true);
                     Console.WriteLine($"Ocurrió un error: {ex.Message}");
                 }
             }
+            return AuxAsync;
         }
         private async Task<bool> MostrarPopUp(string titulo,string mensaje, string btnStr, string CancelarStr, bool Visible)
         {
@@ -158,11 +183,11 @@ namespace BakAppDiego.Components.Pages
             }
             return resultado;
         }
-        private TabfuResponse ParseSoapResponse(string soapResponse)
+        private MensajeAsync ParseSoapResponse(string soapResponse)
         {
             Console.WriteLine("Contenido de la respuesta SOAP:");
             Console.WriteLine(soapResponse); // Para depurar
-
+            MensajeAsync AuxAsync = new MensajeAsync(); 
             try
             {
                 // Deserializar el JSON a un objeto TabfuResponse
@@ -170,17 +195,17 @@ namespace BakAppDiego.Components.Pages
                 TABFU Respuesta = response.Table[0];
                 GlobalData.usuario = Respuesta;
                 GlobalData.GuardarTABFU();
-                Mensaje.EsCorrecto = true;
-                Mensaje.Msg = "Tabla Creada";
+                AuxAsync.EsCorrecto = true;
+                AuxAsync.Msg = "Tabla Creada";
                 
-                return response; // Retorna el objeto que contiene la lista de Tabfu
+                return AuxAsync; // Retorna el objeto que contiene la lista de Tabfu
             }
             catch (JsonException ex)
             {
-                Mensaje.EsCorrecto = false;
-                Mensaje.Msg = "Tabla fallida" + ex.Message;
+                AuxAsync.EsCorrecto = false;
+                AuxAsync.Msg = "Tabla fallida" + ex.Message;
                 Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
-                throw; // Vuelve a lanzar la excepción si es necesario
+                return AuxAsync; // Vuelve a lanzar la excepción si es necesario
             }
         }
     }

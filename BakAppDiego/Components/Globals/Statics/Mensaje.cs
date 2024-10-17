@@ -8,7 +8,7 @@ using Microsoft.Maui.Storage;
 
 namespace BakAppDiego.Components.Globals.Statics
 {
-    public static class Mensaje
+    public  class Mensaje
     {
         public static bool EsCorrecto { get; set; }
         public static string Id { get; set; }
