@@ -41,15 +41,15 @@ namespace BakAppDiego.Components.Pages
         }
 
 
-        private async Task<string> Contraseña() {
+        private async Task ContraseñaAsync() {
             Dialogo = new DialogoService();
             string Respuesta  = await  Dialogo.DisplayText("Ingrese la Clave de acceso", "Clave", "Aceptar", "Cerrar");
 
             if (Respuesta == "971364")
             {
 
-                bool r = await PruebaIP();
-                if (r)
+                await PruebaIP();
+                if (Mensaje.EsCorrecto)
                 {
                     bool res = await Dialogo.DisplayConfirm("Conexion Exitosa ", "", "Aceptar", "Cerrar");
 
@@ -62,6 +62,10 @@ namespace BakAppDiego.Components.Pages
 
                 }
 
+            } else if (Respuesta == null) { 
+            
+            
+            
             }
             else {
 
@@ -70,31 +74,34 @@ namespace BakAppDiego.Components.Pages
 
             }
             
-            return Respuesta;
+            
 
 
         }
 
-        private async Task<bool> PruebaIP()
+        private async Task PruebaIP()
         {
             Dialogo = new DialogoService();
             string Respuesta = await Dialogo.DisplayText("Ingrese la IP ", "IP", "Aceptar", "Cerrar");
             if (Respuesta == null | Respuesta == "" ) {
 
-                return false;
             }
-            if (await CallSoapService(Respuesta))
+            await CallSoapService(Respuesta);
+            if (Mensaje.EsCorrecto)
             {
 
                 GlobalData.GuardarIP();
-                
-                return true;
-
+                Mensaje.EsCorrecto = true;
+                Mensaje.Msg = "Conexion a ip exitosa";
+                Console.WriteLine(Mensaje.Msg);
             }
             else {
-                bool res = await Dialogo.DisplayConfirm("Conexion Fallida ", "", "Aceptar", "Cerrar");
-                return false;
 
+                Console.WriteLine(Mensaje.Msg);
+                Mensaje.EsCorrecto = false;
+                Mensaje.Msg = "Conexion a ip fallida";
+                bool res = await Dialogo.DisplayConfirm("Conexion Fallida ", "", "Aceptar", "Cerrar");
+                
             }
 
 
@@ -102,6 +109,8 @@ namespace BakAppDiego.Components.Pages
 
 
         }
+
+
         private async Task<bool> CallSoapService(string newIp )
         {
             loadingPopup.Show();
@@ -126,7 +135,7 @@ namespace BakAppDiego.Components.Pages
                 {
                     loadingPopup.Hide();
 
-                    GlobalData.Ip_Wb = newIp;
+                    GlobalData.Ip_Wb = "http://" + newIp;
                     Mensaje.EsCorrecto = true;
                     Mensaje.Msg = "Conexion exitosa";
                     //buttonColor = "green"; // Cambiar el color del botón a verde
@@ -147,7 +156,7 @@ namespace BakAppDiego.Components.Pages
                 loadingPopup.Hide();
 
                 Mensaje.EsCorrecto = false;
-                Mensaje.Msg = "Conexion fallida";
+                Mensaje.Msg = "Conexion fallida" + ex;
                 return false;
 
 

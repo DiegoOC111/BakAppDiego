@@ -30,7 +30,7 @@ namespace BakAppDiego.Components.Globals.Statics
         public static void Cargar()
         {
             // Obtener el JSON de Preferences
-            Ip_Wb = Preferences.Get("TABFU", null);
+            Ip_Wb = Preferences.Get("Ip", null);
             string jsonGuardado = Preferences.Get("TABFU", null);
 
             if (jsonGuardado != null)

@@ -9,6 +9,8 @@ using System.Xml.Linq;
 using Newtonsoft.Json;
 using BakAppDiego.Components.Globals.TablasBackApp;
 using BakAppDiego.Components.Globals.Statics;
+using BakAppDiego.Components.Dialogs;
+
 
 namespace BakAppDiego.Components.Pages
 {
@@ -19,11 +21,34 @@ namespace BakAppDiego.Components.Pages
         [Inject] private HttpClient HttpClient { get; set; }
         private string password;
         private ElementReference passwordInput;
+        private DialogoService Dialogo;
+        private PopUpConfirmar PopUp;
+        protected override void OnInitialized()
+        {
+
+            Dialogo = new DialogoService();
+            
+        }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
                 await passwordInput.FocusAsync(); // Establecer el foco en el input
+            }
+            if (GlobalData.usuario != null)
+            {
+                string mensaje = "Hay un usuario activo : " + GlobalData.usuario.NoKofu;
+                bool res = await MostrarPopUp("Usuario Activo", mensaje, "Iniciar", " Usar otro", true);
+                if (res)
+                {
+
+
+                }
+                else { 
+                
+                }
+
+
             }
         }
 
@@ -51,7 +76,7 @@ namespace BakAppDiego.Components.Pages
             using (var client = new HttpClient())
             {
                 // Establecer la URL del servicio web
-                var url = "http://192.168.1.87:89/Ws_BakApp.asmx"; // Asegúrate de usar el puerto correcto
+                var url = GlobalData.Ip_Wb + "/Ws_BakApp.asmx"; // Asegúrate de usar el puerto correcto
 
                 // Configurar la solicitud
                 var content = new StringContent(soapRequest, Encoding.UTF8, "text/xml");
@@ -59,29 +84,80 @@ namespace BakAppDiego.Components.Pages
 
                 try
                 {
+
                     // Enviar la solicitud POST
                     var response = await client.PostAsync(url, content);
                     response.EnsureSuccessStatusCode(); // Asegurarse de que la respuesta fue exitosa
 
                     var responseContent = await response.Content.ReadAsStringAsync();
+                    string a = "{\"Table\":[]}";
+                    if (responseContent == a)
+                    {
+                        Mensaje.EsCorrecto = false;
+                        Mensaje.Msg = "LogIn fallido, contrasela incorrecta";
+                        await MostrarPopUp("Operacion fallida", "Contraseña incorrecta", "Seguir", " Cancelar", true);
+
+                    }
+                    else
+                    {
+
+                        Mensaje.EsCorrecto = true;
+                        Mensaje.Msg = "LogIn correcto";
+                        await MostrarPopUp("Operacion exitosa", "Usuario ingresado", "Seguir", " Cancelar", false);
+
+                        var loginResponse = ParseSoapResponse(responseContent);
+
+
+                        // Aquí puedes usar el objeto usuario
+                        Console.WriteLine($"Resultado del login: {loginResponse}");
+
+
+                    }
+                }
 
                     // Procesar la respuesta
-                    var loginResponse = ParseSoapResponse(responseContent);
-
-                    // Aquí puedes usar el objeto usuario
-                    Console.WriteLine($"Resultado del login: {loginResponse}");
-                }
+                   
+                
                 catch (HttpRequestException e)
                 {
+                    Mensaje.EsCorrecto = false;
+                    Mensaje.Msg = $"LogIn fallido, fallo de conexion: {e.Message}";
+                    Mensaje.ErrorDeConexionSQL = true;
+                    await MostrarPopUp("Operacion fallida", "Fallo de conexion", "Seguir", " Cancelar", true);
+
                     Console.WriteLine($"Error al enviar la solicitud: {e.Message}");
                 }
                 catch (Exception ex)
                 {
+                    Mensaje.EsCorrecto = false;
+                    Mensaje.Msg = $"LogIn fallido, fallo de codigo: {ex.Message}";
+                    Mensaje.ErrorDeConexionSQL = false;
+                    await MostrarPopUp("Operacion fallida", "Fallo de codigo", "Seguir", " Cancelar", true);
                     Console.WriteLine($"Ocurrió un error: {ex.Message}");
                 }
             }
         }
+        private async Task<bool> MostrarPopUp(string titulo,string mensaje, string btnStr, string CancelarStr, bool Visible)
+        {
+            // Configura el popup
+            PopUp.crear(titulo, mensaje, btnStr, CancelarStr, Visible);
 
+            // Espera hasta que el usuario presione un botón
+            bool resultado = await PopUp.ShowAsync();
+
+            // Aquí puedes manejar el resultado
+            if (resultado)
+            {
+                // El usuario presionó "Aceptar"
+                Console.WriteLine("El usuario aceptó.");
+            }
+            else
+            {
+                // El usuario presionó "Cancelar"
+                Console.WriteLine("El usuario canceló.");
+            }
+            return resultado;
+        }
         private TabfuResponse ParseSoapResponse(string soapResponse)
         {
             Console.WriteLine("Contenido de la respuesta SOAP:");
@@ -94,10 +170,15 @@ namespace BakAppDiego.Components.Pages
                 TABFU Respuesta = response.Table[0];
                 GlobalData.usuario = Respuesta;
                 GlobalData.GuardarTABFU();
+                Mensaje.EsCorrecto = true;
+                Mensaje.Msg = "Tabla Creada";
+                
                 return response; // Retorna el objeto que contiene la lista de Tabfu
             }
             catch (JsonException ex)
             {
+                Mensaje.EsCorrecto = false;
+                Mensaje.Msg = "Tabla fallida" + ex.Message;
                 Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
                 throw; // Vuelve a lanzar la excepción si es necesario
             }

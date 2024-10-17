@@ -1,0 +1,66 @@
+﻿@code {
+    private TaskCompletionSource<bool> tcs;
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+    [Parameter]
+    public string mensaje { get; set; } = "";
+    [Parameter]
+    public string titulo { get; set; } = "";
+    [Parameter]
+    public string BotonStringAceptar { get; set; } = "Aceptar";
+    [Parameter]
+    public string BotonStringCancelar { get; set; } = "Cancelar";
+    [Parameter]
+    public bool BotonBoolCancelar { get; set; } = true;
+
+    public Task<bool> ShowAsync()
+    {
+        tcs = new TaskCompletionSource<bool>();
+        IsVisible = true;
+        StateHasChanged();
+        return tcs.Task; // Devuelve la tarea que se completará cuando el popup se cierre
+    }
+
+    public void crear(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2)
+    {
+        titulo = Titulo;
+        mensaje = Mensaje;
+        BotonStringAceptar = aceptar;
+        BotonStringCancelar = cancelar;
+        BotonBoolCancelar = visibleBTN2;
+        StateHasChanged();
+    }
+
+    public void Aceptar()
+    {
+        tcs?.SetResult(true);  // Retorna true cuando el usuario presiona "Aceptar"
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    public void Cancelar()
+    {
+        tcs?.SetResult(false); // Retorna false cuando el usuario presiona "Cancelar"
+        IsVisible = false;
+        StateHasChanged();
+    }
+}
+@if (IsVisible)
+{
+    <div class="loading-popup">
+        <div class="overlay">
+            <div class="popup-content">
+                <h3>@titulo</h3>
+                <p>@mensaje</p>
+
+                <div class="popup-buttons">
+                    <button class="button-19 " @onclick="Aceptar">@BotonStringAceptar</button>
+                    @if (BotonBoolCancelar)
+                    {
+                        <button class ="button-19 " @onclick="Cancelar">@BotonStringCancelar</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

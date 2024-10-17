@@ -14,6 +14,7 @@ namespace BakAppDiego.Components.Dialogs
         }
         public async Task<string> DisplayActionSheet(string titulo, string aceptar, string cerrar, string[] botones)
         {
+            
             return await Application.Current.MainPage.DisplayActionSheet(title: titulo, cancel: cerrar, destruction: aceptar, buttons: botones);
         }
         public async Task<string> DisplayText(string titulo, string mensaje, string aceptar, string cerrar)

@@ -25,8 +25,37 @@ namespace BakAppDiego.Components.Globals.Statics
         public static bool Cerrar { get; set; }
         public static bool ErrorDeConexionSQL { get; set; }
         public static bool ErrorDeCompilacion { get; set; }
-
-
+        public static void SetMensaje(
+    bool? esCorrecto = null,
+    string id = null,
+    string detalle = null,
+    string msg = null,
+    string resultado = null,
+    object tag = null,
+    string nombreImagen = null,
+    object icono = null,
+    bool? cancelado = null,
+    bool? mostrarMensaje = null,
+    bool? cerrar = null,
+    bool? errorDeConexionSQL = null,
+    bool? errorDeCompilacion = null)
+        {
+            if (esCorrecto.HasValue) EsCorrecto = esCorrecto.Value;
+            if (id != null) Id = id;
+            if (detalle != null) Detalle = detalle;
+            if (msg != null) Msg = msg;
+            if (resultado != null) Resultado = resultado;
+            if (tag != null) Tag = tag;
+            if (nombreImagen != null) NombreImagen = nombreImagen;
+            if (icono != null) Icono = icono;
+            if (cancelado.HasValue) Cancelado = cancelado.Value;
+            if (mostrarMensaje.HasValue) MostrarMensaje = mostrarMensaje.Value;
+            if (cerrar.HasValue) Cerrar = cerrar.Value;
+            if (errorDeConexionSQL.HasValue) ErrorDeConexionSQL = errorDeConexionSQL.Value;
+            if (errorDeCompilacion.HasValue) ErrorDeCompilacion = errorDeCompilacion.Value;
+        }
 
     }
+
+
 }
