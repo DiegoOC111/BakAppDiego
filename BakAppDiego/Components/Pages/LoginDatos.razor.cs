@@ -25,7 +25,8 @@ namespace BakAppDiego.Components.Pages
         private ElementReference passwordInput;
         private DialogoService Dialogo;
         private PopUpConfirmar PopUp;
-        
+        private LoadingPopUp loadingPopup;
+
         public MensajeAsync Msj;
         
         protected override void OnInitialized()
@@ -65,16 +66,20 @@ namespace BakAppDiego.Components.Pages
             Console.WriteLine($"Contraseña ingresada: {password}");
 
             // Llamar al método para realizar el login mediante SOAP
+            loadingPopup.Show();
+
             MensajeAsync mensajeAsync =  await Login();
             if (mensajeAsync.EsCorrecto)
             {
-                await MostrarPopUp("Operacion exitosa", "Usuario ingresado bienvenido " + GlobalData.usuario.NoKofu, "Seguir", " Cancelar", false);
+
+                await MostrarPopUp("Operacion exitosa", "Usuario ingresado bienvenido " + GlobalData.usuario.NoKofu, "Ingresar", " Cancelar", false);
 
                 Console.WriteLine(mensajeAsync.Msg);
 
             }
             else {
-                await MostrarPopUp("Operacion fallida", "Contraseña incorrecta", "Seguir", " Cancelar", true);
+
+                await MostrarPopUp("Operacion fallida", "Contraseña incorrecta", "Continuar", " Cancelar", false);
 
                 Console.WriteLine(mensajeAsync.Msg);
 
@@ -120,13 +125,16 @@ namespace BakAppDiego.Components.Pages
                     string a = "{\"Table\":[]}";
                     if (responseContent == a)
                     {
+                        loadingPopup.Hide();
+
                         AuxAsync.EsCorrecto = false;
                         AuxAsync.Msg = "LogIn fallido, contrasela incorrecta";
 
                     }
                     else
                     {
-                                               
+
+                        loadingPopup.Hide();
 
                         MensajeAsync mensajeAsync = ParseSoapResponse(responseContent);
 
@@ -144,6 +152,8 @@ namespace BakAppDiego.Components.Pages
                 
                 catch (HttpRequestException e)
                 {
+                    loadingPopup.Hide();
+
                     AuxAsync.EsCorrecto = false;
                     AuxAsync.Msg = $"LogIn fallido, fallo de conexion: {e.Message}";
                     AuxAsync.ErrorDeConexionSQL = true;
@@ -153,6 +163,8 @@ namespace BakAppDiego.Components.Pages
                 }
                 catch (Exception ex)
                 {
+                    loadingPopup.Hide();
+
                     AuxAsync.EsCorrecto = false;
                     AuxAsync.Msg = $"LogIn fallido, fallo de codigo: {ex.Message}";
                     AuxAsync.ErrorDeConexionSQL = false;
@@ -160,6 +172,7 @@ namespace BakAppDiego.Components.Pages
                     Console.WriteLine($"Ocurrió un error: {ex.Message}");
                 }
             }
+
             return AuxAsync;
         }
         private async Task<bool> MostrarPopUp(string titulo,string mensaje, string btnStr, string CancelarStr, bool Visible)
@@ -194,7 +207,6 @@ namespace BakAppDiego.Components.Pages
                 TabfuResponse response = JsonConvert.DeserializeObject<TabfuResponse>(soapResponse);
                 TABFU Respuesta = response.Table[0];
                 GlobalData.usuario = Respuesta;
-                GlobalData.GuardarTABFU();
                 AuxAsync.EsCorrecto = true;
                 AuxAsync.Msg = "Tabla Creada";
                 

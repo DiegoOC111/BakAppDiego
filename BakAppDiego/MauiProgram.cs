@@ -1,4 +1,7 @@
 ﻿using BakAppDiego.Components.Dialogs;
+using BakAppDiego.Components.Interface;
+
+
 using Microsoft.Extensions.Logging;
 
 namespace BakAppDiego
@@ -24,6 +27,9 @@ namespace BakAppDiego
             builder.Services.AddSingleton(new HttpClient());
             builder.Services.AddSingleton<DialogInterface, DialogoService>();
             return builder.Build();
+
+
+
         }
     }
 }

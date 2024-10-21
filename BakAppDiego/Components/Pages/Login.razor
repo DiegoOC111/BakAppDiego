@@ -1,16 +1,16 @@
 ﻿@page "/"
 @using BakAppDiego.Components.Dialogs
 @inject DialogInterface DialogoService
-<div class="top-row">
-    
-</div>
 
-<div class="header">
-    <label class="Label-Destacar">Id del dispositivo</label>
-    <label class="Label-Destacar" id="ID">AB555SFF</label>
-</div>
+    <div class="header">
+        <label class="Label-Destacar">Id del dispositivo</label>
+        <label class="Label-Destacar" id="ID">@deviceId</label>
+    </div>
+
+
+
 <body>
-
+    
     <div class="containerD">
 
       
@@ -34,6 +34,10 @@
     </div>
     
 </body>
+<div class="footer">
+    <label class="Label-Destacar">BakApp Móvil Versión: </label>
+    <label class="Label-Destacar" id="Version">1.000</label>
+</div>
 <LoadingPopUp @ref="loadingPopup" />
 <PopUpConfirmar @ref="PopUp" />
 
