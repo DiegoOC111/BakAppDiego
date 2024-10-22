@@ -130,7 +130,11 @@ h1:focus {
     background-color: transparent; /* Color de fondo del footer */
 }
 .header {
-    position: relative; /* Permite que los elementos hijos se posicionen de manera relativa */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+     /* Permite que los elementos hijos se posicionen de manera relativa */
     text-align: center; /* Centra el texto dentro del encabezado */
     padding: 10px; /* Espaciado alrededor del encabezado */
     background-color: transparent; /* Color de fondo del encabezado */

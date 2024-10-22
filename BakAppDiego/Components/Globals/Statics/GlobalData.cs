@@ -12,6 +12,7 @@ namespace BakAppDiego.Components.Globals.Statics
     public static class GlobalData
     {
         public static string Ip_Wb { get; set; }
+        public static string Id_dispositivo { get; set; }
         public static TABFU? usuario {get; set;}
         public static void  GuardarIP() {
             string json = JsonSerializer.Serialize(usuario);

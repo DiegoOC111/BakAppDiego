@@ -57,13 +57,13 @@ namespace BakAppDiego.Components.Pages
 
             string id = Setting.Secure.GetString(context.ContentResolver, Secure.AndroidId);
 
-            deviceId = id; 
+            deviceId = id;
 #endif
 
 #if WINDOWS
                         deviceId = GetDeviceID();
 #endif
-
+            GlobalData.Id_dispositivo = deviceId;
         }
 #if WINDOWS
 

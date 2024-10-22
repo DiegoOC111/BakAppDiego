@@ -28,7 +28,12 @@ namespace BakAppDiego.Components.Pages
         private LoadingPopUp loadingPopup;
 
         public MensajeAsync Msj;
-        
+
+        async Task IrMenuPrincipal()
+        {
+            // here're other async action calls
+            NavigationManager.NavigateTo("/MenuPrincipal", true);
+        }
         protected override void OnInitialized()
         {
 
@@ -72,8 +77,13 @@ namespace BakAppDiego.Components.Pages
             if (mensajeAsync.EsCorrecto)
             {
 
-                await MostrarPopUp("Operacion exitosa", "Usuario ingresado bienvenido " + GlobalData.usuario.NoKofu, "Ingresar", " Cancelar", false);
+                bool r = await MostrarPopUp("Operacion exitosa", "Usuario ingresado bienvenido " + GlobalData.usuario.NoKofu, "Ingresar", " Cancelar", false);
+                if(r)
+                {
 
+                    await IrMenuPrincipal();
+
+                }
                 Console.WriteLine(mensajeAsync.Msg);
 
             }
