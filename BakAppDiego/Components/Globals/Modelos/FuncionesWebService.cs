@@ -5,7 +5,10 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.Modelos
@@ -18,6 +21,56 @@ namespace BakAppDiego.Components.Globals.Modelos
         {
             ip_wb = GlobalData.Ip_Wb;
             HttpClient = new HttpClient();
+        }
+        
+
+        public  List<Dictionary<string, object>> Fx_DataTable(string jsonString)
+        {
+            var dataSet = Fx_DataSet(jsonString);
+            if (dataSet.ContainsKey("Table") && dataSet["Table"] is List<Dictionary<string, object>> table)
+            {
+                return table;
+            }
+            return new List<Dictionary<string, object>>();
+        }
+        public  Dictionary<string, object> Fx_DataSet(string jsonString)
+        {
+            using (JsonDocument doc = JsonDocument.Parse(jsonString))
+            {
+                var result = new Dictionary<string, object>();
+
+                foreach (JsonProperty element in doc.RootElement.EnumerateObject())
+                {
+                    
+                    if (element.Value.ValueKind == JsonValueKind.Array)
+                    {
+                        var list = new List<Dictionary<string, object>>();
+                        foreach (var item in element.Value.EnumerateArray())
+                        {
+                            var dict = new Dictionary<string, object>();
+                            foreach (var prop in item.EnumerateObject())
+                            {
+                                dict[prop.Name] = prop.Value.ToString(); 
+                            }
+                            list.Add(dict);
+                        }
+                        result[element.Name] = list;
+                    }
+                    else
+                    {
+                        result[element.Name] = element.Value.ToString();
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        
+        public  Dictionary<string, object> Fx_DataRow(string jsonString)
+        {
+            var table = Fx_DataTable(jsonString);
+            return table.Count > 0 ? table[0] : null;
         }
         public async Task<MensajeAsync> Sb_GetDataSet_Json(string SqlQuery)
         {
@@ -42,22 +95,21 @@ namespace BakAppDiego.Components.Globals.Modelos
                 string a = "{\"Table\":[]}";
                 if (httpResponse.IsSuccessStatusCode)
                 {
-                    if (responseContent == a) {
-                        
+                    if (responseContent == a)
+                    {
+
 
                         auxAsync.EsCorrecto = false;
 
                         auxAsync.Msg = "tabla nula, error de query";
-                        //buttonColor = "green"; // Cambiar el color del botón a verde
                         return auxAsync;
-                        
-                    }
-                    var result = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, object>>>>(responseContent);
 
+                    }
+
+                    auxAsync.Tag = responseContent;
                     auxAsync.EsCorrecto = true;
-                    auxAsync.Tag = result;
+
                     auxAsync.Msg = "Conexion exitosa";
-                    //buttonColor = "green"; // Cambiar el color del botón a verde
                     return auxAsync;
                 }
                 else
