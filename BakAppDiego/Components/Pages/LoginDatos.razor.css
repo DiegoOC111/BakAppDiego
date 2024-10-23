@@ -1,0 +1,87 @@
+﻿.body2 {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Cambiar a center para centrar horizontalmente */
+    justify-content: flex-start; /* Cambiar a flex-start para alinear hacia la parte superior */
+    min-height: 100vh;
+    font-family: 'Jost', sans-serif;
+}
+
+.main2 {
+    width: 70vw; /* 70% del ancho de la ventana */
+    height: 50vh; /* 50% de la altura de la ventana */
+    background: #012E4A;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    box-shadow: 5px 20px 50px #000;
+    margin-top: 20px; /* Espacio entre el contenedor y el siguiente elemento */
+}
+
+#chk {
+    display: none;
+}
+
+.signup {
+    position: center;
+    width: 100%;
+    height: 100%;
+}
+
+label {
+    color: #fff;
+    font-size: 2.3em;
+    justify-content: center;
+    display: flex;
+    margin: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .5s ease-in-out;
+}
+
+input {
+    width: 50vw;
+    height: 5vh;
+    background: #E8EDE7;
+    justify-content: center;
+    display: flex;
+    margin: 20px auto;
+    padding: 12px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+}
+
+
+
+    button:hover {
+        background: #81BECE;
+    }
+
+.login {
+    height: 460px;
+    background: #eee;
+    border-radius: 60% / 10%;
+    transform: translateY(-180px);
+    transition: .8s ease-in-out;
+}
+
+    .login label {
+        color: #573b8a;
+        transform: scale(.6);
+    }
+
+#chk:checked ~ .login {
+    transform: translateY(-500px);
+}
+
+    #chk:checked ~ .login label {
+        transform: scale(1);
+    }
+
+#chk:checked ~ .signup label {
+    transform: scale(.6);
+}

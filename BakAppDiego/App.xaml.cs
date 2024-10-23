@@ -1,4 +1,6 @@
-﻿namespace BakAppDiego
+﻿using BakAppDiego.Components.Globals.Statics;
+
+namespace BakAppDiego
 {
     public partial class App : Application
     {
@@ -7,6 +9,8 @@
             InitializeComponent();
 
             MainPage = new MainPage();
+            GlobalData.Cargar();
         }
+
     }
 }

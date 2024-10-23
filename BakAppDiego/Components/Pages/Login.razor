@@ -1,15 +1,16 @@
 ﻿@page "/"
+@using BakAppDiego.Components.Dialogs
+@inject DialogInterface DialogoService
 
-<div class="top-row">
-    
-</div>
+    <div class="header">
+        <label class="Label-Destacar">Id del dispositivo</label>
+        <label class="Label-Destacar" id="ID">@deviceId</label>
+    </div>
 
-<div class="header">
-    <label class="Label-Destacar">Id del dispositivo</label>
-    <label class="Label-Destacar" id="ID">AB555SFF</label>
-</div>
+
+
 <body>
-
+    
     <div class="containerD">
 
       
@@ -23,16 +24,23 @@
                 Presione el boton ingresar
             </label>
         </div>
-        <div class="itemD"><button class="button-19" role="button">Ingresar</button></div>
-        <div class="itemD"><button class="button-19" role="button">Configuracion y conexion local</button></div>
+        <div @onclick="IrALog" class="itemD"><button class="button-19" role="button">Ingresar</button></div>
+        <div class="itemD">
+            <button @onclick="ContraseñaAsync" class="button-19" role="button" >Configuración y conexión local</button>
+        </div>
+        
         
         
     </div>
     
 </body>
+<div class="footer">
+    <label class="Label-Destacar">BakApp Móvil Versión: </label>
+    <label class="Label-Destacar" id="Version">1.000</label>
+</div>
+<LoadingPopUp @ref="loadingPopup" />
+<PopUpConfirmar @ref="PopUp" />
 
-<h3>Conexión SOAP a Ws_BakApp</h3>
 
-<button @onclick="CallSoapService" style="background-color:@buttonColor">Conectar al Servicio Web</button>
 
-<p>@responseMessage</p>
+

@@ -120,7 +120,7 @@ h1:focus {
 }
 
 .footer {
-    position: absolute; /* Posiciona el footer de manera absoluta */
+    position: fixed; /* Posiciona el footer de manera absoluta */
     bottom: 0; /* Coloca el footer en la parte inferior */
     left: 50%; /* Centra el footer horizontalmente */
     transform: translateX(-50%); /* Ajusta para centrar el footer */
@@ -130,7 +130,11 @@ h1:focus {
     background-color: transparent; /* Color de fondo del footer */
 }
 .header {
-    position: relative; /* Permite que los elementos hijos se posicionen de manera relativa */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+     /* Permite que los elementos hijos se posicionen de manera relativa */
     text-align: center; /* Centra el texto dentro del encabezado */
     padding: 10px; /* Espaciado alrededor del encabezado */
     background-color: transparent; /* Color de fondo del encabezado */

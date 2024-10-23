@@ -1,0 +1,56 @@
+﻿.loading-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-content {
+    background-color: white; /* Color de fondo blanco */
+    color: black; /* Color de texto negro */
+    height: 25%;
+    width: 50%; /* 25% del espacio de la pantalla */
+    padding: 20px; /* Espaciado interno */
+    border-radius: 10px; /* Esquinas redondeadas */
+    text-align: center; /* Centrar el texto */
+    display: flex; /* Usar flexbox para centrar los elementos */
+    flex-direction: column; /* Colocar los elementos en columna */
+    align-items: center; /* Centrar horizontalmente */
+    justify-content: center; /* Centrar verticalmente */
+}
+
+/* Estilo para el círculo giratorio */
+.loader {
+    border: 8px solid rgba(255, 255, 255, 0.3); /* Fondo blanco semitransparente */
+    border-top: 8px solid blue; /* Color azul para la parte superior */
+    border-radius: 50%; /* Hacerlo circular */
+    width: 40px; /* Ancho del círculo */
+    height: 40px; /* Alto del círculo */
+    animation: spin 1s linear infinite; /* Animación giratoria */
+    margin-bottom: 10px; /* Espacio entre el círculo y el texto */
+}
+
+/* Animación giratoria utilizando transformaciones */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
