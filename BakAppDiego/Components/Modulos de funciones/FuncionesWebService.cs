@@ -90,25 +90,25 @@ namespace BakAppDiego.Components.Globals.Modelos
 
             try
             {
-                var httpResponse = await HttpClient.PostAsync(ip_wb + "/Ws_BakApp.asmx", content);
+                HttpResponseMessage httpResponse = await HttpClient.PostAsync(ip_wb + "/Ws_BakApp.asmx", content);
                 var responseContent = await httpResponse.Content.ReadAsStringAsync();
                 string a = "{\"Table\":[]}";
                 if (httpResponse.IsSuccessStatusCode)
                 {
-                    if (responseContent == a)
+                    if (responseContent == a | responseContent == null)
                     {
 
 
                         auxAsync.EsCorrecto = false;
-
-                        auxAsync.Msg = "tabla nula, error de query";
+                        auxAsync.ErrorDeConexionSQL = false;
+                        auxAsync.Msg = "Tabla vacia";
                         return auxAsync;
 
                     }
 
-                    auxAsync.Tag = responseContent;
+                    auxAsync.Tag = httpResponse;
                     auxAsync.EsCorrecto = true;
-
+                    auxAsync.Detalle = responseContent;
                     auxAsync.Msg = "Conexion exitosa";
                     return auxAsync;
                 }
@@ -116,6 +116,8 @@ namespace BakAppDiego.Components.Globals.Modelos
                    
                 {
                     auxAsync.EsCorrecto = false;
+                    auxAsync.ErrorDeConexionSQL = true;
+
                     auxAsync.Msg = "Conexion fallida";
 
                     return auxAsync;

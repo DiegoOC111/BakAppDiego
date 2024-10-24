@@ -31,8 +31,8 @@ namespace BakAppDiego.Components.Pages
 {
     public partial class Login
     {
-        
-     
+
+
         public string deviceId;
         private LoadingPopUp loadingPopup;
         private DialogoService Dialogo;
@@ -42,7 +42,7 @@ namespace BakAppDiego.Components.Pages
         private NavigationManager NavigationManager { get; set; }
         [Inject] private HttpClient HttpClient { get; set; }
         private PopUpConfirmar PopUp;
-
+        private FuncionesWebService ComunicacionWB;
 
         async Task IrALog()
         {
@@ -52,6 +52,7 @@ namespace BakAppDiego.Components.Pages
 
         protected override void OnInitialized()
         {
+            ComunicacionWB = new FuncionesWebService();
 #if ANDROID
             var context = AndroidApp.Context;
 
@@ -61,13 +62,13 @@ namespace BakAppDiego.Components.Pages
 #endif
 
 #if WINDOWS
-                        deviceId = GetDeviceID();
+            deviceId = GetDeviceID();
 #endif
             GlobalData.Id_dispositivo = deviceId;
         }
 #if WINDOWS
 
-    
+
         private string GetDeviceID()
         {
             ManagementObjectSearcher mos = new("SELECT * FROM Win32_BaseBoard");
@@ -79,7 +80,7 @@ namespace BakAppDiego.Components.Pages
             }
             return string.Empty;
         }
-    
+
 #endif
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -95,9 +96,44 @@ namespace BakAppDiego.Components.Pages
             }
 
         }
+        private async Task SB_cargar() {
 
-        
-       
+            string sqlQuery = @"Select Top 1 *,NOKOCARAC+'.dbo.' As Global_BaseBk From TABCARAC Where KOTABLA = 'BAKAPP' And KOCARAC = 'BASE'";
+            MensajeAsync mensaje = await ComunicacionWB.Sb_GetDataSet_Json(sqlQuery);
+            if (mensaje.EsCorrecto)
+            {
+
+                var obj = mensaje.Tag;
+                try
+                {
+
+                    var ax = ComunicacionWB.Fx_DataRow((string)mensaje.Tag);
+                    if (ax != null)
+                    {
+                        GlobalData.Global_BaseBk = (string)ax["Global_BaseBk"];
+                    }
+                    else
+                    {
+                        Console.WriteLine("No se encontraron filas.");
+                    }
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+
+            }
+            else
+            {
+
+
+            }
+
+
+        }
+
+
 
         //private string GetDeviceId()
         //{
@@ -127,12 +163,12 @@ namespace BakAppDiego.Components.Pages
 
         private async Task ContraseñaAsync() {
             Dialogo = new DialogoService();
-            string Respuesta  = await  Dialogo.DisplayText("Ingrese la Clave de acceso", "Clave", "Aceptar", "Cerrar");
+            string Respuesta = await Dialogo.DisplayText("Ingrese la Clave de acceso", "Clave", "Aceptar", "Cerrar");
 
             if (Respuesta == "971364")
             {
 
-                MensajeAsync Msg =  await PruebaIP();
+                MensajeAsync Msg = await PruebaIP();
                 if (Msg.EsCorrecto)
                 {
                     bool res = await MostrarPopUp("Proceso exitoso", "Ip Valida, conectado a WebsService", "Aceptar", " Usar otro", false);
@@ -152,25 +188,25 @@ namespace BakAppDiego.Components.Pages
 
                 }
 
-            } else if (Respuesta == null) { 
-            
-            
-            
+            } else if (Respuesta == null) {
+
+
+
             }
             else {
 
 
-                bool res = await MostrarPopUp("Error ", "Contraseña incorrecta", "Aceptar", "Cerrar",false);
-                
+                bool res = await MostrarPopUp("Error ", "Contraseña incorrecta", "Aceptar", "Cerrar", false);
+
             }
-            
-            
+
+
 
 
         }
         private async Task<bool> MostrarPopUp(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
         {
-            
+
             // Configura el popup
             PopUp.crear(titulo, mensaje, btnStr, CancelarStr, Visible);
 
@@ -193,25 +229,25 @@ namespace BakAppDiego.Components.Pages
         private async Task<MensajeAsync> PruebaIP()
         {
             Dialogo = new DialogoService();
-            
+
             string Respuesta = await Dialogo.DisplayText("Ingrese la IP ", "IP", "Aceptar", "Cerrar");
-            if (Respuesta == null | Respuesta == "" ) {
+            if (Respuesta == null | Respuesta == "") {
                 MensajeAsync MsgAux = new MensajeAsync();
                 MsgAux.EsCorrecto = false;
                 MsgAux.Cancelado = true;
                 return MsgAux;
             }
-            MensajeAsync Msg =  await CallSoapService(Respuesta);
+            MensajeAsync Msg = await CallSoapService(Respuesta);
             if (Msg.EsCorrecto)
             {
 
 
-                
+
                 return Msg;
 
             }
             else {
-               
+
                 return Msg;
             }
 
@@ -222,7 +258,7 @@ namespace BakAppDiego.Components.Pages
         }
 
 
-        private async Task<MensajeAsync> CallSoapService(string newIp )
+        private async Task<MensajeAsync> CallSoapService(string newIp)
         {
             loadingPopup.Show();
             MensajeAsync auxAsync = new MensajeAsync();
@@ -254,7 +290,7 @@ namespace BakAppDiego.Components.Pages
                     return auxAsync;
                 }
                 else
-                loadingPopup.Hide();
+                    loadingPopup.Hide();
                 {
                     auxAsync.EsCorrecto = false;
                     auxAsync.Msg = "Conexion fallida";
@@ -273,6 +309,42 @@ namespace BakAppDiego.Components.Pages
 
 
             }
+        }
+        private async Task nombre() {
+            string sqlQuery = @"Select Top 1 *,NOKOCARAC+'.dbo.' As Global_BaseBk From TABCARAC Where KOTABLA = 'BAKAPP' And KOCARAC = 'BASE'";
+            MensajeAsync mensaje = await ComunicacionWB.Sb_GetDataSet_Json(sqlQuery);
+            if (mensaje.EsCorrecto)
+            {
+
+                var obj = mensaje.Tag;
+                try
+                {
+
+                    var ax = ComunicacionWB.Fx_DataRow((string)mensaje.Tag);
+                    if (ax != null)
+                    {
+                        GlobalData.Global_BaseBk = (string)ax["Global_BaseBk"];
+                    }
+                    else
+                    {
+                        Console.WriteLine("No se encontraron filas.");
+                    }
+                }
+                catch (Exception ex)
+                {
+
+
+                }
+
+            }
+            else
+            {
+
+
+            }
+
+
+
         }
         
 

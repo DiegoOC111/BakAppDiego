@@ -12,6 +12,7 @@ using BakAppDiego.Components.Globals.Statics;
 using BakAppDiego.Components.Dialogs;
 
 using BakAppDiego.Components.Globals.Modelos;
+using BakAppDiego.Components.Globals.Modelos.Responses;
 
 
 namespace BakAppDiego.Components.Pages
@@ -45,9 +46,9 @@ namespace BakAppDiego.Components.Pages
             if (firstRender)
             {
                 await passwordInput.FocusAsync(); // Establecer el foco en el input
-                if (GlobalData.usuario != null)
+                if (GlobalData.Usuario_Activo != null)
                 {
-                    string mensaje = "Hay un usuario activo : " + GlobalData.usuario.NoKofu;
+                    string mensaje = "Hay un usuario activo : " + GlobalData.Usuario_Activo.NoKofu;
                     bool res = await MostrarPopUp("Usuario Activo", mensaje, "Iniciar", " Usar otro", true);
                     if (res)
                     {
@@ -77,7 +78,7 @@ namespace BakAppDiego.Components.Pages
             if (mensajeAsync.EsCorrecto)
             {
 
-                bool r = await MostrarPopUp("Operacion exitosa", "Usuario ingresado bienvenido " + GlobalData.usuario.NoKofu, "Ingresar", " Cancelar", false);
+                bool r = await MostrarPopUp("Operacion exitosa", "Usuario ingresado bienvenido " + GlobalData.Usuario_Activo.NoKofu, "Ingresar", " Cancelar", false);
                 if(r)
                 {
 
@@ -214,9 +215,9 @@ namespace BakAppDiego.Components.Pages
             try
             {
                 // Deserializar el JSON a un objeto TabfuResponse
-                TabfuResponse response = JsonConvert.DeserializeObject<TabfuResponse>(soapResponse);
+                TABFUResponse response = JsonConvert.DeserializeObject<TABFUResponse>(soapResponse);
                 TABFU Respuesta = response.Table[0];
-                GlobalData.usuario = Respuesta;
+                GlobalData.Usuario_Activo = Respuesta;
                 AuxAsync.EsCorrecto = true;
                 AuxAsync.Msg = "Tabla Creada";
                 

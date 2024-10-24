@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BakAppDiego.Components.Globals.TablasBackApp
+namespace BakAppDiego.Components.Globals.Modelos.Bakapp
 {
-    internal class TabfuResponse
+    public class Zw_Configuracion
     {
-        public List<TABFU> Table { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BakAppDiego.Components.Globals.Modelos;
 using BakAppDiego.Components.Globals.Statics;
+using BakAppDiego.Components.Modulos_de_funciones;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -25,35 +26,9 @@ namespace BakAppDiego.Components.Pages
         
             async Task TraerEntidad()
         {
-            string sqlQuery = @"Select Top 1 *,NOKOCARAC+'.dbo.' As Global_BaseBk From TABCARAC Where KOTABLA = 'BAKAPP' And KOCARAC = 'BASE'";
-            MensajeAsync mensaje = await ComunicacionWB.Sb_GetDataSet_Json(sqlQuery);
-            if (mensaje.EsCorrecto)
-            {
+            ConectarConf conect = new ConectarConf();
 
-                var obj = mensaje.Tag;
-                try
-                {
-
-                    var ax = ComunicacionWB.Fx_DataRow((string)mensaje.Tag);
-                    if (ax != null)
-                    {
-                        string ass = (string)ax["Global_BaseBk"];
-                    }
-                    else
-                    {
-                        Console.WriteLine("No se encontraron filas.");
-                    }
-                }
-                catch (Exception ex) { 
-                
-                
-                }
-                
-            }
-            else {
-
-                 
-            }
+           MensajeAsync ms  = await conect.Sb_Cargar_Datos_De_Configuracion();
         }
 
 
