@@ -26,9 +26,21 @@ namespace BakAppDiego.Components.Pages
         
             async Task TraerEntidad()
         {
-            ConectarConf conect = new ConectarConf();
+            //ConectarConf conect = new ConectarConf();
 
-           MensajeAsync ms  = await conect.Sb_Cargar_Datos_De_Configuracion();
+            //MensajeAsync ms  = await conect.Sb_Cargar_Datos_De_Configuracion();
+            //if (ms.EsCorrecto)
+            //{
+
+            //    Console.WriteLine(ms.Msg);
+
+            //}
+            //else { 
+            
+            //    Console.WriteLine(ms.Msg);
+
+
+            //}
         }
 
 

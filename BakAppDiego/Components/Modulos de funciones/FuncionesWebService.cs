@@ -22,8 +22,8 @@ namespace BakAppDiego.Components.Globals.Modelos
             ip_wb = GlobalData.Ip_Wb;
             HttpClient = new HttpClient();
         }
-        
 
+        
         public  List<Dictionary<string, object>> Fx_DataTable(string jsonString)
         {
             var dataSet = Fx_DataSet(jsonString);
@@ -32,6 +32,35 @@ namespace BakAppDiego.Components.Globals.Modelos
                 return table;
             }
             return new List<Dictionary<string, object>>();
+        }
+
+        public async Task<MensajeAsync> Sb_ExisteTabla(string Tabla) {
+
+            MensajeAsync retorno = new MensajeAsync();
+
+            string Consulta_sql = $@"Select Top 1 * From INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{Tabla}'";
+            MensajeAsync respuesta = await Sb_GetDataSet_Json(Consulta_sql);
+
+
+            if (respuesta.EsCorrecto)
+            {
+
+                retorno.EsCorrecto = true;
+                retorno.Msg = "Existe la tabla";
+                GlobalData.ExisteTabla_MS_GATEWAY_STOCK = true;
+
+
+            }
+            else {
+
+                retorno.EsCorrecto = false;
+                retorno.Msg = "No existe la tabla";
+                GlobalData.ExisteTabla_MS_GATEWAY_STOCK = false;
+
+            }
+            return retorno;
+
+
         }
         public  Dictionary<string, object> Fx_DataSet(string jsonString)
         {
@@ -66,7 +95,52 @@ namespace BakAppDiego.Components.Globals.Modelos
             }
         }
 
-        
+        public async Task<MensajeAsync> Fx_HttJob_Ws_Sb_RevCarpetaTmp() {
+
+            string soapMessage = @$"<?xml version=""1.0"" encoding=""utf-8""?>
+<soap12:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap12=""http://www.w3.org/2003/05/soap-envelope"">
+  <soap12:Body>
+    <Sb_RevCarpetaTmp xmlns=""http://BakApp"" />
+  </soap12:Body>
+</soap12:Envelope>";
+            MensajeAsync auxAsync = new MensajeAsync();
+            var content = new StringContent(soapMessage, Encoding.UTF8, "text/xml");
+            content.Headers.Add("SOAPAction", "\"http://BakApp/Sb_RevCarpetaTmp\"");
+            HttpResponseMessage httpResponse = await HttpClient.PostAsync(ip_wb + "/Ws_BakApp.asmx", content);
+            var responseContent = await httpResponse.Content.ReadAsStringAsync();
+            string a = "{\"Table\":[]}";
+           
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                if (responseContent == a | responseContent == null)
+                {
+
+
+                    auxAsync.EsCorrecto = false;
+                    auxAsync.ErrorDeConexionSQL = false;
+                    auxAsync.Msg = "Tabla vacia";
+                    return auxAsync;
+
+                }
+
+                auxAsync.Tag = httpResponse;
+                auxAsync.EsCorrecto = true;
+                auxAsync.Detalle = responseContent;
+                auxAsync.Msg = "Conexion exitosa";
+                return auxAsync;
+            }
+            else
+
+            {
+                auxAsync.EsCorrecto = false;
+                auxAsync.ErrorDeConexionSQL = true;
+
+                auxAsync.Msg = "Conexion fallida";
+
+                return auxAsync;
+
+            }
+        }
         public  Dictionary<string, object> Fx_DataRow(string jsonString)
         {
             var table = Fx_DataTable(jsonString);
@@ -87,6 +161,7 @@ namespace BakAppDiego.Components.Globals.Modelos
 
             var content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml");
             content.Headers.Add("SOAPAction", "\"http://BakApp/Sb_GetDataSet_Json\"");
+
 
             try
             {

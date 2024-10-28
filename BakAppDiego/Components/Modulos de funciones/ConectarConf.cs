@@ -11,6 +11,7 @@ using System.Net.Http.Json;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace BakAppDiego.Components.Modulos_de_funciones
 {
@@ -63,17 +64,191 @@ namespace BakAppDiego.Components.Modulos_de_funciones
 
             mensaje = await Fx_Cargar_Configuracion_Estacion();
 
+            if (mensaje.EsCorrecto == false)
+            {
+                return mensaje;
 
 
-            MensajeAsync dos = await Fx_Cargar_Listas_Precios_Por_Usuario();
-            MensajeAsync tres = await Fx_Cargar_Configuracion_Estacion_Y_General();
-            MensajeAsync cuatro = await Sb_Cargar_Modedas();
+            }
 
+            MensajeAsync MsjCargar = await Fx_Cargar_Listas_Precios_Por_Usuario();
+            if (MsjCargar.EsCorrecto ==  false) {
+                return MsjCargar;
+
+
+            }
+            MensajeAsync MsjConf = await Fx_Cargar_Configuracion_Estacion_Y_General();
+            if (MsjConf.EsCorrecto == false)
+            {
+                return MsjConf;
+
+
+            }
+            MensajeAsync MsjMonedas = await Sb_Cargar_Modedas();
+            if (MsjMonedas.EsCorrecto == false)
+            {
+                return MsjMonedas;
+
+
+            }
+            MensajeAsync MsjTMP = await Sb_Revisar_Carptea_Tmp_Servidor();
+            if (MsjTMP.EsCorrecto == false)
+            {
+                return MsjTMP;
+
+
+            }
+            MensajeAsync MsjDocDestino = await Fx_Cargar_Sis_DespachoSimple_DocDestino();
+            if (MsjDocDestino.EsCorrecto == false)
+            {
+                return MsjDocDestino;
+
+
+            }
+            MensajeAsync MsjDespachoSimple = await Fx_Cargar_Sis_DespachoSimple_Tipo();
+            if (MsjDespachoSimple.EsCorrecto == false)
+            {
+                return MsjDespachoSimple;
+
+
+            }
+            MensajeAsync MsjDespachoSimpleTP = await Fx_Cargar_Sis_DespachoSimple_TipoPago();
+            if (MsjDespachoSimpleTP.EsCorrecto == false)
+            {
+                return MsjDespachoSimpleTP;
+
+
+            }
+            MsjRet.EsCorrecto = true;
+            MsjRet.Msg = "Se cargaron todos los datos de configuracion";
             return MsjRet;
 
 
 
+
         }
+        public async Task<MensajeAsync> Fx_Cargar_Sis_DespachoSimple_DocDestino()
+        {
+            MensajeAsync Retorno = new MensajeAsync();
+            string Consulta_sql = $@"Select * From {GlobalData.Global_BaseBk}Zw_TablaDeCaracterizaciones Where Tabla = 'SIS_DESPACHOSIMPLE_DOCDESTINO'";
+            MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_sql);
+            if (respuesta.EsCorrecto)
+            {
+                Zw_TablaDeCaracterizacionesResponse Res = JsonConvert.DeserializeObject<Zw_TablaDeCaracterizacionesResponse>(respuesta.Detalle);
+                GlobalData.DocDestino = Res.Table[0];
+                Retorno.EsCorrecto = true;
+                Retorno.Msg = "Tabla guardada y creada con exito";
+            }
+            else { 
+                Retorno.EsCorrecto = false;
+                Retorno.Msg = respuesta.Msg;
+
+            }
+            return Retorno;
+
+
+        }
+        private async Task<MensajeAsync> Fx_Cargar_Sis_DespachoSimple_TipoPago()
+        {
+            MensajeAsync Retorno = new MensajeAsync();
+
+            
+            string Consulta_sql = $@"Select * From  {GlobalData.Global_BaseBk}Zw_TablaDeCaracterizaciones Where Tabla = 'SIS_DESPACHOSIMPLE_TIPOPAGO'";
+            MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_sql);
+            if (respuesta.EsCorrecto)
+            {
+                Zw_TablaDeCaracterizacionesResponse Res = JsonConvert.DeserializeObject<Zw_TablaDeCaracterizacionesResponse>(respuesta.Detalle);
+                GlobalData.TablaDeCaracterizacionesTipoPago = Res.Table[0];
+                Retorno.EsCorrecto = true;
+                Retorno.Msg = "Tabla guardada y creada con exito";
+            }
+            else
+            {
+                Retorno.EsCorrecto = false;
+                Retorno.Msg = respuesta.Msg;
+
+            }
+            return Retorno;
+
+
+
+        }
+        private async Task<MensajeAsync> Fx_Cargar_Sis_DespachoSimple_Tipo()
+        {
+            MensajeAsync Retorno = new MensajeAsync();
+
+
+            string Consulta_sql = $@"Select * From  {GlobalData.Global_BaseBk}Zw_TablaDeCaracterizaciones Where Tabla = 'SIS_DESPACHOSIMPLE_TIPO'";
+            MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_sql);
+            if (respuesta.EsCorrecto)
+            {
+                Zw_TablaDeCaracterizacionesResponse Res = JsonConvert.DeserializeObject<Zw_TablaDeCaracterizacionesResponse>(respuesta.Detalle);
+                GlobalData.TablaDeCaracterizacionesTipo = Res.Table[0];
+                Retorno.EsCorrecto = true;
+                Retorno.Msg = "Tabla guardada y creada con exito";
+            }
+            else
+            {
+                Retorno.EsCorrecto = false;
+                Retorno.Msg = respuesta.Msg;
+
+            }
+            return Retorno;
+
+
+
+        }
+        private async Task<MensajeAsync> Sb_Revisar_Carptea_Tmp_Servidor() {
+            MensajeAsync mensajeAsync = await ComunicacionWB.Fx_HttJob_Ws_Sb_RevCarpetaTmp();
+            if (mensajeAsync.EsCorrecto)
+            {
+
+                string response = mensajeAsync.Detalle;
+                List<Dictionary<string, object>> listdic = ComunicacionWB.Fx_DataTable(response);
+                string existeRuta = "false";
+                
+                Dictionary<string, object> dic = listdic[0];
+
+                existeRuta = (string)dic["ExisteRuta"];
+
+
+                
+             
+                        
+                MensajeAsync Respuesta = new MensajeAsync();
+                if (existeRuta == "True")
+                {
+                    Respuesta.EsCorrecto = true;
+                    Respuesta.Msg = "Existe";
+                    return Respuesta;
+
+                }
+                else {
+                    Respuesta.EsCorrecto = false;
+                    Respuesta.Msg = "NoExiste";
+                    return Respuesta;
+
+
+                }
+                
+
+
+            }
+            else { 
+                MensajeAsync MensajeError = new MensajeAsync();
+                MensajeError.EsCorrecto = false;
+                MensajeError.Msg = "Error al revisar la carpeta"; 
+
+
+
+
+            }
+            return mensajeAsync;
+
+
+
+        }
+
         private async Task<MensajeAsync> Sb_Cargar_Modedas() {
 
             string Consulta_Sql = "Select TOP 1 * From TABMO Where KOMO = '$'";
@@ -94,7 +269,8 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             
             }
 
-            Consulta_Sql = "SELECT TOP 1 * FROM MAEMO WHERE KOMO = 'US$' and CONVERT(DATE, FEMO) = CONVERT(DATE, GETDATE()) ORDER BY IDMAEMO DESC;";
+            //trae el ultimo registro del valor del dolar
+            Consulta_Sql = "SELECT  top 1 *  FROM MAEMO WHERE KOMO = 'US$' ORDER BY IDMAEMO DESC;";
             respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);
             if (respuesta.EsCorrecto)
             {
@@ -113,7 +289,9 @@ namespace BakAppDiego.Components.Modulos_de_funciones
                 return MsjError;
 
             }
-            Consulta_Sql = "SELECT TOP 1 *  FROM MAEMO WHERE KOMO = 'UF' and CONVERT(DATE, FEMO) = CONVERT(DATE, GETDATE()) ORDER BY IDMAEMO DESC;";
+            //trae el ultimo registro del valor del uf
+
+            Consulta_Sql = "SELECT TOP 1 *  FROM MAEMO WHERE KOMO = 'UF' ORDER BY IDMAEMO DESC;";
             respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);
             if (respuesta.EsCorrecto)
             {
@@ -271,7 +449,7 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             
         }
         private async Task<MensajeAsync> Fx_Cargar_Configuracion_Estacion() {
-
+            //Decomentar lo de abajo para obtener la respueta real, esto es solo para caso de prueba.
             //string Consulta_Sql = $@"Select * From  {GlobalData.Global_BaseBk}Zw_EstacionesBkp Where NombreEquipo = ' {GlobalData.Id_dispositivo} ' And TipoEstacion = 'B4A'";
             string Consulta_Sql = $@"Select * From  {GlobalData.Global_BaseBk}Zw_EstacionesBkp Where NombreEquipo = 'baca536c8d75bf5f' And TipoEstacion = 'B4A'";
             MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);

@@ -309,7 +309,7 @@ namespace BakAppDiego.Components.Pages
 
 
             }
-        }
+        }  
         private async Task nombre() {
             string sqlQuery = @"Select Top 1 *,NOKOCARAC+'.dbo.' As Global_BaseBk From TABCARAC Where KOTABLA = 'BAKAPP' And KOCARAC = 'BASE'";
             MensajeAsync mensaje = await ComunicacionWB.Sb_GetDataSet_Json(sqlQuery);

@@ -13,6 +13,7 @@ using BakAppDiego.Components.Dialogs;
 
 using BakAppDiego.Components.Globals.Modelos;
 using BakAppDiego.Components.Globals.Modelos.Responses;
+using BakAppDiego.Components.Modulos_de_funciones;
 
 
 namespace BakAppDiego.Components.Pages
@@ -77,14 +78,41 @@ namespace BakAppDiego.Components.Pages
             MensajeAsync mensajeAsync =  await Login();
             if (mensajeAsync.EsCorrecto)
             {
+                ConectarConf conect = new ConectarConf();
 
-                bool r = await MostrarPopUp("Operacion exitosa", "Usuario ingresado bienvenido " + GlobalData.Usuario_Activo.NoKofu, "Ingresar", " Cancelar", false);
-                if(r)
+                MensajeAsync ms = await conect.Sb_Cargar_Datos_De_Configuracion();
+                loadingPopup.Hide();
+
+                if (ms.EsCorrecto)
                 {
+                    bool r = await MostrarPopUp("Operacion exitosa", "Usuario ingresado bienvenido " + GlobalData.Usuario_Activo.NoKofu, "Ingresar", " Cancelar", false);
+                    if (r)
+                    {
 
-                    await IrMenuPrincipal();
+                        await IrMenuPrincipal();
+
+                    }
+                    else { 
+                    
+                        GlobalData.Usuario_Activo = null;
+
+                    }
 
                 }
+                else
+                {
+                    GlobalData.Usuario_Activo = null;
+                    bool r = await MostrarPopUp("Operacion fallida", "Usuario ocurrio un error cargando la configuracion ", "Continuar", " Cancelar", false);
+                    if (r)
+                    {
+
+                        await IrMenuPrincipal();
+
+                    }
+
+
+                }
+                
                 Console.WriteLine(mensajeAsync.Msg);
 
             }
@@ -145,7 +173,6 @@ namespace BakAppDiego.Components.Pages
                     else
                     {
 
-                        loadingPopup.Hide();
 
                         MensajeAsync mensajeAsync = ParseSoapResponse(responseContent);
 

@@ -29,6 +29,10 @@ namespace BakAppDiego.Components.Globals.Statics
         public static TABMO Moneda { get; set; }
         public static MAEMO MonedaDolar { get; set; }
         public static MAEMO UF { get; set; }
+        public static bool ExisteTabla_MS_GATEWAY_STOCK  { get; set; }
+        public static Zw_TablaDeCaracterizaciones TablaDeCaracterizacionesTipo { get; set; }
+        public static Zw_TablaDeCaracterizaciones TablaDeCaracterizacionesTipoPago { get; set; }
+        public static Zw_TablaDeCaracterizaciones DocDestino { get; set; }
 
         public static void  GuardarIP() {
             
