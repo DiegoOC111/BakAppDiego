@@ -1,0 +1,70 @@
+﻿@page "/Inventario"
+
+@* <NavigationLock ConfirmExternalNavigation="@changed" />
+<NavigationLock OnBeforeInternalNavigation="BeforeInternalNavigation" /> *@
+
+
+
+
+@* Opcional: Botón para alternar la visibilidad de la tabla *@
+<button @onclick="ToggleTableVisibility">Mostrar/Ocultar Tabla</button>
+
+@if (isTableVisible)
+{
+    <body>
+        
+        <table class="table-fill">
+            <tbody class="table-hover">
+                @if (iniciado)
+                
+                {
+                <tr>
+                        <th colspan="2" style="text-align: center; vertical-align: middle;">
+                              <h3>Inventario Activo</h3>
+                            
+                    </th>
+                        
+
+                </tr> 
+                <tr>
+                        <td class="text-left"> Id:  @inventarioItem.Id</td> 
+                        
+                        <td class="text-left"> Fecha: @inventarioItem.Fecha_Inventario.ToShortDateString()</td>
+
+                </tr>
+               
+                    <tr>
+                        <td class="text-left">Empresa : @inventarioItem.Nombre_Empresa</td>
+                        <td class="text-left">Sucursal : @inventarioItem.Nombre_Sucursal</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-left">Bodega : @inventarioItem.Nombre_Bodega</td>
+                        <td class="text-left">Nombre inventario : @inventarioItem.NombreInventario</td>
+                    </tr>
+
+                    <tr>
+                        <td class="text-left">Funcionario : @inventarioItem.NombreFuncionario</td>
+                    </tr>
+
+                    
+
+                
+                
+                
+                
+                
+                
+                
+                }
+                
+            </tbody>
+        </table>
+    </body>
+}
+
+<div class="footer">
+    <button class="button-19" style ="bottom: 20px; " @onclick="boton">Escanear Sector</button>
+
+</div>
+

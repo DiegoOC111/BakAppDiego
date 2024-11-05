@@ -1,5 +1,7 @@
 ﻿@page "/MenuPrincipal"
-
+@implements IDisposable
+<NavigationLock ConfirmExternalNavigation="@changed" />
+<NavigationLock OnBeforeInternalNavigation="BeforeInternalNavigation" />
 
 <div class="header">
     <label class="Label-Titulo">Menu Principal</label>
@@ -19,10 +21,10 @@
             <button class="button-19" @onclick="TraerEntidad" role="button">BK-POST DE VENTA(Sistema de ventas)</button>
         </div>
         <div class="itemD">
-            <button  class="button-19" role="button">CODIGOS ALTERNATIVOS</button>
+            <button  disabled  class="button-2" style="" role="button">CODIGOS ALTERNATIVOS</button>
         </div>
         <div class="itemD">
-            <button  class="button-19" role="button">INVENTARIO</button>
+            <button class="button-3" @onclick="MenuInventario" style="" role="button">INVENTARIO</button>
         </div>
 
 
@@ -32,12 +34,12 @@
 </body>
 <footer>
     <div>
-        <label class="Label-Destacar">Usuario Activo</label>
+        <label class="Label-Destacar">Usuario Activo : </label>
         <label class="Label-Destacar" id="ID">@UsuarioActivo</label>
     </div>
         
     <div>
-        <label class="Label-Destacar">Modalidad</label>
+        <label class="Label-Destacar">Modalidad : </label>
         <label class="Label-Destacar" id="ID">@Modalidad</label>
     </div>
 

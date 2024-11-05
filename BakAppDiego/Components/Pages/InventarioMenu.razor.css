@@ -34,6 +34,7 @@
     white-space: nowrap;
     width: 100%;
 }
+
     .button-2:after {
         background-clip: padding-box;
         background-color: #778FD2;
@@ -48,6 +49,7 @@
         top: 0;
         z-index: -1;
     }
+
 .button-3 {
     appearance: button;
     background-color: #3D5220;
@@ -78,6 +80,7 @@
     white-space: nowrap;
     width: 100%;
 }
+
     .button-3:after {
         background-clip: padding-box;
         background-color: #B7CB99;
@@ -92,6 +95,7 @@
         top: 0;
         z-index: -1;
     }
+
 .button-2,
 .button-2:focus {
     user-select: auto;
@@ -110,21 +114,22 @@
         border-width: 4px 0 0;
         background: none;
     }
-    .button-3,
-    .button-3:focus {
-        user-select: auto;
+
+.button-3,
+.button-3:focus {
+    user-select: auto;
+}
+
+    .button-3:hover:not(:disabled) {
+        filter: brightness(1.1);
+        -webkit-filter: brightness(1.1);
     }
 
-        .button-3:hover:not(:disabled) {
-            filter: brightness(1.1);
-            -webkit-filter: brightness(1.1);
-        }
+    .button-3:disabled {
+        cursor: auto;
+    }
 
-        .button-3:disabled {
-            cursor: auto;
-        }
-
-        .button-3:active {
-            border-width: 4px 0 0;
-            background: none;
-        }
+    .button-3:active {
+        border-width: 4px 0 0;
+        background: none;
+    }

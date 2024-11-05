@@ -16,6 +16,8 @@ using BakAppDiego.Components.Dialogs;
 using BakAppDiego.Components.Globals.Statics;
 using BakAppDiego.Components.Globals.Modelos;
 using BakAppDiego.Components.Interface;
+using Microsoft.Maui.Controls;
+
 #if ANDROID
 using AndroidApp = Android.App.Application;
 using Setting = Android.Provider.Settings;
@@ -32,7 +34,6 @@ namespace BakAppDiego.Components.Pages
     public partial class Login
     {
 
-
         public string deviceId;
         private LoadingPopUp loadingPopup;
         private DialogoService Dialogo;
@@ -47,7 +48,13 @@ namespace BakAppDiego.Components.Pages
         async Task IrALog()
         {
             // here're other async action calls
-            NavigationManager.NavigateTo("/LoginDatos", true);
+           
+            NavigationManager.NavigateTo("/LoginDatos");
+        }
+        private async Task HandleBackButton() { 
+        
+        
+        
         }
 
         protected override void OnInitialized()
@@ -57,6 +64,7 @@ namespace BakAppDiego.Components.Pages
             var context = AndroidApp.Context;
 
             string id = Setting.Secure.GetString(context.ContentResolver, Secure.AndroidId);
+          
 
             deviceId = id;
 #endif
@@ -82,6 +90,7 @@ namespace BakAppDiego.Components.Pages
         }
 
 #endif
+        
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)

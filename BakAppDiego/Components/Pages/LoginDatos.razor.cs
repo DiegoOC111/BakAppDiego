@@ -30,7 +30,7 @@ namespace BakAppDiego.Components.Pages
         private LoadingPopUp loadingPopup;
 
         public MensajeAsync Msj;
-
+       
         async Task IrMenuPrincipal()
         {
             // here're other async action calls
