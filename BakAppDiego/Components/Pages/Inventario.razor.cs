@@ -13,6 +13,7 @@ namespace BakAppDiego.Components.Pages
         private bool isTableVisible = false;
         private bool iniciado = false;
         InventarioItem inventarioItem;
+        private DialogoService Dialogo;
         // Inyección de NavigationManager
         [Inject]
         private NavigationManager NavigationManager { get; set; }
@@ -38,13 +39,22 @@ namespace BakAppDiego.Components.Pages
             return inventarioData?.Table ?? new List<InventarioItem>();
         }
         public async Task boton() {
-
-            MensajeAsync ms = await ComunicacionWB.Sb_Inv_BuscarInventario("4");
+            Dialogo = new DialogoService();
+            string Respuesta = await Dialogo.DisplayText("Ingrese la id del inventario", "Id ", "Aceptar", "Cerrar");
+            MensajeAsync ms = await ComunicacionWB.Sb_Inv_BuscarInventario(Respuesta);
             List < InventarioItem > inventarioItems = new List < InventarioItem >();
-            inventarioItems = await ObtenerDatosInventario(ms.Detalle);
-            inventarioItem = inventarioItems.FirstOrDefault();
-            iniciado = true;
+            if (ms.EsCorrecto) {
+                inventarioItems = await ObtenerDatosInventario(ms.Detalle);
+                inventarioItem = inventarioItems.FirstOrDefault();
+                iniciado = true;
+                ToggleTableVisibility();
+            }
+            
 
+
+        }
+        public async Task boton_inventariado() {
+            
         }
     }
 }

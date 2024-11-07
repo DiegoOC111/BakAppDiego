@@ -7,7 +7,7 @@
 
 
 @* Opcional: Botón para alternar la visibilidad de la tabla *@
-<button @onclick="ToggleTableVisibility">Mostrar/Ocultar Tabla</button>
+
 
 @if (isTableVisible)
 {
@@ -61,10 +61,23 @@
             </tbody>
         </table>
     </body>
+    <div class="footer">
+        <button class="button-19" style="bottom: 20px; " @onclick="boton_inventariado">Crear inventariado</button>
+
+    </div>
+
 }
 
-<div class="footer">
-    <button class="button-19" style ="bottom: 20px; " @onclick="boton">Escanear Sector</button>
+else
+{
 
-</div>
+    <div class="footer">
+        <button class="button-19" style="bottom: 20px; " @onclick="boton">Ingresar inventario</button>
+
+    </div>
+
+
+
+}
+
 
