@@ -1,0 +1,113 @@
+﻿@using BakAppDiego.Components.Globals.Modelos.Bakapp
+
+@code {
+    private TaskCompletionSource<Contador> tcs;  // Cambiar a Contador
+    public ContadorResponse cont; 
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public string mensaje { get; set; } = "";
+
+    [Parameter]
+    public string titulo { get; set; } = "";
+
+    [Parameter]
+    public string BotonStringAceptar { get; set; } = "Aceptar";
+
+    [Parameter]
+    public string BotonStringCancelar { get; set; } = "Cancelar";
+
+    [Parameter]
+    public bool BotonBoolCancelar { get; set; } = true;
+
+    // Método para mostrar el popup
+    public Task<Contador> ShowAsync()
+    {
+        tcs = new TaskCompletionSource<Contador>();  // Cambio aquí a Contador
+        IsVisible = true;
+        StateHasChanged();
+        return tcs.Task;  // Devuelve una tarea que se completará cuando el popup se cierre
+    }
+
+    // Método para configurar el popup
+    public void Crear(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2, ContadorResponse contadores)
+    {
+        titulo = Titulo;
+        mensaje = Mensaje;
+        BotonStringAceptar = aceptar;
+        BotonStringCancelar = cancelar;
+        BotonBoolCancelar = visibleBTN2;
+        cont = contadores;
+        StateHasChanged();
+    }
+
+    // Lógica cuando se presiona "Aceptar"
+    public void Aceptar()
+    {
+        // Creamos un objeto Contador con los valores que deseas
+        var contador = new Contador
+            {
+                Id = 1,  // Aquí puedes asignar el ID según lo que necesites
+                Rut = "15463484-3",  // Asignar Rut
+                Nombre = "CONTADOR 1",  // Asignar nombre
+                Telefono = "569 73072284",  // Asignar teléfono
+                Email = "correo@correo.cl",  // Asignar email
+                Activo = true  // Asignar si está activo o no
+            };
+
+        tcs?.SetResult(contador);  // Pasamos la instancia de Contador
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    // Lógica cuando se presiona "Cancelar"
+    public void Cancelar()
+    {
+        // Si necesitas devolver un Contador vacío o nulo, puedes hacerlo
+        tcs?.SetResult(null);  // Retorna null si el usuario cancela
+        IsVisible = false;
+        StateHasChanged();
+    }
+    public void SeleccionarContador(Contador contador)
+    {
+        // Configura el contador seleccionado para usarlo más adelante
+        tcs?.SetResult(contador);  // Devuelve el contador seleccionado
+        IsVisible = false; // Cierra el popup si es necesario
+        StateHasChanged();
+    }
+}
+@if (IsVisible)
+{
+    <div class="loading-popup">
+        <div class="overlay">
+            <div class="popup-content">
+                <h3>@titulo</h3>
+                <p>@mensaje</p>
+                <table class="table-fill">
+                    <tbody class="table-hover">
+                        
+                        
+                            <tr>
+                                <th colspan="2" style="text-align: center; vertical-align: middle;">
+                                    <h3>Contadores Activos</h3>
+                                </th>
+                            </tr>
+
+                            @foreach (var contador in cont.Table)
+                            {
+                                <tr @onclick="() => SeleccionarContador(contador)">
+                                   
+                                    <td class="text-left">Nombre: @contador.Nombre</td>
+                                    <td class="text-left">Rut: @contador.Rut</td>
+                                    
+                                </tr>
+                            }
+                       
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+    </div>
+}

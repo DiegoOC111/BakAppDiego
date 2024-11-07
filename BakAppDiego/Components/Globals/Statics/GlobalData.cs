@@ -12,11 +12,14 @@ using BakAppDiego.Components.Globals.Modelos.Clases;
 using BakAppDiego.Components.Globals.Modelos.Bakapp;
 using BakAppDiego.Components.Globals.Modelos.Clases;
 using BakAppDiego.Components.Globals.Modelos.Random;
+using BakAppDiego.Components.Pages;
+using BakAppDiego.Components.Globals.Modelos;
 
 namespace BakAppDiego.Components.Globals.Statics
 {
     public static class GlobalData
     {
+        public static bool volver { get; set; }
         public static string Ip_Wb { get; set; }
         public static string Id_dispositivo { get; set; }
         public static string Global_BaseBk { get; set; }
@@ -34,6 +37,7 @@ namespace BakAppDiego.Components.Globals.Statics
         public static Zw_TablaDeCaracterizaciones TablaDeCaracterizacionesTipoPago { get; set; }
         public static Zw_TablaDeCaracterizaciones DocDestino { get; set; }
 
+        public static InventarioItem InventarioActivo { get; set; }
         public static void  GuardarIP() {
             
             // Guardar el JSON en Preferences
@@ -46,8 +50,9 @@ namespace BakAppDiego.Components.Globals.Statics
         {
             // Obtener el JSON de Preferences
             Ip_Wb = Preferences.Get("Ip", null);
+            volver = false;
 
-            
+
         }
 
     }

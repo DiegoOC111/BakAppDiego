@@ -148,8 +148,63 @@ namespace BakAppDiego.Components.Globals.Modelos
 
 
         }
+        public async Task<MensajeAsync> Sb_Inv_BuscarContador(string rut1, string rut2)
+        {
+            MensajeAsync respuesta = new MensajeAsync();
 
-            public async Task<MensajeAsync> Fx_HttJob_Ws_Sb_RevCarpetaTmp() {
+            string soapMessage = @$"<?xml version=""1.0"" encoding=""utf-8""?>
+<soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
+  <soap:Body>
+    <Sb_Inv_BuscarContador xmlns=""http://BakApp"">
+      <Rut>{rut1}</Rut>
+      <Rut2>{rut2}</Rut2>
+    </Sb_Inv_BuscarContador>
+  </soap:Body>
+</soap:Envelope>";
+            var content = new StringContent(soapMessage, Encoding.UTF8, "text/xml");
+            content.Headers.Add("SOAPAction", "\"http://BakApp/Sb_Inv_BuscarContador\"");
+            HttpResponseMessage httpResponse = await HttpClient.PostAsync(ip_wb + "/Ws_BakApp.asmx", content);
+            var responseContent = await httpResponse.Content.ReadAsStringAsync();
+            string a = "{\"Table\":[]}";
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                if (responseContent == a | responseContent == null)
+                {
+
+
+                    respuesta.EsCorrecto = false;
+                    respuesta.ErrorDeConexionSQL = false;
+                    respuesta.Msg = "Tabla vacia";
+                    return respuesta;
+
+                }
+
+                respuesta.Tag = httpResponse;
+                respuesta.EsCorrecto = true;
+                respuesta.Detalle = responseContent;
+                respuesta.Msg = "Conexion exitosa";
+                return respuesta;
+            }
+            else
+
+            {
+                respuesta.EsCorrecto = false;
+                respuesta.ErrorDeConexionSQL = true;
+
+                respuesta.Msg = "Conexion fallida";
+
+                return respuesta;
+
+            }
+            return respuesta;
+
+
+
+
+        }
+
+        public async Task<MensajeAsync> Fx_HttJob_Ws_Sb_RevCarpetaTmp() {
 
             string soapMessage = @$"<?xml version=""1.0"" encoding=""utf-8""?>
 <soap12:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap12=""http://www.w3.org/2003/05/soap-envelope"">

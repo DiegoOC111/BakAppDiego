@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using BakAppDiego.Components.Dialogs;
 using System.Collections.Generic;
+using BakAppDiego.Components.Globals.Statics;
 
 namespace BakAppDiego.Components.Pages
 {
@@ -24,6 +25,7 @@ namespace BakAppDiego.Components.Pages
         private void ToggleTableVisibility()
         {
             isTableVisible = !isTableVisible;
+            
         }
 
         protected override void OnInitialized()
@@ -43,18 +45,29 @@ namespace BakAppDiego.Components.Pages
             string Respuesta = await Dialogo.DisplayText("Ingrese la id del inventario", "Id ", "Aceptar", "Cerrar");
             MensajeAsync ms = await ComunicacionWB.Sb_Inv_BuscarInventario(Respuesta);
             List < InventarioItem > inventarioItems = new List < InventarioItem >();
-            if (ms.EsCorrecto) {
+            if (ms.EsCorrecto)
+            {
                 inventarioItems = await ObtenerDatosInventario(ms.Detalle);
                 inventarioItem = inventarioItems.FirstOrDefault();
                 iniciado = true;
+                GlobalData.InventarioActivo = inventarioItem;
                 ToggleTableVisibility();
+            }
+            else {
+
+                string msj = ms.Msg;
+                bool R = await Dialogo.DisplayConfirm("Error", msj, "Seguir",null);
+
+
             }
             
 
 
         }
         public async Task boton_inventariado() {
-            
+            NavigationManager.NavigateTo("/Inventariado");
+
+
         }
     }
 }
