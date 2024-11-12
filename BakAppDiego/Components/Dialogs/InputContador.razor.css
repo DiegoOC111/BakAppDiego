@@ -1,15 +1,15 @@
-﻿/* Title Section */
-div.table-title {
+﻿div.table-title {
     display: block;
     margin: auto;
-    max-width: 100%; /* Asegura que se ajuste a la vista completa */
+    width: 100%; /* Ocupar toda la pantalla */
     padding: 10px;
     background-color: #81BECE;
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
 }
 
 .table-title h3 {
     color: #012E4A;
-    font-size: 4vw; /* Ajuste relativo al tamaño de la pantalla */
+    font-size: 10vw;
     font-weight: 400;
     font-style: normal;
     font-family: "Roboto", helvetica, arial, sans-serif;
@@ -18,20 +18,19 @@ div.table-title {
     text-align: center;
 }
 
-
 /*** Table Styles ***/
-
 .table-fill {
     background: #E8EDE7;
     border-collapse: collapse;
-    height: 70vh; /* Ajusta la altura al 50% de la vista */
     margin: auto;
-    width: 100%;
+    width: 100%; /* Ocupar el 80% del ancho de la pantalla */
     padding: 5px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
     animation: float 5s infinite;
     border-radius: 10px;
-    max-width: 90vw; /* Ajuste del ancho al 90% de la pantalla */
+    /* Altura máxima y comportamiento de desplazamiento */
+    max-height: 85vh; /* Ajuste de la altura máxima al 85% de la vista */
+    overflow-y: auto; /* Desplazamiento vertical si hay más contenido */
 }
 
 th {
@@ -60,28 +59,33 @@ tr {
     border-top: 1px solid #C1C3D1;
     border-bottom: 1px solid #C1C3D1;
     color: #012E4A;
-    font-size: 1.8vw; /* Ajuste de tamaño de fuente relativo */
+    font-size: 10vw; /* Ajuste de tamaño de fuente relativo */
     font-weight: normal;
     text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
 }
 
     tr:first-child {
+        font-size: 2vw;
         border-top: none;
     }
 
     tr:last-child {
+        font-size: 2vw;
         border-bottom: none;
     }
 
     tr:nth-child(odd) td {
+        font-size: 2vw;
         background: #f0f0f0; /* Color alterno en filas */
     }
 
     tr:last-child td:first-child {
+        font-size: 2vw;
         border-bottom-left-radius: 10px;
     }
 
     tr:last-child td:last-child {
+        font-size: 2vw;
         border-bottom-right-radius: 10px;
     }
 
@@ -91,7 +95,7 @@ td {
     text-align: left;
     vertical-align: middle;
     font-weight: 300;
-    font-size: 1.8vw; /* Ajuste de tamaño de fuente relativo */
+    font-size: 2vw; /* Ajuste de tamaño de fuente relativo */
     text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
     border-right: 1px solid #C1C3D1;
 }
@@ -125,15 +129,16 @@ td {
     justify-content: center;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 9999; /* Asegura que el popup esté por encima de otros elementos */
+    backdrop-filter: blur(8px); /* Agrega el efecto de desenfoque */
+    z-index: 9999;
 }
 
 .overlay {
     background-color: white;
     padding: 20px;
     border-radius: 10px;
-    width: 80vw; /* El popup ocupará el 80% del ancho de la pantalla */
-    max-width: 400px; /* Ancho máximo para no ser demasiado grande */
+    width: 80vw;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -142,7 +147,11 @@ td {
 
 .popup-content h3 {
     margin-top: 0;
-    font-size: 3vw; /* Ajuste de tamaño de fuente relativo */
+    font-size: 2vw; /* Tamaño de fuente más pequeño para el título */
+}
+
+.popup-content p {
+    font-size: 2vw; /* Tamaño de fuente grande para el mensaje */
 }
 
 .popup-buttons {

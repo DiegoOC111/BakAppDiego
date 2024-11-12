@@ -88,18 +88,14 @@
                     <tbody class="table-hover">
                         
                         
-                            <tr>
-                                <th colspan="2" style="text-align: center; vertical-align: middle;">
-                                    <h3>Contadores Activos</h3>
-                                </th>
-                            </tr>
+                     
 
                             @foreach (var contador in cont.Table)
                             {
                                 <tr @onclick="() => SeleccionarContador(contador)">
-                                   
-                                    <td class="text-left">Nombre: @contador.Nombre</td>
-                                    <td class="text-left">Rut: @contador.Rut</td>
+
+                                <td class="text-left">Nombre: @contador.Nombre - @contador.Rut </td>
+                                    
                                     
                                 </tr>
                             }

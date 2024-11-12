@@ -11,6 +11,7 @@ namespace BakAppDiego.Components.Pages
 {
     public partial class Inventario
     {
+        PopUpConfirmar PopUp;
         private bool isTableVisible = false;
         private bool iniciado = false;
         InventarioItem inventarioItem;
@@ -56,9 +57,25 @@ namespace BakAppDiego.Components.Pages
             else {
 
                 string msj = ms.Msg;
-                bool R = await Dialogo.DisplayConfirm("Error", msj, "Seguir",null);
+                try
+                {
+                    bool R = await MostrarPopUp("Error", "No se encontro la tabla", "Continuar", " ", false);
 
 
+                    if (R)
+                    {
+
+
+                    }
+
+
+                }
+                catch (Exception ex) { 
+                
+                    Console.WriteLine(ex.ToString());
+                
+                }
+               
             }
             
 
@@ -68,6 +85,27 @@ namespace BakAppDiego.Components.Pages
             NavigationManager.NavigateTo("/Inventariado");
 
 
+        }
+        private async Task<bool> MostrarPopUp(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
+        {
+            // Configura el popup
+            PopUp.crear(titulo, mensaje, btnStr, CancelarStr, Visible);
+
+            // Espera hasta que el usuario presione un botón
+            bool resultado = await PopUp.ShowAsync();
+
+            // Aquí puedes manejar el resultado
+            if (resultado)
+            {
+                // El usuario presionó "Aceptar"
+                Console.WriteLine("El usuario aceptó.");
+            }
+            else
+            {
+                // El usuario presionó "Cancelar"
+                Console.WriteLine("El usuario canceló.");
+            }
+            return resultado;
         }
     }
 }

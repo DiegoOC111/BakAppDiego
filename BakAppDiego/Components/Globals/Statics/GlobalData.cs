@@ -19,6 +19,8 @@ namespace BakAppDiego.Components.Globals.Statics
 {
     public static class GlobalData
     {
+        public static bool menu { get; set; }
+
         public static bool volver { get; set; }
         public static string Ip_Wb { get; set; }
         public static string Id_dispositivo { get; set; }
@@ -51,7 +53,7 @@ namespace BakAppDiego.Components.Globals.Statics
             // Obtener el JSON de Preferences
             Ip_Wb = Preferences.Get("Ip", null);
             volver = false;
-
+            menu = false;
 
         }
 

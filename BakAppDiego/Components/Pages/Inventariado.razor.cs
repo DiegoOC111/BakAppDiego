@@ -1,6 +1,7 @@
 ﻿using BakAppDiego.Components.Dialogs;
 using BakAppDiego.Components.Globals.Modelos;
 using BakAppDiego.Components.Globals.Modelos.Bakapp;
+using BakAppDiego.Components.Globals.Statics;
 using EO.WebBrowser;
 using System;
 using System.Collections.Generic;
@@ -13,32 +14,31 @@ namespace BakAppDiego.Components.Pages
 {
     public partial class Inventariado 
     {
+        private bool Escaneado;
         private InputContador InCon;
         private DialogoService Dialogo;
         private FuncionesWebService ComunicacionWB;
-        private string rut1 = null;
-        private string rut2 = null;
+        Contador c1 = new Contador();
+        Contador c2 = new Contador();
+        
         
         protected override void OnInitialized()
         {
 
             ComunicacionWB = new FuncionesWebService();
             Dialogo = new DialogoService();
-
+            GlobalData.menu = true;
+            Escaneado = false;
         }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
             {
-                MensajeAsync res = await ComunicacionWB.Sb_Inv_BuscarContador(rut1, rut2);
+
+                MensajeAsync res = await elijeContador();
                 if (res.EsCorrecto) {
+                    c1 =(Contador) res.Tag;
 
-                ContadorResponse contadorResponse = JsonSerializer.Deserialize<ContadorResponse>(res.Detalle);
-                    List<string> botones = new List<string>();
-
-                    // Agrega valores dinámicamente a la lista
-
-                    Contador sel = await MostrarContadores("Elija el contador", "", "", "",false, contadorResponse);
 
                     //foreach (Contador contador in contadorResponse.Table)
                     //{
@@ -49,11 +49,60 @@ namespace BakAppDiego.Components.Pages
                     //string respuesta = await Dialogo.DisplayActionSheet("Elija al contador asociado", null, null, opciones);
 
                 }
+                bool r = await Dialogo.DisplayConfirm("Confirmación", "¿Desea agregar un segundo contador ?","Si","No");
+                if (r)
+                {
+                    res = await elijeContador();
+                    if (res.EsCorrecto)
+                    {
+                        c2 = (Contador)res.Tag;
 
 
+                        //foreach (Contador contador in contadorResponse.Table)
+                        //{
+                        //    botones.Add($"{contador.Nombre} - {contador.Rut}");
 
-                
+                        //}
+                        //string[] opciones = botones.ToArray();
+                        //string respuesta = await Dialogo.DisplayActionSheet("Elija al contador asociado", null, null, opciones);
+
+                    }
+                }
+                StateHasChanged();
+
             }
+
+        }
+        private async Task<MensajeAsync> elijeContador() {
+
+            MensajeAsync res = await ComunicacionWB.Sb_Inv_BuscarContador(c1.Rut, c2.Rut);
+            MensajeAsync Retorno = new MensajeAsync();
+            if (res.EsCorrecto)
+            {
+
+                ContadorResponse contadorResponse = JsonSerializer.Deserialize<ContadorResponse>(res.Detalle);
+                List<string> botones = new List<string>();
+
+                // Agrega valores dinámicamente a la lista
+
+                Contador sel = await MostrarContadores("Elija el contador", "", "", "", false, contadorResponse);
+                Retorno.EsCorrecto = true;
+                Retorno.Tag = sel;
+                return Retorno;
+
+                //foreach (Contador contador in contadorResponse.Table)
+                //{
+                //    botones.Add($"{contador.Nombre} - {contador.Rut}");
+
+                //}
+                //string[] opciones = botones.ToArray();
+                //string respuesta = await Dialogo.DisplayActionSheet("Elija al contador asociado", null, null, opciones);
+
+            }
+            Retorno.EsCorrecto = false;
+            Retorno.Msg = res.Msg;
+            return Retorno;
+
 
         }
         private async Task<Contador> MostrarContadores(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible,ContadorResponse contadoress)

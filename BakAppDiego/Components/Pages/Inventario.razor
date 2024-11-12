@@ -7,7 +7,10 @@
 
 
 @* Opcional: Botón para alternar la visibilidad de la tabla *@
+@using BakAppDiego.Components.Dialogs
 
+@inject DialogInterface DialogoService
+<PopUpConfirmar @ref="PopUp" />
 
 @if (isTableVisible)
 {

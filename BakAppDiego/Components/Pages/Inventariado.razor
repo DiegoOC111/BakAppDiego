@@ -1,9 +1,118 @@
 ﻿@page "/Inventariado"
 @using BakAppDiego.Components.Dialogs
+@using BakAppDiego.Components.Layout
+<InputContador @ref="InCon" />
+
+<body>
+
+   
+    <div class="panel">
+        <nav role="navigation">
+            <div id="menuToggle">
+                <!--
+                A fake / hidden checkbox is used as click reciever,
+                so you can use the :checked selector on it.
+                -->
+                <input type="checkbox" id="menuCheckbox" />
+
+                <!--
+                Some spans to act as a hamburger.
+
+                They are acting like a real hamburger,
+                not that McDonalds stuff.
+                -->
+                <span></span>
+                <span></span>
+                <span></span>
+
+                <!--
+                Too bad the menu has to be inside of the button
+                but hey, it's pure CSS magic.
+                -->
+                <ul id="menu">
+                    <!--
+                    We can use a label here to close upon click (when doing same page navigation), this
+                    does require a slight bit of JS.
+                    -->
+                    <!-- These just close the menu -->
+                    <li>
+                        <label for="menuCheckbox">
+                            <a class="menu-item">
+                                Buscador de productos
+                            </a>
+                        </label>
+                    </li>
+                    <li>
+                        <label for="menuCheckbox">
+                            <a class="menu-item">
+
+                                Editar Contador 1
+
+                            </a>
+                        </label>
+                    </li>
+                    <li>
+                        <label for="menuCheckbox">
+                            <a class="menu-item">
+
+                                Editar Contador 2
+                            </a>
+                        </label>
+                    </li>
+                    <!-- Or just use regular URLs -->
+
+                </ul>
+            </div>
+        </nav>
+        <h1>Sector 1</h1>
+    </div>
+    <div class="container">
+        <!-- Tarjetas dentro del contenedor -->
+        <div class="card">
+            <h2>Tarjeta 1</h2>
+            <p>Contenido de la tarjeta 1</p>
+        </div>
+        <div class="card">
+            <h2>Tarjeta 2</h2>
+            <p>Contenido de la tarjeta 2</p>
+        </div>
+        <div class="card">
+            <h2>Tarjeta 3</h2>
+            <p>Contenido de la tarjeta 3</p>
+        </div>
+        <div class="card">
+            <h2>Tarjeta 4</h2>
+            <p>Contenido de la tarjeta 4</p>
+        </div>
+        <div class="card">
+            <h2>Tarjeta 5</h2>
+            <p>Contenido de la tarjeta 5</p>
+        </div>
+        <!-- Agregar más tarjetas si lo deseas -->
+    </div>
+    <!-- El contenido de la página va aquí -->
+    
+    @if (Escaneado)
+    {
+
+        <div class="footer">
+            <div class="cantidad-container">
+                <span class="cantidad-texto">Cantidad: 5</span>
+            </div>
+            <button class="button-19" style="bottom: 20px;">Escanear Producto</button>
+        </div>
+
+    }
+    else
+    {
+
+        <div class="footer">
+            <span class="cantidad-texto">Cantidad: 5</span>
+            <button class="button-19" style="bottom: 20px; ">Escanear  Sector</button>
+
+        </div>
 
 
-<InputContador @ref = "InCon"/>
 
-@code {
-
-}
+    }
+</body>
