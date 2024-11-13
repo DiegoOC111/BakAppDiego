@@ -37,24 +37,8 @@ namespace BakAppDiego.Components.Pages
         public string UsuarioActivo;
         public string Modalidad;
         private IDisposable registration;
-        private async ValueTask LocationChangingHandler(LocationChangingContext arg)
-        {
-            Console.WriteLine("Location is changing...");
-
-            // Mostrar el diálogo de confirmación
-            bool answer = await Dialogo.DisplayConfirm("¿Desea cambiar de página?", "Cambiar ubicación", "Sí", "No");
-
-            if (!answer)
-            {
-                // Si el usuario selecciona "No", prevenir la navegación
-                arg.PreventNavigation();
-            }
-        }
-        private void BeforeInternalNavigation(LocationChangingContext context)
-        {
-            if (changed)
-                context.PreventNavigation();
-        }
+       
+        
         public void Dispose()
         {
             registration?.Dispose();
@@ -72,7 +56,7 @@ namespace BakAppDiego.Components.Pages
         {
             if (firstRender)
             {
-                registration = NavigationManager.RegisterLocationChangingHandler(LocationChangingHandler);
+                
             }
         }
 

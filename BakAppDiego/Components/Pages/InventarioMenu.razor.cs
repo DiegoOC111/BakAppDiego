@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BakAppDiego.Components.Globals.Statics;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace BakAppDiego.Components.Pages
 
         async Task inventario()
         {
+            GlobalData.InventarioActivo = null;
             NavigationManager.NavigateTo("/Inventario");
 
             //ConectarConf conect = new ConectarConf();

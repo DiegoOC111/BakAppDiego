@@ -47,22 +47,22 @@ namespace BakAppDiego.Components.Pages
             if (firstRender)
             {
                 await passwordInput.FocusAsync(); // Establecer el foco en el input
-                if (GlobalData.Usuario_Activo != null)
-                {
-                    string mensaje = "Hay un usuario activo : " + GlobalData.Usuario_Activo.NoKofu;
-                    bool res = await MostrarPopUp("Usuario Activo", mensaje, "Iniciar", " Usar otro", true);
-                    if (res)
-                    {
+                //if (GlobalData.Usuario_Activo != null)
+                //{
+                //    string mensaje = "Hay un usuario activo : " + GlobalData.Usuario_Activo.NoKofu;
+                //    bool res = await MostrarPopUp("Usuario Activo", mensaje, "Iniciar", " Usar otro", true);
+                //    if (res)
+                //    {
 
 
-                    }
-                    else
-                    {
+                //    }
+                //    else
+                //    {
 
-                    }
+                //    }
 
 
-                }
+                //}
             }
             
         }

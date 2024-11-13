@@ -1,40 +1,92 @@
-﻿@if(Visible)
+﻿@using BakAppDiego.Components.Globals.Modelos.Bakapp
+@code {
+    private TaskCompletionSource<string> tcs;
+    
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public string mensaje { get; set; } = "";
+
+    [Parameter]
+    public string titulo { get; set; } = "";
+
+    [Parameter]
+    public string BotonStringAceptar { get; set; } = "Aceptar";
+
+    [Parameter]
+    public string BotonStringCancelar { get; set; } = "Cancelar";
+
+    [Parameter]
+    public bool BotonBoolCancelar { get; set; } = true;
+
+    private string inputText = "";  // Variable para almacenar el texto del input
+
+    // Método para mostrar el popup
+    public Task<string> ShowAsync()
+    {
+        tcs = new TaskCompletionSource<string>();
+        IsVisible = true;
+        StateHasChanged();
+        return tcs.Task;
+    }
+
+    // Método para configurar el popup
+    public void Crear(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2)
+    {
+        titulo = Titulo;
+        mensaje = Mensaje;
+        BotonStringAceptar = aceptar;
+        BotonStringCancelar = cancelar;
+        BotonBoolCancelar = visibleBTN2;
+        inputText = ""; // Reiniciar el texto del input
+        StateHasChanged();
+    }
+
+    // Lógica cuando se presiona "Aceptar"
+    public void Aceptar()
+    {
+        tcs?.SetResult(inputText);
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    // Lógica cuando se presiona "Cancelar"
+    public void Cancelar()
+    {
+        tcs?.SetResult(null);
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+
+
+    // Método para confirmar la entrada de texto al presionar Enter
+    private void ConfirmarInputText()
+    {
+        // Aquí puedes manejar el texto ingresado o pasarlo a otra lógica
+        Console.WriteLine($"Texto ingresado: {inputText}");
+        Aceptar();
+    }
+}
+@if (IsVisible)
 {
-    <div class="InputDialog">
-        <div class="dialog-content">
-            <h3>@Title</h3>
-            <p>@Message</p>
-            <input type="text" @bind="UserInput" placeholder="@Placeholder" />
-            <button @onclick="OnConfirm">OK</button>
-            <button @onclick="OnCancel">Cancel</button>
+    <div class="loading-popup">
+        <div class="overlay">
+            <div class="popup-content">
+                <h3>@titulo</h3>
+                <p>@mensaje</p>
+                <input type="text" class="text-input" @bind="inputText" @onkeypress="@(e => { if (e.Key == "Enter") ConfirmarInputText(); })" />
+
+                <div class="popup-buttons">
+
+                    @if (BotonBoolCancelar)
+                    {
+                        <button class="button-19 " @onclick="Aceptar">@BotonStringAceptar</button>
+                        <button class="button-19 " @onclick="Aceptar">@BotonStringCancelar</button>
+                    }
+                </div>
+            </div>
         </div>
     </div>
-
-
-
-}
-
-
-@code {
-    [Parameter] public string Title { get; set; }
-    [Parameter] public string Message { get; set; }
-    [Parameter] public string Placeholder { get; set; }
-    [Parameter] public EventCallback<string> Respuesta { get; set; }
-    [Parameter] public bool Visible { get; set; }
-    
-    private string UserInput { get; set; }
-    
-
-    
-
-    private async Task OnConfirm()
-    {
-        await Respuesta.InvokeAsync(UserInput); // Invocar la respuesta
-       
-    }
-
-    private void OnCancel()
-    {
-       
-    }
 }
