@@ -45,18 +45,7 @@
     // Lógica cuando se presiona "Aceptar"
     public void Aceptar()
     {
-        // Creamos un objeto Contador con los valores que deseas
-        var contador = new Contador
-            {
-                Id = 1,  // Aquí puedes asignar el ID según lo que necesites
-                Rut = "15463484-3",  // Asignar Rut
-                Nombre = "CONTADOR 1",  // Asignar nombre
-                Telefono = "569 73072284",  // Asignar teléfono
-                Email = "correo@correo.cl",  // Asignar email
-                Activo = true  // Asignar si está activo o no
-            };
-
-        tcs?.SetResult(contador);  // Pasamos la instancia de Contador
+        tcs?.SetResult(null);  // Retorna null si el usuario cancela
         IsVisible = false;
         StateHasChanged();
     }
@@ -102,7 +91,13 @@
                        
                     </tbody>
                 </table>
-                
+                <div class="popup-buttons">
+                    
+                    @if (BotonBoolCancelar)
+                    {
+                        <button class="button-19 " @onclick="Aceptar">@BotonStringAceptar</button>
+                    }
+                </div>
             </div>
         </div>
     </div>

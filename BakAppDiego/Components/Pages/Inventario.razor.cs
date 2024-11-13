@@ -33,7 +33,11 @@ namespace BakAppDiego.Components.Pages
         {
 
             ComunicacionWB = new FuncionesWebService();
-          
+            if (GlobalData.InventarioActivo != null) {
+                inventarioItem = GlobalData.InventarioActivo;
+                isTableVisible = true;
+                iniciado = true;
+            }
 
         }
         public async Task<List<InventarioItem>> ObtenerDatosInventario(string json)

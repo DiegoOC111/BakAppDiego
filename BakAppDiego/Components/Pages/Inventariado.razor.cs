@@ -20,7 +20,7 @@ namespace BakAppDiego.Components.Pages
         private FuncionesWebService ComunicacionWB;
         Contador c1 = new Contador();
         Contador c2 = new Contador();
-        
+        private bool iniciado = false;
         
         protected override void OnInitialized()
         {
@@ -29,6 +29,38 @@ namespace BakAppDiego.Components.Pages
             Dialogo = new DialogoService();
             GlobalData.menu = true;
             Escaneado = false;
+        }
+        private async Task CambiarContador(int numero) {
+
+
+            if (numero == 1)
+            {
+                MensajeAsync res = await elijeContador();
+                if (res.EsCorrecto)
+                {
+                    if (res.Tag != null)
+                    {
+                        c1 = (Contador)res.Tag;
+
+                    }
+
+                }
+
+            }
+            else { 
+                MensajeAsync res = await elijeContador();
+                if (res.EsCorrecto) {
+                    if (res.Tag != null) { 
+                        c2 = (Contador)res.Tag;
+
+
+                    }
+
+                }
+
+
+            }
+
         }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -68,6 +100,7 @@ namespace BakAppDiego.Components.Pages
 
                     }
                 }
+                iniciado = true;
                 StateHasChanged();
 
             }
@@ -84,8 +117,8 @@ namespace BakAppDiego.Components.Pages
                 List<string> botones = new List<string>();
 
                 // Agrega valores dinámicamente a la lista
-
-                Contador sel = await MostrarContadores("Elija el contador", "", "", "", false, contadorResponse);
+              
+                Contador sel = await MostrarContadores("Elija el contador", "", "Cancelar", "", iniciado, contadorResponse);
                 Retorno.EsCorrecto = true;
                 Retorno.Tag = sel;
                 return Retorno;
@@ -114,7 +147,7 @@ namespace BakAppDiego.Components.Pages
 
             // Espera hasta que el usuario presione un botón
             Contador resultado = await InCon.ShowAsync();
-
+            
             // Aquí puedes manejar el resultado
             
             return resultado;
