@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.Modelos.Clases
 {
-    public class TABPP
+    public class Precios
     {
         public string Kolt { get; set; }
         public string Nokolt { get; set; }
+    }
+    public class PreciosUsuario
+    {
+        public List<Precios> Table { get; set; }
     }
 }

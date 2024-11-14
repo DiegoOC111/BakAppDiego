@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.TablasBackApp
 {
+    public class TABFUResponse
+    {
+        public List<TABFU> Table { get; set; }
+    }
     public class TABFU
 
 

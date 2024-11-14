@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.Modelos.Random
 {
+    public class TABMOResponse
+    {
+        public List<TABMO> Table { get; set; }
+    }
     public class TABMO
     {
         public string KOMO { get; set; }

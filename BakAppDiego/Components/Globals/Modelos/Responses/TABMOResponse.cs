@@ -7,8 +7,5 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.Modelos.Responses
 {
-    internal class TABMOResponse
-    {
-        public List<TABMO> Table { get; set; }
-    }
+   
 }

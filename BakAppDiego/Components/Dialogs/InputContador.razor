@@ -1,8 +1,8 @@
 ﻿@using BakAppDiego.Components.Globals.Modelos.Bakapp
 
 @code {
-    private TaskCompletionSource<Zw_Inv_Contador> tcs;  // Cambiar a Contador
-    public ls_Zw_Inv_Contador cont; 
+    private TaskCompletionSource<Contador> tcs;  // Cambiar a Contador
+    public ContadorResponse cont; 
     [Parameter]
     public bool IsVisible { get; set; } = false;
 
@@ -22,16 +22,16 @@
     public bool BotonBoolCancelar { get; set; } = true;
 
     // Método para mostrar el popup
-    public Task<Zw_Inv_Contador> ShowAsync()
+    public Task<Contador> ShowAsync()
     {
-        tcs = new TaskCompletionSource<Zw_Inv_Contador>();  // Cambio aquí a Contador
+        tcs = new TaskCompletionSource<Contador>();  // Cambio aquí a Contador
         IsVisible = true;
         StateHasChanged();
         return tcs.Task;  // Devuelve una tarea que se completará cuando el popup se cierre
     }
 
     // Método para configurar el popup
-    public void Crear(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2, ls_Zw_Inv_Contador contadores)
+    public void Crear(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2, ContadorResponse contadores)
     {
         titulo = Titulo;
         mensaje = Mensaje;
@@ -58,7 +58,7 @@
         IsVisible = false;
         StateHasChanged();
     }
-    public void SeleccionarContador(Zw_Inv_Contador contador)
+    public void SeleccionarContador(Contador contador)
     {
         // Configura el contador seleccionado para usarlo más adelante
         tcs?.SetResult(contador);  // Devuelve el contador seleccionado

@@ -7,8 +7,5 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.Modelos.Responses
 {
-    public class MAEOMResponse
-    {
-       public  List<MAEMO> Table { get; set; }
-    }
+   
 }

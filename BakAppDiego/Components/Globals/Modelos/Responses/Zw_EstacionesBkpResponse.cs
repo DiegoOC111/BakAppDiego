@@ -7,10 +7,6 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.Modelos.Responses
 {
-    public class Zw_EstacionesBkpResponse
-    {
-        public List<Zw_EstacionesBkp> Table { get; set; }
-
-    }
+    
 
 }

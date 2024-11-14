@@ -16,4 +16,8 @@ namespace BakAppDiego.Components.Globals.Modelos.Random
         public DateTime FEMO { get; set; }
         public double VAMOCOM { get; set; }
     }
+    public class MAEOMResponse
+    {
+        public List<MAEMO> Table { get; set; }
+    }
 }

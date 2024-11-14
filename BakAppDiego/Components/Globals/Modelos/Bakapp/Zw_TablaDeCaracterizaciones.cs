@@ -28,4 +28,8 @@ namespace BakAppDiego.Components.Globals.Modelos.Bakapp
         public string Suc { get; set; }
         public string Bod { get; set; }
     }
+    public class Zw_TablaDeCaracterizacionesResponse
+    {
+        public List<Zw_TablaDeCaracterizaciones> Table { get; set; }
+    }
 }

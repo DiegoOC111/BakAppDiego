@@ -7,8 +7,5 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.Modelos.Responses
 {
-    public class ls_TABPP
-    {
-        public List<TABPP> Table { get; set; }
-    }
+    
 }

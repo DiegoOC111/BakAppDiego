@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.Modelos.Clases
 {
+    public class ResponseConifgEstacion
+    {
+        public List<ConfigEstacion> Table { get; set; }
+    }
     public class ConfigEstacion
     {
         public string EMPRESA { get; set; }

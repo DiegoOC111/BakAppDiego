@@ -7,8 +7,5 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.Modelos.Responses
 {
-    public class ResponseConifgEstacion
-    {
-        public List<ConfigEstacion> Table { get; set; }
-    }
+    
 }
