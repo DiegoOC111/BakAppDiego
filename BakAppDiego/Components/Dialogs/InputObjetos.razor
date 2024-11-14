@@ -1,0 +1,120 @@
+﻿@using BakAppDiego.Components.Globals.Modelos.Bakapp
+@code {
+    private TaskCompletionSource<List<string>> tcs;
+    private string Seleccinado = "Principal";
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public string mensaje { get; set; } = "";
+
+    [Parameter]
+    public string titulo { get; set; } = "";
+
+    [Parameter]
+    public string BotonStringAceptar { get; set; } = "Aceptar";
+
+    [Parameter]
+    public string BotonStringCancelar { get; set; } = "Cancelar";
+
+    [Parameter]
+    public bool BotonBoolCancelar { get; set; } = true;
+
+    private string inputText = "";  // Variable para almacenar el texto del input
+
+    // Método para mostrar el popup
+    public void cambiar(string seleccion)
+    {
+
+        Seleccinado = seleccion;
+
+
+    }
+    public Task<List<string>> ShowAsync()
+    {
+        tcs = new TaskCompletionSource<List<string>>();
+        IsVisible = true;
+        StateHasChanged();
+        return tcs.Task;
+    }
+
+    // Método para configurar el popup
+    public void Crear(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2)
+    {
+        titulo = Titulo;
+        mensaje = Mensaje;
+        BotonStringAceptar = aceptar;
+        BotonStringCancelar = cancelar;
+        BotonBoolCancelar = visibleBTN2;
+        inputText = ""; // Reiniciar el texto del input
+        StateHasChanged();
+    }
+
+    // Lógica cuando se presiona "Aceptar"
+    public void Aceptar()
+    {
+        Console.WriteLine(Seleccinado);
+        List<string> Respuesta = new List<string>();
+        Respuesta.Add(Seleccinado);
+        Respuesta.Add(inputText);
+        tcs?.SetResult(Respuesta);
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    // Lógica cuando se presiona "Cancelar"
+    public void Cancelar()
+    {
+        tcs?.SetResult(null);
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+
+
+    // Método para confirmar la entrada de texto al presionar Enter
+    private void ConfirmarInputText()
+    {
+        // Aquí puedes manejar el texto ingresado o pasarlo a otra lógica
+        Console.WriteLine($"Texto ingresado: {inputText}");
+        Aceptar();
+    }
+}
+@if (IsVisible)
+{
+    <div class="loading-popup">
+        <div class="overlay">
+            <div class="popup-content">
+                <h3>@titulo</h3>
+                <p>@mensaje</p>
+                <div class="wrapper">
+                    <input @onclick='() => cambiar("Principal")' type="radio" name="select" id="option-1" checked>
+                    <input @onclick='() => cambiar("Tecnico")' type="radio" name="select" id="option-2">
+                    <input @onclick='() => cambiar("Rapido")' type="radio" name="select" id="option-3">
+                    <label for="option-1" class="option option-1">
+                        <div class="dot"></div>
+                        <span>Principal</span>
+                    </label>
+                    <label for="option-2" class="option option-2">
+                        <div class="dot"></div>
+                        <span>Tecnico</span>
+                    </label>
+                    <label for="option-3" class="option option-3">
+                        <div class="dot"></div>
+                        <span>Rapido</span>
+                    </label>
+                </div>
+                <input type="text" class="text-input" @bind="inputText" @onkeypress="@(e => { if (e.Key == "Enter") Aceptar(); })" />
+               
+                <div class="popup-buttons">
+
+                    @if (BotonBoolCancelar)
+                    {
+                        <button class="button-19 " @onclick="Aceptar">@BotonStringAceptar</button>
+                        <button class="button-19 " @onclick="Cancelar">@BotonStringCancelar</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

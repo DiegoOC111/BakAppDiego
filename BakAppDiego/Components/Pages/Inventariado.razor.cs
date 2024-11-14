@@ -18,11 +18,13 @@ namespace BakAppDiego.Components.Pages
         private bool Escaneado;
         private InputContador InCon;
         private InputDialog InDIalog;
+        private InventarProducto inventar;
+        private InputObjetos InObj;
         private DialogoService Dialogo;
-        private Inv_Sector SectorActivo;
+        private Zw_Inv_Sector SectorActivo;
         private FuncionesWebService ComunicacionWB;
-        Contador c1 = new Contador();
-        Contador c2 = new Contador();
+        Zw_Inv_Contador c1 = new Zw_Inv_Contador();
+        Zw_Inv_Contador c2 = new Zw_Inv_Contador();
         private bool iniciado = false;
 
         protected override void OnInitialized()
@@ -32,6 +34,14 @@ namespace BakAppDiego.Components.Pages
             Dialogo = new DialogoService();
             GlobalData.menu = true;
             Escaneado = false;
+        }
+        private async Task EscanearObjeto() {
+
+
+            List<string> res = await MostrarInputObjeto("Ingrese el objeto", "", "Aceptar", "Cancelar", true);
+            string Tipo = res[0];
+            string Codigo = res[1];
+            List<string> res2 = await MostrarInventarObj("Ingrese el objeto", "", "Aceptar", "Cancelar", true);
         }
         private async Task CambiarContador(int numero) {
 
@@ -43,7 +53,7 @@ namespace BakAppDiego.Components.Pages
                 {
                     if (res.Tag != null)
                     {
-                        c1 = (Contador)res.Tag;
+                        c1 = (Zw_Inv_Contador)res.Tag;
 
                     }
 
@@ -54,7 +64,7 @@ namespace BakAppDiego.Components.Pages
                 MensajeAsync res = await elijeContador();
                 if (res.EsCorrecto) {
                     if (res.Tag != null) {
-                        c2 = (Contador)res.Tag;
+                        c2 = (Zw_Inv_Contador)res.Tag;
 
 
                     }
@@ -91,7 +101,7 @@ namespace BakAppDiego.Components.Pages
 
                 MensajeAsync res = await elijeContador();
                 if (res.EsCorrecto) {
-                    c1 = (Contador)res.Tag;
+                    c1 = (Zw_Inv_Contador)res.Tag;
 
 
                     //foreach (Contador contador in contadorResponse.Table)
@@ -109,7 +119,7 @@ namespace BakAppDiego.Components.Pages
                     res = await elijeContador();
                     if (res.EsCorrecto)
                     {
-                        c2 = (Contador)res.Tag;
+                        c2 = (Zw_Inv_Contador)res.Tag;
 
 
                         //foreach (Contador contador in contadorResponse.Table)
@@ -135,12 +145,12 @@ namespace BakAppDiego.Components.Pages
             if (res.EsCorrecto)
             {
 
-                ContadorResponse contadorResponse = JsonSerializer.Deserialize<ContadorResponse>(res.Detalle);
+                ls_Zw_Inv_Contador contadorResponse = JsonSerializer.Deserialize<ls_Zw_Inv_Contador>(res.Detalle);
                 List<string> botones = new List<string>();
 
                 // Agrega valores dinámicamente a la lista
 
-                Contador sel = await MostrarContadores("Elija el contador", "", "Cancelar", "", iniciado, contadorResponse);
+                Zw_Inv_Contador sel = await MostrarContadores("Elija el contador", "", "Cancelar", "", iniciado, contadorResponse);
                 Retorno.EsCorrecto = true;
                 Retorno.Tag = sel;
                 return Retorno;
@@ -160,7 +170,7 @@ namespace BakAppDiego.Components.Pages
 
 
         }
-        private async Task<Contador> MostrarContadores(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, ContadorResponse contadoress)
+        private async Task<Zw_Inv_Contador> MostrarContadores(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible,  ls_Zw_Inv_Contador contadoress)
         {
             InCon.Crear(titulo, mensaje, btnStr, CancelarStr, Visible, contadoress);
 
@@ -168,7 +178,7 @@ namespace BakAppDiego.Components.Pages
             //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
 
             // Espera hasta que el usuario presione un botón
-            Contador resultado = await InCon.ShowAsync();
+            Zw_Inv_Contador resultado = await InCon.ShowAsync();
 
             // Aquí puedes manejar el resultado
 
@@ -183,6 +193,34 @@ namespace BakAppDiego.Components.Pages
 
             // Espera hasta que el usuario presione un botón
             string resultado = await InDIalog.ShowAsync();
+
+            // Aquí puedes manejar el resultado
+
+            return resultado;
+        }
+        private async Task<List<string>> MostrarInputObjeto(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
+        {
+            InObj.Crear(titulo, mensaje, btnStr, CancelarStr, Visible);
+
+            // Configura el popup
+            //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
+
+            // Espera hasta que el usuario presione un botón
+            List<string> resultado = await InObj.ShowAsync();
+
+            // Aquí puedes manejar el resultado
+
+            return resultado;
+        }
+        private async Task<List<string>> MostrarInventarObj(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
+        {
+            inventar.Crear(titulo, mensaje, btnStr, CancelarStr, Visible);
+
+            // Configura el popup
+            //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
+
+            // Espera hasta que el usuario presione un botón
+            List<string> resultado = await inventar.ShowAsync();
 
             // Aquí puedes manejar el resultado
 

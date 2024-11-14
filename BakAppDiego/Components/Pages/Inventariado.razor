@@ -3,7 +3,8 @@
 @using BakAppDiego.Components.Layout
 <InputContador @ref="InCon" />
 <InputDialog @ref="InDIalog" />
-
+<InputObjetos @ref="InObj" />
+<InventarProducto @ref="inventar"/>
 <body>
 
     @if (iniciado)
@@ -106,7 +107,7 @@
 
         <div class="footer">
             <span class="cantidad-texto">Cantidad: 5</span>
-            <button class="button-19" style="bottom: 20px;" >Escanear Producto</button>
+            <button class="button-19" style="bottom: 20px;" @onclick="() =>EscanearObjeto()">Escanear Producto</button>
         </div>
 
     }

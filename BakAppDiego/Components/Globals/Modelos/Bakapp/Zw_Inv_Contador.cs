@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BakAppDiego.Components.Globals.Modelos.Bakapp
 {
 
-    public class Contador
+    public class Zw_Inv_Contador
     {
         public int Id { get; set; }
         public string Rut { get; set; }
@@ -17,8 +17,8 @@ namespace BakAppDiego.Components.Globals.Modelos.Bakapp
         public bool Activo { get; set; }
     }
 
-    public class ContadorResponse
+    public class ls_Zw_Inv_Contador
     {
-        public List<Contador> Table { get; set; }
+        public List<Zw_Inv_Contador> Table { get; set; }
     }
 }
