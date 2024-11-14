@@ -50,38 +50,47 @@ namespace BakAppDiego.Components.Pages
             string Respuesta = await Dialogo.DisplayText("Ingrese la id del inventario", "Id ", "Aceptar", "Cerrar");
             MensajeAsync ms = await ComunicacionWB.Sb_Inv_BuscarInventario(Respuesta);
             List < InventarioItem > inventarioItems = new List < InventarioItem >();
-            if (ms.EsCorrecto)
-            {
-                inventarioItems = await ObtenerDatosInventario(ms.Detalle);
-                inventarioItem = inventarioItems.FirstOrDefault();
-                iniciado = true;
-                GlobalData.InventarioActivo = inventarioItem;
-                ToggleTableVisibility();
-            }
-            else {
+            if (Respuesta != null | Respuesta != "") {
 
-                string msj = ms.Msg;
-                try
+
+                if (ms.EsCorrecto)
                 {
-                    bool R = await MostrarPopUp("Error", "No se encontro la tabla", "Continuar", " ", false);
+                    inventarioItems = await ObtenerDatosInventario(ms.Detalle);
+                    inventarioItem = inventarioItems.FirstOrDefault();
+                    iniciado = true;
+                    GlobalData.InventarioActivo = inventarioItem;
+                    ToggleTableVisibility();
+                }
+                else
+                {
 
-
-                    if (R)
+                    string msj = ms.Msg;
+                    try
                     {
+                        bool R = await MostrarPopUp("Error", "No se encontro la tabla", "Continuar", " ", false);
+
+
+                        if (R)
+                        {
+
+
+                        }
 
 
                     }
+                    catch (Exception ex)
+                    {
 
+                        Console.WriteLine(ex.ToString());
+
+                    }
 
                 }
-                catch (Exception ex) { 
-                
-                    Console.WriteLine(ex.ToString());
-                
-                }
-               
+
+
+
+
             }
-            
 
 
         }

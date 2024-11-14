@@ -4,14 +4,6 @@ using BakAppDiego.Components.Globals.Modelos.Responses;
 using BakAppDiego.Components.Globals.Statics;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
 namespace BakAppDiego.Components.Modulos_de_funciones
 {
@@ -19,11 +11,13 @@ namespace BakAppDiego.Components.Modulos_de_funciones
     {
         [Inject] private HttpClient HttpClient { get; set; }
         private FuncionesWebService ComunicacionWB;
-        public ConectarConf(){
-             HttpClient = new HttpClient();  
-             ComunicacionWB = new FuncionesWebService();
+        public ConectarConf()
+        {
+            HttpClient = new HttpClient();
+            ComunicacionWB = new FuncionesWebService();
         }
-        public async Task<MensajeAsync> Sb_Cargar_Datos_De_Configuracion() {
+        public async Task<MensajeAsync> Sb_Cargar_Datos_De_Configuracion()
+        {
             MensajeAsync MsjRet = new MensajeAsync();
             string sqlQuery = @"Select Top 1 *,NOKOCARAC+'.dbo.' As Global_BaseBk From TABCARAC Where KOTABLA = 'BAKAPP' And KOCARAC = 'BASE'";
             MensajeAsync mensaje = await ComunicacionWB.Sb_GetDataSet_Json(sqlQuery);
@@ -37,7 +31,7 @@ namespace BakAppDiego.Components.Modulos_de_funciones
                     var ax = ComunicacionWB.Fx_DataRow((string)mensaje.Detalle);
                     if (ax != null)
                     {
-                       
+
                         GlobalData.Global_BaseBk = (string)ax["Global_BaseBk"];
                     }
                     else
@@ -57,7 +51,7 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             }
             else
             {
-            
+
                 return mensaje;
 
             }
@@ -72,7 +66,8 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             }
 
             MensajeAsync MsjCargar = await Fx_Cargar_Listas_Precios_Por_Usuario();
-            if (MsjCargar.EsCorrecto ==  false) {
+            if (MsjCargar.EsCorrecto == false)
+            {
                 return MsjCargar;
 
 
@@ -139,7 +134,8 @@ namespace BakAppDiego.Components.Modulos_de_funciones
                 Retorno.EsCorrecto = true;
                 Retorno.Msg = "Tabla guardada y creada con exito";
             }
-            else { 
+            else
+            {
                 Retorno.EsCorrecto = false;
                 Retorno.Msg = respuesta.Msg;
 
@@ -150,32 +146,29 @@ namespace BakAppDiego.Components.Modulos_de_funciones
         }
         private async Task<MensajeAsync> Fx_Cargar_Sis_DespachoSimple_TipoPago()
         {
-            MensajeAsync Retorno = new MensajeAsync();
+            MensajeAsync mensaje = new MensajeAsync();
 
-            
             string Consulta_sql = $@"Select * From  {GlobalData.Global_BaseBk}Zw_TablaDeCaracterizaciones Where Tabla = 'SIS_DESPACHOSIMPLE_TIPOPAGO'";
             MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_sql);
             if (respuesta.EsCorrecto)
             {
                 Zw_TablaDeCaracterizacionesResponse Res = JsonConvert.DeserializeObject<Zw_TablaDeCaracterizacionesResponse>(respuesta.Detalle);
                 GlobalData.TablaDeCaracterizacionesTipoPago = Res.Table[0];
-                Retorno.EsCorrecto = true;
-                Retorno.Msg = "Tabla guardada y creada con exito";
+                mensaje.EsCorrecto = true;
+                mensaje.Msg = "Tabla guardada y creada con exito";
             }
             else
             {
-                Retorno.EsCorrecto = false;
-                Retorno.Msg = respuesta.Msg;
+                mensaje.EsCorrecto = false;
+                mensaje.Msg = respuesta.Msg;
 
             }
-            return Retorno;
-
-
+            return mensaje;
 
         }
         private async Task<MensajeAsync> Fx_Cargar_Sis_DespachoSimple_Tipo()
         {
-            MensajeAsync Retorno = new MensajeAsync();
+            MensajeAsync mensaje = new MensajeAsync();
 
 
             string Consulta_sql = $@"Select * From  {GlobalData.Global_BaseBk}Zw_TablaDeCaracterizaciones Where Tabla = 'SIS_DESPACHOSIMPLE_TIPO'";
@@ -184,21 +177,22 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             {
                 Zw_TablaDeCaracterizacionesResponse Res = JsonConvert.DeserializeObject<Zw_TablaDeCaracterizacionesResponse>(respuesta.Detalle);
                 GlobalData.TablaDeCaracterizacionesTipo = Res.Table[0];
-                Retorno.EsCorrecto = true;
-                Retorno.Msg = "Tabla guardada y creada con exito";
+                mensaje.EsCorrecto = true;
+                mensaje.Msg = "Tabla guardada y creada con exito";
             }
             else
             {
-                Retorno.EsCorrecto = false;
-                Retorno.Msg = respuesta.Msg;
+                mensaje.EsCorrecto = false;
+                mensaje.Msg = respuesta.Msg;
 
             }
-            return Retorno;
+            return mensaje;
 
 
 
         }
-        private async Task<MensajeAsync> Sb_Revisar_Carptea_Tmp_Servidor() {
+        private async Task<MensajeAsync> Sb_Revisar_Carptea_Tmp_Servidor()
+        {
             MensajeAsync mensajeAsync = await ComunicacionWB.Fx_HttJob_Ws_Sb_RevCarpetaTmp();
             if (mensajeAsync.EsCorrecto)
             {
@@ -206,50 +200,39 @@ namespace BakAppDiego.Components.Modulos_de_funciones
                 string response = mensajeAsync.Detalle;
                 List<Dictionary<string, object>> listdic = ComunicacionWB.Fx_DataTable(response);
                 string existeRuta = "false";
-                
+
                 Dictionary<string, object> dic = listdic[0];
 
                 existeRuta = (string)dic["ExisteRuta"];
 
 
-                
-             
-                        
                 MensajeAsync Respuesta = new MensajeAsync();
                 if (existeRuta == "True")
                 {
                     Respuesta.EsCorrecto = true;
                     Respuesta.Msg = "Existe";
                     return Respuesta;
-
                 }
-                else {
+                else
+                {
                     Respuesta.EsCorrecto = false;
                     Respuesta.Msg = "NoExiste";
                     return Respuesta;
-
-
                 }
-                
-
 
             }
-            else { 
+            else
+            {
                 MensajeAsync MensajeError = new MensajeAsync();
                 MensajeError.EsCorrecto = false;
-                MensajeError.Msg = "Error al revisar la carpeta"; 
-
-
-
-
+                MensajeError.Msg = "Error al revisar la carpeta";
             }
             return mensajeAsync;
 
-
-
         }
 
-        private async Task<MensajeAsync> Sb_Cargar_Modedas() {
+        private async Task<MensajeAsync> Sb_Cargar_Modedas()
+        {
 
             string Consulta_Sql = "Select TOP 1 * From TABMO Where KOMO = '$'";
             MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);
@@ -257,28 +240,24 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             {
                 TABMOResponse Response = JsonConvert.DeserializeObject<TABMOResponse>(respuesta.Detalle);
                 GlobalData.Moneda = Response.Table[0];
-
-
-
-
-            }else{ 
-                MensajeAsync MsjError = new MensajeAsync(); 
+            }
+            else
+            {
+                MensajeAsync MsjError = new MensajeAsync();
                 MsjError.EsCorrecto = false;
                 MsjError.Msg = "Ocurrio un error definiendo la moneda";
                 return MsjError;
-            
             }
 
             //trae el ultimo registro del valor del dolar
             Consulta_Sql = "SELECT  top 1 *  FROM MAEMO WHERE KOMO = 'US$' ORDER BY IDMAEMO DESC;";
             respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);
+
+
             if (respuesta.EsCorrecto)
             {
                 MAEOMResponse Response = JsonConvert.DeserializeObject<MAEOMResponse>(respuesta.Detalle);
                 GlobalData.MonedaDolar = Response.Table[0];
-
-
-
 
             }
             else
@@ -297,10 +276,6 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             {
                 MAEOMResponse Response = JsonConvert.DeserializeObject<MAEOMResponse>(respuesta.Detalle);
                 GlobalData.UF = Response.Table[0];
-
-
-
-
             }
             else
             {
@@ -308,14 +283,12 @@ namespace BakAppDiego.Components.Modulos_de_funciones
                 MsjError.EsCorrecto = false;
                 MsjError.Msg = "Ocurrio un error definiendo las monedas";
                 return MsjError;
-
             }
             return respuesta;
 
-
-
-         }
-        private async Task<MensajeAsync> Fx_Cargar_Listas_Precios_Por_Usuario() {
+        }
+        private async Task<MensajeAsync> Fx_Cargar_Listas_Precios_Por_Usuario()
+        {
 
             string Usuario_X_Defecto = GlobalData.Usuario_Activo.Kofu;
             string Consulta_Sql = $@"
@@ -329,31 +302,28 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             Order By Nokolt";
 
             MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);
-            if (respuesta.EsCorrecto) {
-                PreciosUsuario Response = JsonConvert.DeserializeObject<PreciosUsuario>(respuesta.Detalle);
+            MensajeAsync mensaje = new MensajeAsync();
+
+            if (respuesta.EsCorrecto)
+            {
+                ls_TABPP Response = JsonConvert.DeserializeObject<ls_TABPP>(respuesta.Detalle);
                 GlobalData.Listas_precios_usuarios = Response.Table;
-                MensajeAsync salida = new MensajeAsync();
-                salida.Msg = "PRecios cargados correctamente";
-                salida.EsCorrecto = true;
-                return salida;
-
-
+                mensaje.Msg = "Precios cargados correctamente";
+                mensaje.EsCorrecto = true;
             }
-            else { 
-                MensajeAsync salida =  new MensajeAsync();
-                salida.Msg = "El usuario no posee permisos para ninguna lista de precios en Random.";
-                salida.EsCorrecto = false;
-                return salida;
-
-
+            else
+            {
+                mensaje.Msg = "El usuario no posee permisos para ninguna lista de precios en Random.";
+                mensaje.EsCorrecto = false;
             }
 
-
+            return mensaje;
 
         }
-        private async Task<MensajeAsync> Fx_Cargar_Configuracion_Estacion_Y_General() {
-            string Empresa = GlobalData.EstacionBk.Empresa_X_Defecto;       
-            string Modalidad = GlobalData.EstacionBk.Modalidad_X_Defecto;    
+        private async Task<MensajeAsync> Fx_Cargar_Configuracion_Estacion_Y_General()
+        {
+            string Empresa = GlobalData.EstacionBk.Empresa_X_Defecto;
+            string Modalidad = GlobalData.EstacionBk.Modalidad_X_Defecto;
             string Global_BaseBk = GlobalData.Global_BaseBk;
             string JSONResponse;
             string Consulta_Sql = @$"
@@ -363,12 +333,15 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             On Empresa = EMPRESA And Modalidad = '{Modalidad}'
             Where EMPRESA = '{Empresa}' And MODALIDAD = '{Modalidad}'";
             MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);
-            if (respuesta.EsCorrecto) {
+            if (respuesta.EsCorrecto)
+            {
                 JSONResponse = respuesta.Detalle;
                 ResponseConifgEstacion Respuesta = JsonConvert.DeserializeObject<ResponseConifgEstacion>(JSONResponse);
                 GlobalData.ConfiguracionEstacion = Respuesta.Table[0];
 
-            } else {
+            }
+            else
+            {
 
 
                 MensajeAsync MsjError = new MensajeAsync();
@@ -431,12 +404,13 @@ namespace BakAppDiego.Components.Modulos_de_funciones
                 GlobalData.Configuracion_General = Respuesta.Table[0];
 
             }
-            else { 
-            
+            else
+            {
+
                 MensajeAsync MsjError = new MensajeAsync();
                 MsjError.Msg = "Error al cargar la configuracion general";
                 MsjError.EsCorrecto = false;
-                
+
                 return MsjError;
 
 
@@ -446,9 +420,10 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             Exitoso.EsCorrecto = true;
 
             return Exitoso;
-            
+
         }
-        private async Task<MensajeAsync> Fx_Cargar_Configuracion_Estacion() {
+        private async Task<MensajeAsync> Fx_Cargar_Configuracion_Estacion()
+        {
             //Decomentar lo de abajo para obtener la respueta real, esto es solo para caso de prueba.
             //string Consulta_Sql = $@"Select * From  {GlobalData.Global_BaseBk}Zw_EstacionesBkp Where NombreEquipo = ' {GlobalData.Id_dispositivo} ' And TipoEstacion = 'B4A'";
             string Consulta_Sql = $@"Select * From  {GlobalData.Global_BaseBk}Zw_EstacionesBkp Where NombreEquipo = 'baca536c8d75bf5f' And TipoEstacion = 'B4A'";
@@ -469,15 +444,16 @@ namespace BakAppDiego.Components.Modulos_de_funciones
                     return Res;
 
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
 
 
                     return respuesta;
 
 
                 }
-                
-               
+
+
             }
             else
             {
@@ -488,7 +464,8 @@ namespace BakAppDiego.Components.Modulos_de_funciones
                     Res.EsCorrecto = false;
                     return Res;
                 }
-                else {
+                else
+                {
                     MensajeAsync Res = new MensajeAsync();
                     Res.Msg = "Usuario no encontrado";
                     Res.EsCorrecto = false;
@@ -499,7 +476,7 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             }
 
 
-            }
+        }
 
 
     }

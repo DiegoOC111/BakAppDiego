@@ -28,7 +28,7 @@ namespace BakAppDiego.Components.Globals.Statics
         public static TABFU? Usuario_Activo { get; set;}
 
         public static Zw_EstacionesBkp? EstacionBk { get; set; }
-        public static List<Precios> Listas_precios_usuarios { get; set; }
+        public static List<TABPP> Listas_precios_usuarios { get; set; }
         public static ConfigEstacion ConfiguracionEstacion { get; set; }
         public static Zw_EstacionesBkp Configuracion_General { get; set; }
         public static TABMO Moneda { get; set; }

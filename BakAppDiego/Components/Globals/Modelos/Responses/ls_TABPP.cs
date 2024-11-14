@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.Modelos.Responses
 {
-    public class PreciosUsuario
+    public class ls_TABPP
     {
-        public List<Precios> Table { get; set; }
+        public List<TABPP> Table { get; set; }
     }
 }
