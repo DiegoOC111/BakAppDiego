@@ -73,7 +73,7 @@ namespace BakAppDiego.Components.Pages
                 MensajeAsync res = await ComunicacionWB.Sb_Inv_BuscarSector(sector, GlobalData.InventarioActivo.Id.ToString());
                 if (res.EsCorrecto) {
 
-                    Inv_SectorResponse resCont =  JsonSerializer.Deserialize<Inv_SectorResponse>(res.Detalle);
+                    ls_Zw_Inv_Sector resCont =  JsonSerializer.Deserialize<ls_Zw_Inv_Sector>(res.Detalle);
                     SectorActivo = resCont.Table[0];
                     Sector = SectorActivo.Sector;
                     Escaneado = true;

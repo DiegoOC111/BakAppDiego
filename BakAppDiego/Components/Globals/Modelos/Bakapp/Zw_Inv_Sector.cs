@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Globals.Modelos.Bakapp
 {
-    public class Inv_Sector
+    public class Zw_Inv_Sector
     {
         public int Id { get; set; }
         public int IdInventario { get; set; }
@@ -19,9 +19,9 @@ namespace BakAppDiego.Components.Globals.Modelos.Bakapp
         public bool Abierto { get; set; }
     }
 
-    public class Inv_SectorResponse
+    public class ls_Zw_Inv_Sector
     {
-        public List<Inv_Sector> Table { get; set; }
+        public List<Zw_Inv_Sector> Table { get; set; }
     }
 
    
