@@ -1,8 +1,9 @@
 ﻿@using BakAppDiego.Components.Globals.Modelos.Bakapp
 
 @code {
-    private TaskCompletionSource<Zw_Inv_Contador> tcs;  // Cambiar a Contador
-    public ls_Zw_Inv_Contador cont; 
+    private TaskCompletionSource<Zw_Inv_Contador> tcs; // Manejo de tareas asíncronas
+    public ls_Zw_Inv_Contador cont;
+
     [Parameter]
     public bool IsVisible { get; set; } = false;
 
@@ -24,10 +25,10 @@
     // Método para mostrar el popup
     public Task<Zw_Inv_Contador> ShowAsync()
     {
-        tcs = new TaskCompletionSource<Zw_Inv_Contador>();  // Cambio aquí a Contador
+        tcs = new TaskCompletionSource<Zw_Inv_Contador>();
         IsVisible = true;
         StateHasChanged();
-        return tcs.Task;  // Devuelve una tarea que se completará cuando el popup se cierre
+        return tcs.Task;
     }
 
     // Método para configurar el popup
@@ -45,7 +46,7 @@
     // Lógica cuando se presiona "Aceptar"
     public void Aceptar()
     {
-        tcs?.SetResult(null);  // Retorna null si el usuario cancela
+        tcs?.SetResult(null);
         IsVisible = false;
         StateHasChanged();
     }
@@ -53,50 +54,57 @@
     // Lógica cuando se presiona "Cancelar"
     public void Cancelar()
     {
-        // Si necesitas devolver un Contador vacío o nulo, puedes hacerlo
-        tcs?.SetResult(null);  // Retorna null si el usuario cancela
+        tcs?.SetResult(null);
         IsVisible = false;
         StateHasChanged();
     }
+
+    // Lógica cuando se selecciona un contador
     public void SeleccionarContador(Zw_Inv_Contador contador)
     {
-        // Configura el contador seleccionado para usarlo más adelante
-        tcs?.SetResult(contador);  // Devuelve el contador seleccionado
-        IsVisible = false; // Cierra el popup si es necesario
+        tcs?.SetResult(contador);
+        IsVisible = false;
         StateHasChanged();
     }
 }
+
 @if (IsVisible)
 {
     <div class="loading-popup">
         <div class="overlay">
             <div class="popup-content">
-                <h3>@titulo</h3>
+                
                 <p>@mensaje</p>
-                <table class="table-fill">
-                    <tbody class="table-hover">
-                        
-                        
-                     
+                <div class="container" style="background-color: transparent;">
+                    <div class="row flex-column align-items-center g-3" style="background-color: transparent;">
+                        <div class="col-md-12">
+                            <div class="card bg-transparent border-0">
+                                <div class="card-body text-center">
+                                    <h1 class="display-5" style="color: #012E4A;">@titulo</h1>
+                                </div>
+                            </div>
+                        </div>
 
-                            @foreach (var contador in cont.Table)
-                            {
-                                <tr @onclick="() => SeleccionarContador(contador)">
+                        @foreach (var contador in cont.Table)
+                        {
+                             <div class="col-12" @onclick="() => SeleccionarContador(contador)">
+            <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;">
+                                    <div class="card-header" style="background-color: #81BECE;">@contador.Nombre</div>
+                <div class="card-body" style="background-color: #81BECE;">
+                    <h5 class="card-title">Rut: @contador.Rut</h5>
+                </div>
+            </div>
+        </div>
+                        }
+                    </div>
+                </div>
 
-                                <td class="text-left">Nombre: @contador.Nombre - @contador.Rut </td>
-                                    
-                                    
-                                </tr>
-                            }
-                       
-                    </tbody>
-                </table>
-                <div class="popup-buttons">
-                    
+                <div class="popup-buttons text-center">
                     @if (BotonBoolCancelar)
                     {
-                        <button class="button-19 " @onclick="Aceptar">@BotonStringAceptar</button>
+                        <button class="button-19" @onclick="Aceptar">@BotonStringAceptar</button>
                     }
+                    
                 </div>
             </div>
         </div>

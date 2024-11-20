@@ -40,44 +40,21 @@ main {
 /* Contenedor de tarjetas */
 .container {
     position: relative;
-    margin-top: 15vh;
+    margin-top: 15vh; /* Ajusta según tu diseño */
     margin-bottom: 80px;
-    width: 100%;
-    max-height: calc(100vh - 15vh - 80px);
+    width: 90%; /* Ocupa el 90% del ancho de la pantalla */
+    max-width: 1200px; /* Limita el ancho máximo para pantallas grandes */
+    max-height: calc(100vh - 15vh - 80px); /* Ajusta la altura máxima */
     overflow-y: auto;
     padding: 1rem;
     background-color: transparent;
     box-sizing: border-box;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-left: auto;
+    margin-right: auto; /* Centra el contenedor */
 }
 
-/* Estilo de cada tarjeta */
-.card {
-    background-color: #E8EDE7;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    width: 100%;
-    max-width: 300px;
-    box-sizing: border-box;
-    transition: box-shadow 0.3s ease;
-}
-
-    .card:hover {
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .card h2 {
-        margin-top: 0;
-        color: #036280;
-    }
-
-    .card p {
-        color: #036280;
-        margin-bottom: 0;
-    }
 
 /* Menú hamburguesa */
 #menuToggle {
