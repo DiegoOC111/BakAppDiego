@@ -53,5 +53,44 @@ namespace BakAppDiego.Components.Globals.Modelos.Bakapp
         public double PrecioListaUd1 { get; set; }
 
         public double PrecioListaUd2 { get; set; }
+
+    }
+    public class Zw_Producto_inventariado : Zw_Producto
+    {
+        // Propiedades adicionales
+        public double Cantidad { get; set; }
+        public string Comentario { get; set; } 
+
+        public string tipo_esc { get; set; }
+        public Zw_Producto_inventariado(Zw_Producto producto)
+        {
+            
+            Principal = producto.Principal;
+            Rapido = producto.Rapido;
+            Tecnico = producto.Tecnico;
+            Rtu = producto.Rtu;
+            Ud1 = producto.Ud1;
+            Ud2 = producto.Ud2;
+            Descripcion = producto.Descripcion;
+            StFisicoUd1 = producto.StFisicoUd1;
+            StFisicoUd2 = producto.StFisicoUd2;
+            SuperFamilia = producto.SuperFamilia;
+            NombreSuper = producto.NombreSuper;
+            Familia = producto.Familia;
+            NombreFamilia = producto.NombreFamilia;
+            SubFamilia = producto.SubFamilia;
+            NombreSub = producto.NombreSub;
+            MRPR = producto.MRPR;
+            Marca = producto.Marca;
+            PrecioListaUd1 = producto.PrecioListaUd1;
+            PrecioListaUd2 = producto.PrecioListaUd2;
+
+            // Inicializa las propiedades adicionales
+
+            Cantidad = 0;       // Cantidad en 0 por defecto
+            Comentario = "";
+            tipo_esc = "";
+        }
+            
     }
 }

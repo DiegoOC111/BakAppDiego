@@ -18,7 +18,7 @@ namespace BakAppDiego.Components.Pages
         private bool Escaneado;
         private InputContador InCon;
         private InputDialog InDIalog;
-        private InventarProducto inventar;
+        private ObjInventar inventar;
         private InputObjetos InObj;
         private DialogoService Dialogo;
         private Zw_Inv_Sector SectorActivo;
@@ -26,10 +26,10 @@ namespace BakAppDiego.Components.Pages
         Zw_Inv_Contador c1 = new Zw_Inv_Contador();
         Zw_Inv_Contador c2 = new Zw_Inv_Contador();
         private bool iniciado = false;
-
+        private List<Zw_Producto_inventariado> ListaProductos;
         protected override void OnInitialized()
         {
-
+            ListaProductos = new List<Zw_Producto_inventariado>();
             ComunicacionWB = new FuncionesWebService();
             Dialogo = new DialogoService();
             GlobalData.menu = true;
@@ -41,7 +41,23 @@ namespace BakAppDiego.Components.Pages
             List<string> res = await MostrarInputObjeto("Ingrese el objeto", "", "Aceptar", "Cancelar", true);
             string Tipo = res[0];
             string Codigo = res[1];
-            List<string> res2 = await MostrarInventarObj("Ingrese el objeto", "", "Aceptar", "Cancelar", true);
+            MensajeAsync msg = await ComunicacionWB.Sb_Inv_TraerProductoInventario(GlobalData.InventarioActivo.Id, GlobalData.InventarioActivo.Empresa,GlobalData.InventarioActivo.Sucursal, GlobalData.InventarioActivo.Bodega, Tipo,Codigo);
+            if (msg.EsCorrecto) {
+
+                ls_Zw_Producto response = JsonSerializer.Deserialize<ls_Zw_Producto>(msg.Detalle);
+                Zw_Producto prod = response.Table[0];
+
+                Zw_Producto_inventariado obj = new Zw_Producto_inventariado(prod);
+                obj.tipo_esc = Tipo;
+                Zw_Producto_inventariado res2 = await MostrarInventarObj("Ingrese el objeto", "", "Aceptar", "Cancelar", true, obj);
+                if (res2 != null) {
+                    ListaProductos.Add(res2);
+                    StateHasChanged();
+
+
+                }
+            }
+            
         }
         private async Task CambiarContador(int numero) {
 
@@ -212,15 +228,15 @@ namespace BakAppDiego.Components.Pages
 
             return resultado;
         }
-        private async Task<List<string>> MostrarInventarObj(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
+        private async Task<Zw_Producto_inventariado> MostrarInventarObj(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, Zw_Producto_inventariado obj)
         {
-            inventar.Crear(titulo, mensaje, btnStr, CancelarStr, Visible);
+            inventar.Crear(titulo, mensaje, btnStr, CancelarStr, Visible, obj);
 
             // Configura el popup
             //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
 
             // Espera hasta que el usuario presione un botón
-            List<string> resultado = await inventar.ShowAsync();
+            Zw_Producto_inventariado resultado = await inventar.ShowAsync();
 
             // Aquí puedes manejar el resultado
 
