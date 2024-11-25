@@ -115,7 +115,7 @@ namespace BakAppDiego.Components.Globals.Modelos
             content.Headers.Add("SOAPAction", "\"http://BakApp/Sb_Inv_TraerProductoInventario\"");
             HttpResponseMessage httpResponse = await HttpClient.PostAsync(ip_wb + "/Ws_BakApp.asmx", content);
             var responseContent = await httpResponse.Content.ReadAsStringAsync();
-            string a = "{\"Table\":[]}";
+            string a = "{\"Table\":[{\"Codigo\":\"Error_No hay ninguna fila en la posición 0.\",\"Version\":\"1.0.0.35\"}]}";
 
             if (httpResponse.IsSuccessStatusCode)
             {

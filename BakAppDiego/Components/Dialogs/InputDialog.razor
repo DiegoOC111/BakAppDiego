@@ -1,7 +1,10 @@
 ﻿@using BakAppDiego.Components.Globals.Modelos.Bakapp
 @code {
     private TaskCompletionSource<string> tcs;
-    
+    private TaskCompletionSource<double?> tcs2;
+    public bool Numeric;
+    private double Numero { get; set; } = 0;
+    private string advertencia = "";
     [Parameter]
     public bool IsVisible { get; set; } = false;
 
@@ -30,33 +33,90 @@
         StateHasChanged();
         return tcs.Task;
     }
+    public Task<double?> ShowAsynNumeric()
+    {
+        tcs2 = new TaskCompletionSource<double?>();
+        IsVisible = true;
+        StateHasChanged();
+        return tcs2.Task;
+    }
 
     // Método para configurar el popup
     public void Crear(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2)
     {
+        Numeric = false;
         titulo = Titulo;
         mensaje = Mensaje;
         BotonStringAceptar = aceptar;
         BotonStringCancelar = cancelar;
         BotonBoolCancelar = visibleBTN2;
         inputText = ""; // Reiniciar el texto del input
+        advertencia = "";
+        Numero = 0;
         StateHasChanged();
     }
-
+    public void Crear(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2, bool Num,double defa)
+    {
+        Numeric = Num;
+     
+        titulo = Titulo;
+        mensaje = Mensaje;
+        BotonStringAceptar = aceptar;
+        BotonStringCancelar = cancelar;
+        BotonBoolCancelar = visibleBTN2;
+        inputText = ""; // Reiniciar el texto del input
+        advertencia = "";
+        Numero = defa;
+        
+        StateHasChanged();
+    }
     // Lógica cuando se presiona "Aceptar"
     public void Aceptar()
     {
+        if (Numeric)
+        {
+            if (Numero == 0)
+            {
+                advertencia = "La cantidad no puede ser 0. Por favor, ingrese un valor válido.";
+                StateHasChanged();
+                return;
+            }
+
+
+            tcs2.SetResult(Numero);
+            IsVisible = false;
+            StateHasChanged();
+            return;
+
+
+        }
         tcs?.SetResult(inputText);
         IsVisible = false;
         StateHasChanged();
+        return;
     }
 
     // Lógica cuando se presiona "Cancelar"
     public void Cancelar()
     {
-        tcs?.SetResult(null);
-        IsVisible = false;
-        StateHasChanged();
+        if (Numeric)
+
+        {
+
+            tcs2?.SetResult(null);
+            IsVisible = false;
+            StateHasChanged();
+            return;
+
+        }
+        else
+        {
+            tcs?.SetResult(null);
+            IsVisible = false;
+            StateHasChanged();
+            return;
+        }
+        
     }
 
 
@@ -76,7 +136,27 @@
             <div class="popup-content">
                 <h3>@titulo</h3>
                 <p>@mensaje</p>
-                <input type="text" class="text-input" @bind="inputText" @onkeypress="@(e => { if (e.Key == "Enter") ConfirmarInputText(); })" />
+                @if (Numeric)
+                {
+                    @if (!string.IsNullOrEmpty(advertencia))
+                    {
+                        <div class="alert alert-danger">
+                            @advertencia
+                        </div>
+
+                    }
+
+                    <input type="number" class="form-control" @bind="Numero" placeholder="0" />
+
+
+                }
+                else
+                
+                {
+                    <input type="text" class="text-input" @bind="inputText" @onkeypress="@(e => { if (e.Key == "Enter") ConfirmarInputText(); })" />
+                
+                }
+                
 
                 <div class="popup-buttons">
 

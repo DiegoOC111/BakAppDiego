@@ -5,7 +5,7 @@
     private string Seleccinado = "Principal";
     private string cod = "";
     private double Numero { get; set; } = 0;
-
+    private string advertencia = "";
     [Parameter]
     public bool IsVisible { get; set; } = false;
 
@@ -49,9 +49,9 @@
         if (producto1.tipo_esc == "Rapido") { cod = producto1.Rapido; }
         if (producto1.tipo_esc == "Tecnico") { cod = producto1.Tecnico; }
         if (producto1.tipo_esc == "Principal") { cod = producto1.Principal; }
-
+        Numero = 0;
         producto1 = producto;
-
+        advertencia = null;
         titulo = Titulo;
         mensaje = Mensaje;
         BotonStringAceptar = aceptar;
@@ -64,12 +64,20 @@
     // Lógica cuando se presiona "Aceptar"
     public void Aceptar()
     {
+        if (Numero == 0)
+        {
+            // Mostrar una advertencia si el número es 0
+            advertencia = "La cantidad no puede ser 0. Por favor, ingrese un valor válido.";
+            StateHasChanged();
+            return;
+        }
+
         producto1.Cantidad = Numero;
+
         tcs?.SetResult(producto1);
         IsVisible = false;
         StateHasChanged();
     }
-
     // Lógica cuando se presiona "Cancelar"
     public void Cancelar()
     {
@@ -90,6 +98,12 @@
             <div class="popup-content">
                 <h3>@titulo</h3>
                 <p>@mensaje</p>
+                @if (!string.IsNullOrEmpty(advertencia))
+                {
+                    <div class="alert alert-danger">
+                        @advertencia
+                    </div>
+                }
                 <div class="container mt-4">
                     <div class="row">
                         <!-- Primer elemento -->
@@ -145,4 +159,5 @@
             </div>
         </div>
     </div>
+
 }

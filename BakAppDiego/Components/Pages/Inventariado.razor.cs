@@ -14,6 +14,7 @@ namespace BakAppDiego.Components.Pages
 {
     public partial class Inventariado
     {
+
         private string Sector = "";
         private bool Escaneado;
         private InputContador InCon;
@@ -27,6 +28,8 @@ namespace BakAppDiego.Components.Pages
         Zw_Inv_Contador c2 = new Zw_Inv_Contador();
         private bool iniciado = false;
         private List<Zw_Producto_inventariado> ListaProductos;
+        private System.Timers.Timer longClickTimer;
+        private Zw_Producto_inventariado selectedProducto;
         protected override void OnInitialized()
         {
             ListaProductos = new List<Zw_Producto_inventariado>();
@@ -213,6 +216,21 @@ namespace BakAppDiego.Components.Pages
             // Aquí puedes manejar el resultado
 
             return resultado;
+
+        }
+        private async Task<double?> MostrarInput(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, bool numeric,double defaul)
+        {
+            InDIalog.Crear(titulo, mensaje, btnStr, CancelarStr, Visible,numeric, defaul);
+
+            // Configura el popup
+            //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
+
+            // Espera hasta que el usuario presione un botón
+            double? resultado = await InDIalog.ShowAsynNumeric();
+
+            // Aquí puedes manejar el resultado
+
+            return resultado;
         }
         private async Task<List<string>> MostrarInputObjeto(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
         {
@@ -241,6 +259,80 @@ namespace BakAppDiego.Components.Pages
             // Aquí puedes manejar el resultado
 
             return resultado;
+        }
+       
+
+        private void StartLongClick(Zw_Producto_inventariado producto, int index)
+        {
+            selectedProducto = producto;
+            longClickTimer = new System.Timers.Timer(500); // Duración del "long click" en ms
+            longClickTimer.Elapsed += (sender, args) =>
+            {
+                longClickTimer.Stop();
+                InvokeAsync(() => HandleLongClick(producto, index));
+            };
+            longClickTimer.Start();
+        }
+
+        private void CancelLongClick()
+        {
+            longClickTimer?.Stop();
+            longClickTimer = null;
+        }
+
+        private async Task HandleLongClick(Zw_Producto_inventariado producto, int index)
+          
+        {
+            string[] str = { "Editar Cantidad", "Editar Comentario", "Borrar Inventariado", "Volver" };
+            string accion = await Dialogo.DisplayActionSheet("Que desea Hacer",null,null, str);
+            if (accion == null)
+            {
+
+                return;
+            }
+            //Editar 
+            else if (accion == str[0]) {
+                await EditNumero(producto);
+
+                return;
+
+            }
+            //Comentar
+            else if (accion == str[1])
+            { 
+
+                return;
+
+
+            }
+            //Borrar
+            else if (accion == str[2])
+            {
+
+                return;
+
+            }
+            return;
+        }
+        private async Task EditNumero(Zw_Producto_inventariado producto) {
+            double cantidad = producto.Cantidad;
+            string text = $" producto : {producto.Descripcion}";
+            double? respuesta_double = await MostrarInput(text, "Ingrese la nueva cantidad de inventariado", "Aceptar", "Cancelar", true, true, cantidad);
+            if (respuesta_double == null)
+            {
+                return;
+
+            }
+            else
+            {
+
+                producto.Cantidad = (double)respuesta_double;
+                StateHasChanged();
+
+
+            }
+
+
         }
     }
 }

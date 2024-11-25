@@ -81,7 +81,9 @@
                     @foreach (var producto in ListaProductos.Select((value, index) => new { value, index }))
                     {
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;">
+                            <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;" @onmousedown="@(e => StartLongClick(producto.value, producto.index))"
+                                 @onmouseup="CancelLongClick"
+                                 @onmouseleave="CancelLongClick">
                                 <div class="card-header" style="background-color: #E8EDE7;">
                                     <!-- Número del objeto en la lista (index + 1) -->
                                     @(producto.index + 1)
@@ -116,7 +118,7 @@
     {
 
         <div class="footer">
-            <span class="cantidad-texto">Cantidad: 5</span>
+            <span class="cantidad-texto">Cantidad: @(ListaProductos.Count)</span>
             <button class="button-19" style="bottom: 20px;" @onclick="() =>EscanearObjeto()">Escanear Producto</button>
         </div>
 
@@ -125,7 +127,7 @@
     {
 
         <div class="footer">
-            <span class="cantidad-texto">Cantidad: 5</span>
+            
             <button class="button-19" style="bottom: 20px; " @onclick="() =>EscanearSector()">Escanear  Sector</button>
 
         </div>
