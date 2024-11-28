@@ -4,13 +4,11 @@ using BakAppDiego.Components.Globals.Modelos;
 using BakAppDiego.Components.Globals.Modelos.Bakapp;
 using BakAppDiego.Components.Globals.Statics;
 using EO.WebBrowser;
-using Java.Sql;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BakAppDiego.Components.Pages
@@ -55,8 +53,7 @@ namespace BakAppDiego.Components.Pages
             string Codigo = res[1];
             MensajeAsync msg = await ComunicacionWB.Sb_Inv_TraerProductoInventario(GlobalData.InventarioActivo.Id, GlobalData.InventarioActivo.Empresa, GlobalData.InventarioActivo.Sucursal, GlobalData.InventarioActivo.Bodega, Tipo, Codigo);
             if (msg.EsCorrecto) {
-
-                ls_Zw_Producto response = JsonSerializer.Deserialize<ls_Zw_Producto>(msg.Detalle);
+                ls_Zw_Producto response = System.Text.Json.JsonSerializer.Deserialize<ls_Zw_Producto>(msg.Detalle);
                 Zw_Producto prod = response.Table[0];
 
                 Zw_Producto_inventariado obj = new Zw_Producto_inventariado(prod);
@@ -111,7 +108,7 @@ namespace BakAppDiego.Components.Pages
                 MensajeAsync res = await ComunicacionWB.Sb_Inv_BuscarSector(sector, GlobalData.InventarioActivo.Id.ToString());
                 if (res.EsCorrecto) {
 
-                    ls_Zw_Inv_Sector resCont = JsonSerializer.Deserialize<ls_Zw_Inv_Sector>(res.Detalle);
+                    ls_Zw_Inv_Sector resCont = System.Text.Json.JsonSerializer.Deserialize<ls_Zw_Inv_Sector>(res.Detalle);
                     SectorActivo = resCont.Table[0];
                     Sector = SectorActivo.Sector;
                     Escaneado = true;
@@ -173,7 +170,7 @@ namespace BakAppDiego.Components.Pages
             if (res.EsCorrecto)
             {
 
-                ls_Zw_Inv_Contador contadorResponse = JsonSerializer.Deserialize<ls_Zw_Inv_Contador>(res.Detalle);
+                ls_Zw_Inv_Contador contadorResponse = System.Text.Json.JsonSerializer.Deserialize<ls_Zw_Inv_Contador>(res.Detalle);
                 List<string> botones = new List<string>();
 
                 // Agrega valores dinámicamente a la lista
