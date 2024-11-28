@@ -1,8 +1,11 @@
-﻿using BakAppDiego.Components.Dialogs;
+﻿
+using BakAppDiego.Components.Dialogs;
 using BakAppDiego.Components.Globals.Modelos;
 using BakAppDiego.Components.Globals.Modelos.Bakapp;
 using BakAppDiego.Components.Globals.Statics;
 using EO.WebBrowser;
+using Java.Sql;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +33,12 @@ namespace BakAppDiego.Components.Pages
         private List<Zw_Producto_inventariado> ListaProductos;
         private System.Timers.Timer longClickTimer;
         private Zw_Producto_inventariado selectedProducto;
+        private bool menuAbierto;
+
+        private void CerrarMenu()
+        {
+            menuAbierto = false;
+        }
         protected override void OnInitialized()
         {
             ListaProductos = new List<Zw_Producto_inventariado>();
@@ -44,7 +53,7 @@ namespace BakAppDiego.Components.Pages
             List<string> res = await MostrarInputObjeto("Ingrese el objeto", "", "Aceptar", "Cancelar", true);
             string Tipo = res[0];
             string Codigo = res[1];
-            MensajeAsync msg = await ComunicacionWB.Sb_Inv_TraerProductoInventario(GlobalData.InventarioActivo.Id, GlobalData.InventarioActivo.Empresa,GlobalData.InventarioActivo.Sucursal, GlobalData.InventarioActivo.Bodega, Tipo,Codigo);
+            MensajeAsync msg = await ComunicacionWB.Sb_Inv_TraerProductoInventario(GlobalData.InventarioActivo.Id, GlobalData.InventarioActivo.Empresa, GlobalData.InventarioActivo.Sucursal, GlobalData.InventarioActivo.Bodega, Tipo, Codigo);
             if (msg.EsCorrecto) {
 
                 ls_Zw_Producto response = JsonSerializer.Deserialize<ls_Zw_Producto>(msg.Detalle);
@@ -60,7 +69,7 @@ namespace BakAppDiego.Components.Pages
 
                 }
             }
-            
+
         }
         private async Task CambiarContador(int numero) {
 
@@ -102,13 +111,13 @@ namespace BakAppDiego.Components.Pages
                 MensajeAsync res = await ComunicacionWB.Sb_Inv_BuscarSector(sector, GlobalData.InventarioActivo.Id.ToString());
                 if (res.EsCorrecto) {
 
-                    ls_Zw_Inv_Sector resCont =  JsonSerializer.Deserialize<ls_Zw_Inv_Sector>(res.Detalle);
+                    ls_Zw_Inv_Sector resCont = JsonSerializer.Deserialize<ls_Zw_Inv_Sector>(res.Detalle);
                     SectorActivo = resCont.Table[0];
                     Sector = SectorActivo.Sector;
                     Escaneado = true;
                     StateHasChanged();
                 }
-            
+
             }
 
 
@@ -189,7 +198,7 @@ namespace BakAppDiego.Components.Pages
 
 
         }
-        private async Task<Zw_Inv_Contador> MostrarContadores(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible,  ls_Zw_Inv_Contador contadoress)
+        private async Task<Zw_Inv_Contador> MostrarContadores(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, ls_Zw_Inv_Contador contadoress)
         {
             InCon.Crear(titulo, mensaje, btnStr, CancelarStr, Visible, contadoress);
 
@@ -218,9 +227,24 @@ namespace BakAppDiego.Components.Pages
             return resultado;
 
         }
-        private async Task<double?> MostrarInput(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, bool numeric,double defaul)
+        private async Task<string> MostrarInputLong(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, string comentario)
         {
-            InDIalog.Crear(titulo, mensaje, btnStr, CancelarStr, Visible,numeric, defaul);
+            InDIalog.CrearLong(titulo, mensaje, btnStr, CancelarStr, Visible, comentario);
+
+            // Configura el popup
+            //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
+
+            // Espera hasta que el usuario presione un botón
+            string resultado = await InDIalog.ShowAsync();
+
+            // Aquí puedes manejar el resultado
+
+            return resultado;
+
+        }
+        private async Task<double?> MostrarInput(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, bool numeric, double defaul)
+        {
+            InDIalog.Crear(titulo, mensaje, btnStr, CancelarStr, Visible, numeric, defaul);
 
             // Configura el popup
             //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
@@ -260,7 +284,7 @@ namespace BakAppDiego.Components.Pages
 
             return resultado;
         }
-       
+
 
         private void StartLongClick(Zw_Producto_inventariado producto, int index)
         {
@@ -281,10 +305,10 @@ namespace BakAppDiego.Components.Pages
         }
 
         private async Task HandleLongClick(Zw_Producto_inventariado producto, int index)
-          
+
         {
             string[] str = { "Editar Cantidad", "Editar Comentario", "Borrar Inventariado", "Volver" };
-            string accion = await Dialogo.DisplayActionSheet("Que desea Hacer",null,null, str);
+            string accion = await Dialogo.DisplayActionSheet("Que desea Hacer", null, null, str);
             if (accion == null)
             {
 
@@ -299,7 +323,8 @@ namespace BakAppDiego.Components.Pages
             }
             //Comentar
             else if (accion == str[1])
-            { 
+            {
+                await EditComentario(producto);
 
                 return;
 
@@ -327,6 +352,55 @@ namespace BakAppDiego.Components.Pages
             {
 
                 producto.Cantidad = (double)respuesta_double;
+                StateHasChanged();
+
+
+            }
+
+
+        }
+        public MensajeAsync SerializarLista()
+        {
+            MensajeAsync msg = new MensajeAsync();
+            List<HojaDetalle> InventariadoHojaDetalle = new List<HojaDetalle>();
+            int id;
+
+            if (c2 == null)
+            {
+
+                id = 0;
+            }
+            else { id = c2.Id; }
+            foreach (var obj in ListaProductos.Select((value, index) => new { value, index })) {
+                 Zw_Producto_inventariado aux = obj.value;
+                string indes = (obj.index + 1).ToString();
+                
+                 HojaDetalle Detalle = new HojaDetalle(1,1,"111",GlobalData.InventarioActivo.Id,GlobalData.InventarioActivo.Empresa,GlobalData.InventarioActivo.Sucursal,GlobalData.InventarioActivo.Bodega,GlobalData.InventarioActivo.FuncionarioCargo,c1.Id, id, indes, SectorActivo.Id,SectorActivo.Sector,"","",aux.Principal,"",0,"", DateTime.Now,aux.Rtu,0,1,aux.Cantidad,aux.Ud1,aux.Cantidad,aux.Ud2,aux.Cantidad,aux.Descripcion,0,"","");
+
+
+
+                InventariadoHojaDetalle.Add(Detalle);
+            }
+            Hoja hoja = new Hoja(1,GlobalData.InventarioActivo.Id, "1" , GlobalData.EstacionBk.NombreEquipo, DateTime.Now,GlobalData.InventarioActivo.FuncionarioCargo,c1.Id, id ,DateTime.Now,false);
+            string json = JsonConvert.SerializeObject(InventariadoHojaDetalle, Formatting.Indented);
+            string json2 = hoja.ToJson();
+            /*EviarJson 1 y 2 */
+            return msg;
+        }
+        private async Task EditComentario(Zw_Producto_inventariado producto)
+        {
+            string comentario = producto.Comentario;
+            string text = $" producto : {producto.Descripcion}";
+            string? Respuesta_string = await MostrarInputLong(text, "Edite su comentario del producto", "Aceptar", "Cancelar", true, comentario);
+            if (Respuesta_string == null)
+            {
+                return;
+
+            }
+            else
+            {
+
+                producto.Comentario = (string)Respuesta_string;
                 StateHasChanged();
 
 

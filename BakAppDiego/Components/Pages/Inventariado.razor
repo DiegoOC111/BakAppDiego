@@ -7,41 +7,20 @@
 <InputDialog @ref="InDIalog" />
 <InputObjetos @ref="InObj" />
 <ObjInventar @ref="inventar"/>
+
 <body>
 
     @if (iniciado)
     {
         <div class="panel">
             <h1>@Sector</h1>
-
             <nav role="navigation">
                 <div id="menuToggle">
-                    <!--
-                    A fake / hidden checkbox is used as click reciever,
-                    so you can use the :checked selector on it.
-                    -->
-                    <input type="checkbox" id="menuCheckbox" />
-
-                    <!--
-                    Some spans to act as a hamburger.
-
-                    They are acting like a real hamburger,
-                    not that McDonalds stuff.
-                    -->
+                    <input type="checkbox" id="menuCheckbox" @bind="menuAbierto" />
                     <span></span>
                     <span></span>
                     <span></span>
-
-                    <!--
-                    Too bad the menu has to be inside of the button
-                    but hey, it's pure CSS magic.
-                    -->
                     <ul id="menu">
-                        <!--
-                        We can use a label here to close upon click (when doing same page navigation), this
-                        does require a slight bit of JS.
-                        -->
-                        <!-- These just close the menu -->
                         <li>
                             <label for="menuCheckbox">
                                 <a class="menu-item">
@@ -49,29 +28,59 @@
                                 </a>
                             </label>
                         </li>
-                        <li >
-                            <label for="menuCheckbox" >
+                        <li>
+                            <label for="menuCheckbox">
                                 <a class="menu-item" @onclick="() => CambiarContador(1)">
-
                                     Editar Contador 1
-
                                 </a>
                             </label>
                         </li>
                         <li>
-                            <label for="menuCheckbox" @onclick="() => CambiarContador(2)">
-                                <a class="menu-item">
-
+                            <label for="menuCheckbox">
+                                <a class="menu-item" @onclick="() => CambiarContador(2)">
                                     Editar Contador 2
                                 </a>
                             </label>
                         </li>
-                        <!-- Or just use regular URLs -->
-
                     </ul>
                 </div>
             </nav>
+            <button class="button-docked">Enviar Hoja</button>
         </div>
+
+            
+            @* <nav role="navigation">
+                <div id="menuToggle">
+                    <input type="checkbox" id="menuCheckbox" @bind="menuAbierto" />
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <ul id="menu">
+                        <li>
+                            <label for="menuCheckbox">
+                                <a class="menu-item">
+                                    Buscador de productos
+                                </a>
+                            </label>
+                        </li>
+                        <li>
+                            <label for="menuCheckbox">
+                                <a class="menu-item" @onclick="() => CambiarContador(1)">
+                                    Editar Contador 1
+                                </a>
+                            </label>
+                        </li>
+                        <li>
+                            <label for="menuCheckbox">
+                                <a class="menu-item" @onclick="() => CambiarContador(2)">
+                                    Editar Contador 2
+                                </a>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </nav> *@
+       
         @if(ListaProductos.Count>0)
         {
 

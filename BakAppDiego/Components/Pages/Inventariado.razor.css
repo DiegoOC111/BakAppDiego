@@ -57,12 +57,18 @@ main {
 
 
 /* Menú hamburguesa */
+
+
+/* Evitar clics en el contenido debajo del menú */
+#menuToggle input:checked ~ *:not(#menu, #menuOverlay) {
+    pointer-events: none;
+}
 #menuToggle {
     display: block;
     position: fixed;
-    top: 2.5vh; /* Coloca el botón hamburguesa justo sobre el panel (ajustado según la altura del panel) */
-    left: 10px;
-    z-index: 999; /* Asegura que el botón quede por encima del panel y otros elementos */
+    top: 2.5vh; /* Ajusta la posición vertical */
+    left: 10px; /* Ajusta la posición horizontal */
+    z-index: 1200; /* Asegura que el botón esté por encima del overlay */
     -webkit-user-select: none;
     user-select: none;
 }
@@ -87,7 +93,8 @@ main {
         left: -5px;
         cursor: pointer;
         opacity: 0; /* hide this */
-        z-index: 2; /* and place it over the hamburger */
+        z-index: 1202;
+         /* and place it over the hamburger */
 
         -webkit-touch-callout: none;
     }
@@ -103,7 +110,7 @@ main {
         position: relative;
         background: #cdcdcd;
         border-radius: 3px;
-        z-index: 1;
+        z-index: 1100;
         transform-origin: 4px 0px;
         transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0), background 0.5s cubic-bezier(0.77,0.2,0.05,1.0), opacity 0.55s ease;
     }
@@ -146,12 +153,12 @@ main {
  * at the top left of the screen
  */
 #menu {
-    position: fixed; /* Cambiado a fixed para que ocupe toda la pantalla */
+    position: fixed;
     top: 0;
     left: 0;
-    width: 80vw; /* Ancho relativo al 80% de la ventana */
-    height: 100vh; /* Ajustado para que ocupe toda la altura de la pantalla */
-    margin: 0; /* Ajustado para eliminar cualquier margen */
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
     padding: 50px;
     padding-top: 125px;
     box-sizing: border-box;
@@ -238,3 +245,28 @@ main {
 @media (max-width: 640px) {
     
 }
+
+
+/*Boton*/
+
+.button-docked {
+    position: absolute;
+    top: 50%; /* Centrado verticalmente */
+    right: 10px; /* Separación de 10px del borde derecho */
+    transform: translateY(-50%); /* Ajusta el centrado exacto */
+    background-color: #E8EDE7; /* Color de fondo */
+    color: #012E4A; /* Color del texto */
+    border: none;
+    border-radius: 5px; /* Esquinas redondeadas */
+    padding: 10px 20px; /* Tamaño del botón */
+    font-size: 16px; /* Tamaño del texto */
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+    .button-docked:hover {
+        color: #E8EDE7;
+        background-color: #012E4A; /* Color al pasar el ratón */
+        transform: translateY(-50%) scale(1.05); /* Efecto de zoom al pasar el ratón */
+    }

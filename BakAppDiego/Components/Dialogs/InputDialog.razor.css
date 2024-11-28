@@ -55,6 +55,16 @@ th {
         border-right: none;
     }
 
+.text-area {
+    width: 90%; /* Ajusta el ancho relativo al contenedor */
+    max-width: 100%; /* Evita que sobrepase el tamaño del contenedor */
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical; /* Permite ajustar el tamaño vertical */
+}
 tr {
     border-top: 1px solid #C1C3D1;
     border-bottom: 1px solid #C1C3D1;

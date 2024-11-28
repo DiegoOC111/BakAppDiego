@@ -3,6 +3,7 @@
     private TaskCompletionSource<string> tcs;
     private TaskCompletionSource<double?> tcs2;
     public bool Numeric;
+    public bool Long;
     private double Numero { get; set; } = 0;
     private string advertencia = "";
     [Parameter]
@@ -54,6 +55,21 @@
         advertencia = "";
         Numero = 0;
         StateHasChanged();
+        Long = false;
+    }
+    public void CrearLong(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2, string comentario)
+    {
+        Numeric = false;
+        titulo = Titulo;
+        mensaje = Mensaje;
+        BotonStringAceptar = aceptar;
+        BotonStringCancelar = cancelar;
+        BotonBoolCancelar = visibleBTN2;
+        inputText = comentario; // Reiniciar el texto del input
+        advertencia = "";
+        Numero = 0;
+        StateHasChanged();
+        Long = true;
     }
     public void Crear(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2, bool Num,double defa)
     {
@@ -151,9 +167,21 @@
 
                 }
                 else
-                
+
                 {
-                    <input type="text" class="text-input" @bind="inputText" @onkeypress="@(e => { if (e.Key == "Enter") ConfirmarInputText(); })" />
+                    @if (Long  == false)
+                    {
+                        <input type="text" class="text-input" @bind="inputText" @onkeypress="@(e => { if (e.Key == "Enter") ConfirmarInputText(); })" />
+                    }
+                    else
+                    {
+
+                        <textarea class="text-area" @bind="inputText"
+                                  @onkeypress="@(e => { if (e.Key == "Enter") ConfirmarInputText(); })"
+                                  rows="5" cols="50"></textarea>
+                        
+                    
+                    }
                 
                 }
                 
