@@ -1,8 +1,8 @@
 ﻿@using BakAppDiego.Components.Globals.Modelos.Bakapp
 
 @code {
-    private TaskCompletionSource<Zw_Inv_Contador> tcs; // Manejo de tareas asíncronas
-    public ls_Zw_Inv_Contador cont;
+    private TaskCompletionSource<Zw_Inv_Contador?>? tcs; // Manejo de tareas asíncronas
+    public ls_Zw_Inv_Contador? cont;
 
     [Parameter]
     public bool IsVisible { get; set; } = false;
@@ -23,9 +23,9 @@
     public bool BotonBoolCancelar { get; set; } = true;
 
     // Método para mostrar el popup
-    public Task<Zw_Inv_Contador> ShowAsync()
+    public Task<Zw_Inv_Contador?> ShowAsync()
     {
-        tcs = new TaskCompletionSource<Zw_Inv_Contador>();
+        tcs = new TaskCompletionSource<Zw_Inv_Contador?>();
         IsVisible = true;
         StateHasChanged();
         return tcs.Task;
@@ -84,18 +84,21 @@
                                 </div>
                             </div>
                         </div>
-
-                        @foreach (var contador in cont.Table)
+                        @if (cont != null)
                         {
-                             <div class="col-12" @onclick="() => SeleccionarContador(contador)">
-            <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;">
+                            @if (cont.Table != null)
+                            {
+                                @foreach (var contador in cont.Table)
+                                {
+                                    <div class="col-12" @onclick="() => SeleccionarContador(contador)">
+                                        <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;">
                                     <div class="card-header" style="background-color: #81BECE;">@contador.Nombre</div>
                 <div class="card-body" style="background-color: #81BECE;">
                     <h5 class="card-title">Rut: @contador.Rut</h5>
                 </div>
             </div>
         </div>
-                        }
+                        }}}
                     </div>
                 </div>
 

@@ -3,7 +3,6 @@ using BakAppDiego.Components.Dialogs;
 using BakAppDiego.Components.Globals.Modelos;
 using BakAppDiego.Components.Globals.Modelos.Bakapp;
 using BakAppDiego.Components.Globals.Statics;
-using EO.WebBrowser;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,19 +17,19 @@ namespace BakAppDiego.Components.Pages
 
         private string Sector = "";
         private bool Escaneado;
-        private InputContador InCon;
-        private InputDialog InDIalog;
-        private ObjInventar inventar;
-        private InputObjetos InObj;
-        private DialogoService Dialogo;
-        private Zw_Inv_Sector SectorActivo;
-        private FuncionesWebService ComunicacionWB;
+        private InputContador? InCon;
+        private InputDialog? InDIalog;
+        private ObjInventar? inventar;
+        private InputObjetos? InObj;
+        private DialogoService? Dialogo;
+        private Zw_Inv_Sector? SectorActivo;
+        private FuncionesWebService? ComunicacionWB;
         Zw_Inv_Contador c1 = new Zw_Inv_Contador();
         Zw_Inv_Contador c2 = new Zw_Inv_Contador();
         private bool iniciado = false;
-        private List<Zw_Producto_inventariado> ListaProductos;
-        private System.Timers.Timer longClickTimer;
-        private Zw_Producto_inventariado selectedProducto;
+        private List<Zw_Producto_inventariado>? ListaProductos;
+        public required System.Timers.Timer longClickTimer;
+        private Zw_Producto_inventariado? selectedProducto;
         private bool menuAbierto;
 
         private void CerrarMenu()
@@ -49,21 +48,27 @@ namespace BakAppDiego.Components.Pages
 
 
             List<string> res = await MostrarInputObjeto("Ingrese el objeto", "", "Aceptar", "Cancelar", true);
-            string Tipo = res[0];
-            string Codigo = res[1];
-            MensajeAsync msg = await ComunicacionWB.Sb_Inv_TraerProductoInventario(GlobalData.InventarioActivo.Id, GlobalData.InventarioActivo.Empresa, GlobalData.InventarioActivo.Sucursal, GlobalData.InventarioActivo.Bodega, Tipo, Codigo);
-            if (msg.EsCorrecto) {
-                ls_Zw_Producto response = System.Text.Json.JsonSerializer.Deserialize<ls_Zw_Producto>(msg.Detalle);
-                Zw_Producto prod = response.Table[0];
+            if (res == null) { return; }
+            else
+            {
+                string Tipo = res[0];
+                string Codigo = res[1];
+                MensajeAsync msg = await ComunicacionWB!.Sb_Inv_TraerProductoInventario(GlobalData.InventarioActivo!.Id, GlobalData.InventarioActivo.Empresa, GlobalData.InventarioActivo.Sucursal, GlobalData.InventarioActivo.Bodega, Tipo, Codigo);
+                if (msg.EsCorrecto)
+                {
+                    ls_Zw_Producto response = System.Text.Json.JsonSerializer.Deserialize<ls_Zw_Producto>(msg.Detalle)!;
+                    Zw_Producto prod = response.Table[0];
 
-                Zw_Producto_inventariado obj = new Zw_Producto_inventariado(prod);
-                obj.tipo_esc = Tipo;
-                Zw_Producto_inventariado res2 = await MostrarInventarObj("Ingrese el objeto", "", "Aceptar", "Cancelar", true, obj);
-                if (res2 != null) {
-                    ListaProductos.Add(res2);
-                    StateHasChanged();
+                    Zw_Producto_inventariado obj = new Zw_Producto_inventariado(prod);
+                    obj.tipo_esc = Tipo;
+                    Zw_Producto_inventariado res2 = await MostrarInventarObj("Ingrese el objeto", "", "Aceptar", "Cancelar", true, obj);
+                    if (res2 != null)
+                    {
+                        ListaProductos!.Add(res2);
+                        StateHasChanged();
 
 
+                    }
                 }
             }
 
@@ -100,15 +105,16 @@ namespace BakAppDiego.Components.Pages
             }
 
         }
+        
         private async Task EscanearSector()
         {
             string sector = await MostrarInput("Ingrese el sector", "", "Aceptar", "Cancelar", true);
             if (sector != null) {
 
-                MensajeAsync res = await ComunicacionWB.Sb_Inv_BuscarSector(sector, GlobalData.InventarioActivo.Id.ToString());
+                MensajeAsync res = await ComunicacionWB!.Sb_Inv_BuscarSector(sector, GlobalData.InventarioActivo!.Id.ToString())!;
                 if (res.EsCorrecto) {
 
-                    ls_Zw_Inv_Sector resCont = System.Text.Json.JsonSerializer.Deserialize<ls_Zw_Inv_Sector>(res.Detalle);
+                    ls_Zw_Inv_Sector resCont = System.Text.Json.JsonSerializer.Deserialize<ls_Zw_Inv_Sector>(res.Detalle)!;
                     SectorActivo = resCont.Table[0];
                     Sector = SectorActivo.Sector;
                     Escaneado = true;
@@ -129,16 +135,9 @@ namespace BakAppDiego.Components.Pages
                     c1 = (Zw_Inv_Contador)res.Tag;
 
 
-                    //foreach (Contador contador in contadorResponse.Table)
-                    //{
-                    //    botones.Add($"{contador.Nombre} - {contador.Rut}");
-
-                    //}
-                    //string[] opciones = botones.ToArray();
-                    //string respuesta = await Dialogo.DisplayActionSheet("Elija al contador asociado", null, null, opciones);
 
                 }
-                bool r = await Dialogo.DisplayConfirm("Confirmación", "¿Desea agregar un segundo contador ?", "Si", "No");
+                bool r = await Dialogo!.DisplayConfirm("Confirmación", "¿Desea agregar un segundo contador ?", "Si", "No");
                 if (r)
                 {
                     res = await elijeContador();
@@ -147,13 +146,7 @@ namespace BakAppDiego.Components.Pages
                         c2 = (Zw_Inv_Contador)res.Tag;
 
 
-                        //foreach (Contador contador in contadorResponse.Table)
-                        //{
-                        //    botones.Add($"{contador.Nombre} - {contador.Rut}");
-
-                        //}
-                        //string[] opciones = botones.ToArray();
-                        //string respuesta = await Dialogo.DisplayActionSheet("Elija al contador asociado", null, null, opciones);
+                      
 
                     }
                 }
@@ -165,28 +158,22 @@ namespace BakAppDiego.Components.Pages
         }
         private async Task<MensajeAsync> elijeContador() {
 
-            MensajeAsync res = await ComunicacionWB.Sb_Inv_BuscarContador(c1.Rut, c2.Rut);
+            MensajeAsync res = await ComunicacionWB!.Sb_Inv_BuscarContador(c1.Rut, c2.Rut);
             MensajeAsync Retorno = new MensajeAsync();
             if (res.EsCorrecto)
             {
 
-                ls_Zw_Inv_Contador contadorResponse = System.Text.Json.JsonSerializer.Deserialize<ls_Zw_Inv_Contador>(res.Detalle);
+                ls_Zw_Inv_Contador contadorResponse = System.Text.Json.JsonSerializer.Deserialize<ls_Zw_Inv_Contador>(res.Detalle)!;
                 List<string> botones = new List<string>();
 
-                // Agrega valores dinámicamente a la lista
+               
 
-                Zw_Inv_Contador sel = await MostrarContadores("Elija el contador", "", "Cancelar", "", iniciado, contadorResponse);
+                Zw_Inv_Contador? sel = await MostrarContadores("Elija el contador", "", "Cancelar", "", iniciado, contadorResponse);
                 Retorno.EsCorrecto = true;
-                Retorno.Tag = sel;
+                Retorno.Tag = sel!;
                 return Retorno;
 
-                //foreach (Contador contador in contadorResponse.Table)
-                //{
-                //    botones.Add($"{contador.Nombre} - {contador.Rut}");
-
-                //}
-                //string[] opciones = botones.ToArray();
-                //string respuesta = await Dialogo.DisplayActionSheet("Elija al contador asociado", null, null, opciones);
+              
 
             }
             Retorno.EsCorrecto = false;
@@ -195,94 +182,147 @@ namespace BakAppDiego.Components.Pages
 
 
         }
-        private async Task<Zw_Inv_Contador> MostrarContadores(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, ls_Zw_Inv_Contador contadoress)
+        /// <summary>
+        /// Muestra en pantalla la lista de contadores.
+        /// </summary>
+        /// <param name="titulo">El título del diálogo.</param>
+        /// <param name="mensaje">El mensaje descriptivo.</param>
+        /// <param name="btnStr">Texto del botón de confirmación.</param>
+        /// <param name="CancelarStr">Texto del botón de cancelación.</param>
+        /// <param name="Visible">Define si el diálogo es visible inicialmente.</param>
+        /// <param name="contadoress">Lista de contadores a mostrar.</param>
+        /// <returns>
+        /// Un objeto <see cref="Zw_Inv_Contador"/> seleccionado por el usuario.
+        /// </returns>
+        private async Task<Zw_Inv_Contador?> MostrarContadores(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, ls_Zw_Inv_Contador contadoress)
         {
-            InCon.Crear(titulo, mensaje, btnStr, CancelarStr, Visible, contadoress);
+            InCon!.Crear(titulo, mensaje, btnStr, CancelarStr, Visible, contadoress);
 
-            // Configura el popup
-            //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
+            
+            Zw_Inv_Contador? resultado = await InCon.ShowAsync();
 
-            // Espera hasta que el usuario presione un botón
-            Zw_Inv_Contador resultado = await InCon.ShowAsync();
-
-            // Aquí puedes manejar el resultado
+           
 
             return resultado;
         }
+        /// <summary>
+        /// Muestra en pantalla un input personalizado.
+        /// </summary>
+        /// <param name="titulo">Título del diálogo.</param>
+        /// <param name="mensaje">Mensaje a mostrar.</param>
+        /// <param name="btnStr">Texto del botón de confirmación.</param>
+        /// <param name="CancelarStr">Texto del botón de cancelación.</param>
+        /// <param name="Visible">Define si el diálogo es visible.</param>
+        /// <returns>
+        /// El texto ingresado por el usuario.
+        /// </returns>
         private async Task<string> MostrarInput(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
         {
-            InDIalog.Crear(titulo, mensaje, btnStr, CancelarStr, Visible);
+            InDIalog!.Crear(titulo, mensaje, btnStr, CancelarStr, Visible);
 
-            // Configura el popup
-            //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
+            
+            string? resultado = await InDIalog.ShowAsync();
 
-            // Espera hasta que el usuario presione un botón
-            string resultado = await InDIalog.ShowAsync();
+          
 
-            // Aquí puedes manejar el resultado
-
-            return resultado;
+            return resultado!;
 
         }
+        /// <summary>
+        /// Muestra en pantalla un input personalizado.
+        /// </summary>
+        /// <param name="titulo">Título del diálogo.</param>
+        /// <param name="mensaje">Mensaje a mostrar.</param>
+        /// <param name="btnStr">Texto del botón de confirmación.</param>
+        /// <param name="CancelarStr">Texto del botón de cancelación.</param>
+        /// <param name="Visible">Define si el diálogo es visible.</param>
+        /// <returns>
+        /// El texto ingresado por el usuario.
+        /// </returns>
         private async Task<string> MostrarInputLong(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, string comentario)
         {
-            InDIalog.CrearLong(titulo, mensaje, btnStr, CancelarStr, Visible, comentario);
+            InDIalog!.CrearLong(titulo, mensaje, btnStr, CancelarStr, Visible, comentario);
 
-            // Configura el popup
-            //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
+           
+            string? resultado = await InDIalog.ShowAsync();
 
-            // Espera hasta que el usuario presione un botón
-            string resultado = await InDIalog.ShowAsync();
+            
 
-            // Aquí puedes manejar el resultado
-
-            return resultado;
+            return resultado!;
 
         }
+        /// <summary>
+        /// Muestra en pantalla un input personalizado numérico.
+        /// </summary>
+        /// <param name="titulo">Título del diálogo.</param>
+        /// <param name="mensaje">Mensaje a mostrar.</param>
+        /// <param name="btnStr">Texto del botón de confirmación.</param>
+        /// <param name="CancelarStr">Texto del botón de cancelación.</param>
+        /// <param name="Visible">Define si el diálogo es visible.</param>
+        /// <param name="numeric">Si es true, permite solo entradas numéricas.</param>
+        /// <param name="defaul">Valor predeterminado.</param>
+        /// <returns>
+        /// Un valor numérico ingresado por el usuario.
+        /// </returns>
         private async Task<double?> MostrarInput(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, bool numeric, double defaul)
         {
             InDIalog.Crear(titulo, mensaje, btnStr, CancelarStr, Visible, numeric, defaul);
 
-            // Configura el popup
-            //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
-
-            // Espera hasta que el usuario presione un botón
+            
             double? resultado = await InDIalog.ShowAsynNumeric();
 
-            // Aquí puedes manejar el resultado
 
             return resultado;
         }
+        /// <summary>
+        /// Muestra en pantalla un input personalizado de objetos.
+        /// </summary>
+        /// <param name="titulo">Título del diálogo.</param>
+        /// <param name="mensaje">Mensaje a mostrar.</param>
+        /// <param name="btnStr">Texto del botón de confirmación.</param>
+        /// <param name="CancelarStr">Texto del botón de cancelación.</param>
+        /// <param name="Visible">Define si el diálogo es visible.</param>
+        /// <returns>
+        /// Una lista de cadenas ingresadas por el usuario.
+        /// </returns>
         private async Task<List<string>> MostrarInputObjeto(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
         {
             InObj.Crear(titulo, mensaje, btnStr, CancelarStr, Visible);
 
-            // Configura el popup
-            //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
-
-            // Espera hasta que el usuario presione un botón
+            
             List<string> resultado = await InObj.ShowAsync();
 
-            // Aquí puedes manejar el resultado
+           
 
             return resultado;
         }
+        /// <summary>
+        /// Muestra en pantalla la información de un objeto.
+        /// </summary>
+        /// <param name="titulo">Título del diálogo.</param>
+        /// <param name="mensaje">Mensaje a mostrar.</param>
+        /// <param name="btnStr">Texto del botón de confirmación.</param>
+        /// <param name="CancelarStr">Texto del botón de cancelación.</param>
+        /// <param name="Visible">Define si el diálogo es visible.</param>
+        /// <param name="obj">Objeto a inventariar.</param>
+        /// <returns>
+        /// Un objeto inventariado con los datos actualizados.
+        /// </returns>
         private async Task<Zw_Producto_inventariado> MostrarInventarObj(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, Zw_Producto_inventariado obj)
         {
             inventar.Crear(titulo, mensaje, btnStr, CancelarStr, Visible, obj);
 
-            // Configura el popup
-            //InCon.crear(titulo, mensaje, btnStr, CancelarStr, Visible,);
+            
 
-            // Espera hasta que el usuario presione un botón
+           
             Zw_Producto_inventariado resultado = await inventar.ShowAsync();
 
-            // Aquí puedes manejar el resultado
+           
 
             return resultado;
         }
 
-
+       
         private void StartLongClick(Zw_Producto_inventariado producto, int index)
         {
             selectedProducto = producto;
@@ -295,12 +335,14 @@ namespace BakAppDiego.Components.Pages
             longClickTimer.Start();
         }
 
+       
         private void CancelLongClick()
         {
             longClickTimer?.Stop();
             longClickTimer = null;
         }
 
+        
         private async Task HandleLongClick(Zw_Producto_inventariado producto, int index)
 
         {
@@ -336,6 +378,14 @@ namespace BakAppDiego.Components.Pages
             }
             return;
         }
+
+        /// <summary>
+        /// Edita la cantidad de inventario de un objeto.
+        /// </summary>
+        /// <param name="producto">El producto cuya cantidad será editada.</param>
+        /// <returns>
+        /// Una tarea asincrónica que actualiza la cantidad del producto.
+        /// </returns>
         private async Task EditNumero(Zw_Producto_inventariado producto) {
             double cantidad = producto.Cantidad;
             string text = $" producto : {producto.Descripcion}";
@@ -356,6 +406,12 @@ namespace BakAppDiego.Components.Pages
 
 
         }
+        /// <summary>
+        /// Serializa la lista de objetos en formato JSON para enviarla al web service bakapp.
+        /// </summary>
+        /// <returns>
+        /// Un mensaje indicando si la serialización y la preparación para el envío fueron exitosas.
+        /// </returns>
         public MensajeAsync SerializarLista()
         {
             MensajeAsync msg = new MensajeAsync();
@@ -384,6 +440,16 @@ namespace BakAppDiego.Components.Pages
             /*EviarJson 1 y 2 */
             return msg;
         }
+
+
+        /// <summary>
+        /// Edita el comentario de un objeto en la lista.
+        /// </summary>
+        /// <param name="producto">El producto cuyo comentario será editado.</param>
+        /// <returns>
+        /// Una tarea asincrónica que actualiza el comentario del producto.
+        /// </returns>
+        /// <seealso cref="MostrarInputLong"/>
         private async Task EditComentario(Zw_Producto_inventariado producto)
         {
             string comentario = producto.Comentario;

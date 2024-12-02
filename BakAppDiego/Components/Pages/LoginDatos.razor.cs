@@ -47,93 +47,73 @@ namespace BakAppDiego.Components.Pages
             if (firstRender)
             {
                 await passwordInput.FocusAsync(); // Establecer el foco en el input
-                //if (GlobalData.Usuario_Activo != null)
-                //{
-                //    string mensaje = "Hay un usuario activo : " + GlobalData.Usuario_Activo.NoKofu;
-                //    bool res = await MostrarPopUp("Usuario Activo", mensaje, "Iniciar", " Usar otro", true);
-                //    if (res)
-                //    {
-
-
-                //    }
-                //    else
-                //    {
-
-                //    }
-
-
-                //}
+                
             }
             
         }
 
+        /// <summary>
+        /// Valida las credenciales ingresadas por el usuario.
+        /// </summary>
         private async void Validate()
         {
-            // Lógica para validar la contraseña o lo que necesites.
             Console.WriteLine($"Contraseña ingresada: {password}");
 
-            // Llamar al método para realizar el login mediante SOAP
+            // Muestra un popup de carga mientras se valida la contraseña
             loadingPopup.Show();
 
-            MensajeAsync mensajeAsync =  await Login();
+            // Llama al método de inicio de sesión y espera la respuesta
+            MensajeAsync mensajeAsync = await Login();
             if (mensajeAsync.EsCorrecto)
             {
                 ConectarConf conect = new ConectarConf();
 
+                // Carga la configuración necesaria si el inicio de sesión fue exitoso
                 MensajeAsync ms = await conect.Sb_Cargar_Datos_De_Configuracion();
                 loadingPopup.Hide();
 
                 if (ms.EsCorrecto)
                 {
-                    bool r = await MostrarPopUp("Operacion exitosa", "Usuario ingresado bienvenido " + GlobalData.Usuario_Activo.NoKofu, "Ingresar", " Cancelar", false);
+                    // Muestra un popup de bienvenida al usuario
+                    bool r = await MostrarPopUp("Operación exitosa", "Usuario ingresado, bienvenido " + GlobalData.Usuario_Activo.NoKofu, "Ingresar", "Cancelar", false);
                     if (r)
                     {
-
+                        // Redirige al menú principal
                         await IrMenuPrincipal();
-
                     }
-                    else { 
-                    
+                    else
+                    {
+                        // Si el usuario cancela, se limpia la información del usuario activo
                         GlobalData.Usuario_Activo = null;
-
                     }
-
                 }
                 else
                 {
                     GlobalData.Usuario_Activo = null;
-                    bool r = await MostrarPopUp("Operacion fallida", "Usuario ocurrio un error cargando la configuracion ", "Continuar", " Cancelar", false);
+                    // Muestra un mensaje de error si hubo un problema al cargar la configuración
+                    bool r = await MostrarPopUp("Operación fallida", "Ocurrió un error cargando la configuración", "Continuar", "Cancelar", false);
                     if (r)
                     {
-
                         await IrMenuPrincipal();
-
                     }
-
-
                 }
-                
                 Console.WriteLine(mensajeAsync.Msg);
-
             }
-            else {
-
-                await MostrarPopUp("Operacion fallida", "Contraseña incorrecta", "Continuar", " Cancelar", false);
-
+            else
+            {
+                // Muestra un mensaje de error si la contraseña es incorrecta
+                await MostrarPopUp("Operación fallida", "Contraseña incorrecta", "Continuar", "Cancelar", false);
                 Console.WriteLine(mensajeAsync.Msg);
-
             }
-
-            // mensaje = Login
-            // si mensaje.esCorrecto.
-            //....
-
         }
 
+        /// <summary>
+        /// Realiza el proceso de inicio de sesión enviando las credenciales al  web service.
+        /// </summary>
+        /// <returns>Un objeto MensajeAsync con el resultado del inicio de sesión.</returns>
         private async Task<MensajeAsync> Login()
         {
-
-            // Crear el XML del cuerpo de la solicitud SOAP
+            // Crea la solicitud SOAP para autenticar al usuario
             var soapRequest = $@"<?xml version=""1.0"" encoding=""utf-8""?>
 <soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
   <soap:Body>
@@ -143,119 +123,108 @@ namespace BakAppDiego.Components.Pages
   </soap:Body>
 </soap:Envelope>";
 
-            MensajeAsync AuxAsync  = new MensajeAsync();
+            MensajeAsync AuxAsync = new MensajeAsync();
             using (var client = new HttpClient())
             {
-                // Establecer la URL del servicio web
-                var url = GlobalData.Ip_Wb + "/Ws_BakApp.asmx"; // Asegúrate de usar el puerto correcto
+                var url = GlobalData.Ip_Wb + "/Ws_BakApp.asmx"; // URL del servicio web
 
-                // Configurar la solicitud
                 var content = new StringContent(soapRequest, Encoding.UTF8, "text/xml");
                 content.Headers.Add("SOAPAction", "\"http://BakApp/Sb_Login_Usuario_Json\"");
 
                 try
                 {
-
-                    // Enviar la solicitud POST
                     var response = await client.PostAsync(url, content);
-                    response.EnsureSuccessStatusCode(); // Asegurarse de que la respuesta fue exitosa
+                    response.EnsureSuccessStatusCode();
 
                     var responseContent = await response.Content.ReadAsStringAsync();
                     string a = "{\"Table\":[]}";
                     if (responseContent == a)
                     {
                         loadingPopup.Hide();
-
                         AuxAsync.EsCorrecto = false;
-                        AuxAsync.Msg = "LogIn fallido, contrasela incorrecta";
-
+                        AuxAsync.Msg = "Inicio de sesión fallido, contraseña incorrecta";
                     }
                     else
                     {
-
-
                         MensajeAsync mensajeAsync = ParseSoapResponse(responseContent);
-
-
                         AuxAsync = mensajeAsync;
-                        // Aquí puedes usar el objeto usuario
                         Console.WriteLine($"Resultado del login: {mensajeAsync}");
-
-
                     }
                 }
-
-                    // Procesar la respuesta
-                   
-                
                 catch (HttpRequestException e)
                 {
                     loadingPopup.Hide();
-
                     AuxAsync.EsCorrecto = false;
-                    AuxAsync.Msg = $"LogIn fallido, fallo de conexion: {e.Message}";
+                    AuxAsync.Msg = $"Inicio de sesión fallido, fallo de conexión: {e.Message}";
                     AuxAsync.ErrorDeConexionSQL = true;
-                    await MostrarPopUp("Operacion fallida", "Fallo de conexion", "Seguir", " Cancelar", true);
-
+                    await MostrarPopUp("Operación fallida", "Fallo de conexión", "Seguir", "Cancelar", true);
                     Console.WriteLine($"Error al enviar la solicitud: {e.Message}");
                 }
                 catch (Exception ex)
                 {
                     loadingPopup.Hide();
-
                     AuxAsync.EsCorrecto = false;
-                    AuxAsync.Msg = $"LogIn fallido, fallo de codigo: {ex.Message}";
+                    AuxAsync.Msg = $"Inicio de sesión fallido, error en el código: {ex.Message}";
                     AuxAsync.ErrorDeConexionSQL = false;
-                    await MostrarPopUp("Operacion fallida", "Fallo de codigo", "Seguir", " Cancelar", true);
+                    await MostrarPopUp("Operación fallida", "Fallo en el código", "Seguir", "Cancelar", true);
                     Console.WriteLine($"Ocurrió un error: {ex.Message}");
                 }
             }
 
             return AuxAsync;
         }
-        private async Task<bool> MostrarPopUp(string titulo,string mensaje, string btnStr, string CancelarStr, bool Visible)
+
+        /// <summary>
+        /// Muestra un popup con opciones para el usuario.
+        /// </summary>
+        /// <param name="titulo">Título del popup.</param>
+        /// <param name="mensaje">Mensaje del popup.</param>
+        /// <param name="btnStr">Texto del botón de acción.</param>
+        /// <param name="CancelarStr">Texto del botón de cancelar.</param>
+        /// <param name="Visible">Indica si el popup es visible.</param>
+        /// <returns>Un valor booleano que indica si el usuario aceptó.</returns>
+        private async Task<bool> MostrarPopUp(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
         {
-            // Configura el popup
             PopUp.crear(titulo, mensaje, btnStr, CancelarStr, Visible);
 
-            // Espera hasta que el usuario presione un botón
             bool resultado = await PopUp.ShowAsync();
 
-            // Aquí puedes manejar el resultado
             if (resultado)
             {
-                // El usuario presionó "Aceptar"
                 Console.WriteLine("El usuario aceptó.");
             }
             else
             {
-                // El usuario presionó "Cancelar"
                 Console.WriteLine("El usuario canceló.");
             }
             return resultado;
         }
+
+        /// <summary>
+        /// Analiza la respuesta SOAP del servicio web y convierte los datos a un objeto MensajeAsync.
+        /// </summary>
+        /// <param name="soapResponse">La respuesta SOAP en formato de texto.</param>
+        /// <returns>Un objeto MensajeAsync con el resultado del análisis.</returns>
         private MensajeAsync ParseSoapResponse(string soapResponse)
         {
             Console.WriteLine("Contenido de la respuesta SOAP:");
-            Console.WriteLine(soapResponse); // Para depurar
-            MensajeAsync AuxAsync = new MensajeAsync(); 
+            Console.WriteLine(soapResponse);
+            MensajeAsync AuxAsync = new MensajeAsync();
             try
             {
-                // Deserializar el JSON a un objeto TabfuResponse
                 TABFUResponse response = JsonConvert.DeserializeObject<TABFUResponse>(soapResponse);
                 TABFU Respuesta = response.Table[0];
                 GlobalData.Usuario_Activo = Respuesta;
                 AuxAsync.EsCorrecto = true;
-                AuxAsync.Msg = "Tabla Creada";
-                
-                return AuxAsync; // Retorna el objeto que contiene la lista de Tabfu
+                AuxAsync.Msg = "Tabla creada correctamente";
+                return AuxAsync;
             }
             catch (JsonException ex)
             {
                 AuxAsync.EsCorrecto = false;
-                AuxAsync.Msg = "Tabla fallida" + ex.Message;
+                AuxAsync.Msg = "Error al crear la tabla: " + ex.Message;
                 Console.WriteLine("Error al deserializar el JSON: " + ex.Message);
-                return AuxAsync; // Vuelve a lanzar la excepción si es necesario
+                return AuxAsync;
             }
         }
     }

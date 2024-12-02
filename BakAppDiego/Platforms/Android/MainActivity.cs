@@ -14,7 +14,7 @@ namespace BakAppDiego
         public override void OnBackPressed()
         {
             // Comprobamos si la variable global indica que se debe mostrar la confirmación
-            if (GlobalData.volver)
+            if (GlobalData.Volver)
             {
                 // Mostrar un mensaje de confirmación si la variable es true
                 var result = ShowConfirmationDialog();

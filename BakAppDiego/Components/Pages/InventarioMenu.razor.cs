@@ -17,21 +17,7 @@ namespace BakAppDiego.Components.Pages
             GlobalData.InventarioActivo = null;
             NavigationManager.NavigateTo("/Inventario");
 
-            //ConectarConf conect = new ConectarConf();
-
-            //MensajeAsync ms  = await conect.Sb_Cargar_Datos_De_Configuracion();
-            //if (ms.EsCorrecto)
-            //{
-
-            //    Console.WriteLine(ms.Msg);
-
-            //}
-            //else { 
-
-            //    Console.WriteLine(ms.Msg);
-
-
-            //}
+            
         }
 
     }

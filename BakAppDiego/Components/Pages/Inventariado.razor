@@ -47,40 +47,9 @@
             </nav>
             <button class="button-docked">Enviar Hoja</button>
         </div>
-
+        @if(ListaProductos != null)
+        {
             
-            @* <nav role="navigation">
-                <div id="menuToggle">
-                    <input type="checkbox" id="menuCheckbox" @bind="menuAbierto" />
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <ul id="menu">
-                        <li>
-                            <label for="menuCheckbox">
-                                <a class="menu-item">
-                                    Buscador de productos
-                                </a>
-                            </label>
-                        </li>
-                        <li>
-                            <label for="menuCheckbox">
-                                <a class="menu-item" @onclick="() => CambiarContador(1)">
-                                    Editar Contador 1
-                                </a>
-                            </label>
-                        </li>
-                        <li>
-                            <label for="menuCheckbox">
-                                <a class="menu-item" @onclick="() => CambiarContador(2)">
-                                    Editar Contador 2
-                                </a>
-                            </label>
-                        </li>
-                    </ul>
-                </div>
-            </nav> *@
-       
         @if(ListaProductos.Count>0)
         {
 
@@ -118,30 +87,20 @@
                 </div>
             </div>
         }
+        }
 
         <!-- El contenido de la página va aquí -->
     }
 
-    
-    @if (Escaneado)
+    @if(ListaProductos != null)
     {
-
-        <div class="footer">
-            <span class="cantidad-texto">Cantidad: @(ListaProductos.Count)</span>
-            <button class="button-19" style="bottom: 20px;" @onclick="() =>EscanearObjeto()">Escanear Producto</button>
-        </div>
-
+        
+    <div class="footer">
+        <span class="cantidad-texto">Cantidad: @(ListaProductos.Count)</span>
+        <button class="button-19" style="bottom: 20px;" @onclick="Escaneado ? EscanearObjeto : EscanearSector">
+            @(Escaneado ? "Escanear Producto" : "Escanear Sector")
+        </button>
+    </div>
     }
-    else
-    {
 
-        <div class="footer">
-            
-            <button class="button-19" style="bottom: 20px; " @onclick="() =>EscanearSector()">Escanear  Sector</button>
-
-        </div>
-
-
-
-    }
 </body>

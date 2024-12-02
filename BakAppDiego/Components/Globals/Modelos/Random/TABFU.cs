@@ -15,7 +15,7 @@ namespace BakAppDiego.Components.Globals.TablasBackApp
 
     {
         public int IdTabfu { get; set; } // [IDTABFU] [int] NOT NULL
-        public string Kofu { get; set; } //   NOT NULL
+        public  string Kofu { get; set; } //   NOT NULL
         public string NoKofu { get; set; } //   NOT NULL
         public string Tifu { get; set; } //   NOT NULL
         public string RtFu { get; set; } //   NOT NULL

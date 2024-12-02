@@ -1,7 +1,7 @@
 ﻿@using BakAppDiego.Components.Globals.Modelos.Bakapp
 @code {
-    private TaskCompletionSource<string> tcs;
-    private TaskCompletionSource<double?> tcs2;
+    private TaskCompletionSource<string?>? tcs;
+    private TaskCompletionSource<double?>? tcs2;
     public bool Numeric;
     public bool Long;
     private double Numero { get; set; } = 0;
@@ -27,9 +27,9 @@
     private string inputText = "";  // Variable para almacenar el texto del input
 
     // Método para mostrar el popup
-    public Task<string> ShowAsync()
+    public Task<string?> ShowAsync()
     {
-        tcs = new TaskCompletionSource<string>();
+        tcs = new TaskCompletionSource<string?>();
         IsVisible = true;
         StateHasChanged();
         return tcs.Task;
@@ -99,7 +99,7 @@
             }
 
 
-            tcs2.SetResult(Numero);
+            tcs2?.SetResult(Numero);
             IsVisible = false;
             StateHasChanged();
             return;

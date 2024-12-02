@@ -49,7 +49,7 @@ namespace BakAppDiego.Components.Pages
             UsuarioActivo = GlobalData.Usuario_Activo.Kofu + "-" + GlobalData.Usuario_Activo.NoKofu;
             Modalidad = GlobalData.Usuario_Activo.Modalidad;
             Dialogo = new DialogoService();
-            // Desactivar el botón de "volver atrás"
+            
 
         }
         protected override void OnAfterRender(bool firstRender)
@@ -64,40 +64,12 @@ namespace BakAppDiego.Components.Pages
         {
             NavigationManager.NavigateTo("/LoginDatos");
 
-            //ConectarConf conect = new ConectarConf();
-
-            //MensajeAsync ms  = await conect.Sb_Cargar_Datos_De_Configuracion();
-            //if (ms.EsCorrecto)
-            //{
-
-            //    Console.WriteLine(ms.Msg);
-
-            //}
-            //else { 
-
-            //    Console.WriteLine(ms.Msg);
-
-
-            //}
+            
         }async Task MenuInventario()
         {
             NavigationManager.NavigateTo("/InventarioMenu");
 
-            //ConectarConf conect = new ConectarConf();
-
-            //MensajeAsync ms  = await conect.Sb_Cargar_Datos_De_Configuracion();
-            //if (ms.EsCorrecto)
-            //{
-
-            //    Console.WriteLine(ms.Msg);
-
-            //}
-            //else { 
-
-            //    Console.WriteLine(ms.Msg);
-
-
-            //}
+            
         }
 
 

@@ -19,6 +19,6 @@ namespace BakAppDiego.Components.Globals.Modelos.Bakapp
 
     public class ls_Zw_Inv_Contador
     {
-        public List<Zw_Inv_Contador> Table { get; set; }
+        public List<Zw_Inv_Contador>? Table { get; set; }
     }
 }

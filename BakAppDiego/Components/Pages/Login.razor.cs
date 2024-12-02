@@ -1,23 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
-using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
-using System.Runtime.CompilerServices;
 using BakAppDiego.Components.Dialogs;
 using BakAppDiego.Components.Globals.Statics;
 using BakAppDiego.Components.Globals.Modelos;
-using BakAppDiego.Components.Interface;
-using Microsoft.Maui.Controls;
-
 #if ANDROID
 using AndroidApp = Android.App.Application;
 using Setting = Android.Provider.Settings;
@@ -38,7 +24,6 @@ namespace BakAppDiego.Components.Pages
         private LoadingPopUp loadingPopup;
         private DialogoService Dialogo;
         private string responseMessage = string.Empty;
-        private string buttonColor = "gray"; // Color inicial del botón
         [Inject]
         private NavigationManager NavigationManager { get; set; }
         [Inject] private HttpClient HttpClient { get; set; }

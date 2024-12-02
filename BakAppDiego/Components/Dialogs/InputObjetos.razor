@@ -1,6 +1,6 @@
 ﻿@using BakAppDiego.Components.Globals.Modelos.Bakapp
 @code {
-    private TaskCompletionSource<List<string>> tcs;
+    private TaskCompletionSource<List<string?>?>? tcs;
     private string Seleccinado = "Principal";
     [Parameter]
     public bool IsVisible { get; set; } = false;
@@ -30,9 +30,9 @@
 
 
     }
-    public Task<List<string>> ShowAsync()
+    public Task<List<string?>?> ShowAsync()
     {
-        tcs = new TaskCompletionSource<List<string>>();
+        tcs = new TaskCompletionSource<List<string?>?>();
         IsVisible = true;
         StateHasChanged();
         return tcs.Task;
@@ -55,7 +55,7 @@
     public void Aceptar()
     {
         Console.WriteLine(Seleccinado);
-        List<string> Respuesta = new List<string>();
+        List<string?> Respuesta = new List<string?>();
         Respuesta.Add(Seleccinado);
         Respuesta.Add(inputText);
         tcs?.SetResult(Respuesta);
@@ -92,18 +92,24 @@
                     <input @onclick='() => cambiar("Principal")' type="radio" name="select" id="option-1" checked>
                     <input @onclick='() => cambiar("Tecnico")' type="radio" name="select" id="option-2">
                     <input @onclick='() => cambiar("Rapido")' type="radio" name="select" id="option-3">
-                    <label for="option-1" class="option option-1">
+                    <div class="option option-1">
                         <div class="dot"></div>
-                        <span>Principal</span>
-                    </label>
-                    <label for="option-2" class="option option-2">
+                        <label for="option-1">
+                            <span>Principal</span>
+                        </label>
+                    </div>
+                    <div class="option option-2">
                         <div class="dot"></div>
-                        <span>Tecnico</span>
-                    </label>
-                    <label for="option-3" class="option option-3">
+                        <label for="option-2">
+                            <span>Tecnico</span>
+                        </label>
+                    </div>
+                    <div class="option option-3">
                         <div class="dot"></div>
-                        <span>Rapido</span>
-                    </label>
+                        <label for="option-3">
+                            <span>Rapido</span>
+                        </label>
+                    </div>
                 </div>
                 <input type="text" class="text-input" @bind="inputText" @onkeypress="@(e => { if (e.Key == "Enter") Aceptar(); })" />
                

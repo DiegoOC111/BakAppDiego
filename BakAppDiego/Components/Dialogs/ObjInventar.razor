@@ -24,8 +24,7 @@
     [Parameter]
     public bool BotonBoolCancelar { get; set; } = true;
 
-    private string inputText = "";  // Variable para almacenar el texto del input
-    private Zw_Producto_inventariado producto1;
+    private Zw_Producto_inventariado? producto1;
     // Método para mostrar el popup
     public void cambiar(string seleccion)
     {
@@ -57,7 +56,6 @@
         BotonStringAceptar = aceptar;
         BotonStringCancelar = cancelar;
         BotonBoolCancelar = visibleBTN2;
-        inputText = ""; // Reiniciar el texto del input
         StateHasChanged();
     }
 

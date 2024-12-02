@@ -52,7 +52,7 @@ namespace BakAppDiego.Components.Modulos_de_funciones
                 }
                 catch (Exception ex)
                 {
-
+                    Console.WriteLine(ex.Message);
 
                 }
 
@@ -136,10 +136,13 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_sql);
             if (respuesta.EsCorrecto)
             {
-                Zw_TablaDeCaracterizacionesResponse Res = JsonConvert.DeserializeObject<Zw_TablaDeCaracterizacionesResponse>(respuesta.Detalle);
-                GlobalData.DocDestino = Res.Table[0];
-                Retorno.EsCorrecto = true;
-                Retorno.Msg = "Tabla guardada y creada con exito";
+                Zw_TablaDeCaracterizacionesResponse? Res = JsonConvert.DeserializeObject<Zw_TablaDeCaracterizacionesResponse>(respuesta.Detalle);
+                if (Res != null) {
+                    GlobalData.DocDestino = Res.Table[0];
+                    Retorno.EsCorrecto = true;
+                    Retorno.Msg = "Tabla guardada y creada con exito";
+                }
+                
             }
             else { 
                 Retorno.EsCorrecto = false;
@@ -159,10 +162,13 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_sql);
             if (respuesta.EsCorrecto)
             {
-                Zw_TablaDeCaracterizacionesResponse Res = JsonConvert.DeserializeObject<Zw_TablaDeCaracterizacionesResponse>(respuesta.Detalle);
-                GlobalData.TablaDeCaracterizacionesTipoPago = Res.Table[0];
-                Retorno.EsCorrecto = true;
-                Retorno.Msg = "Tabla guardada y creada con exito";
+                Zw_TablaDeCaracterizacionesResponse? Res = JsonConvert.DeserializeObject<Zw_TablaDeCaracterizacionesResponse>(respuesta.Detalle);
+                if (Res != null) {
+                    GlobalData.TablaDeCaracterizacionesTipoPago = Res.Table[0];
+                    Retorno.EsCorrecto = true;
+                    Retorno.Msg = "Tabla guardada y creada con exito";
+                }
+                
             }
             else
             {
@@ -184,10 +190,13 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_sql);
             if (respuesta.EsCorrecto)
             {
-                Zw_TablaDeCaracterizacionesResponse Res = JsonConvert.DeserializeObject<Zw_TablaDeCaracterizacionesResponse>(respuesta.Detalle);
-                GlobalData.TablaDeCaracterizacionesTipo = Res.Table[0];
-                Retorno.EsCorrecto = true;
-                Retorno.Msg = "Tabla guardada y creada con exito";
+                Zw_TablaDeCaracterizacionesResponse? Res = JsonConvert.DeserializeObject<Zw_TablaDeCaracterizacionesResponse>(respuesta.Detalle);
+                if (Res != null)
+                {
+                    GlobalData.TablaDeCaracterizacionesTipo = Res.Table[0];
+                    Retorno.EsCorrecto = true;
+                    Retorno.Msg = "Tabla guardada y creada con exito";
+                }
             }
             else
             {
@@ -257,13 +266,15 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);
             if (respuesta.EsCorrecto)
             {
-                TABMOResponse Response = JsonConvert.DeserializeObject<TABMOResponse>(respuesta.Detalle);
-                GlobalData.Moneda = Response.Table[0];
+                TABMOResponse? Response = JsonConvert.DeserializeObject<TABMOResponse>(respuesta.Detalle);
+                
+                if (Response != null) { GlobalData.Moneda = Response.Table[0]; }
 
 
 
 
-            }else{ 
+            }
+            else{ 
                 MensajeAsync MsjError = new MensajeAsync(); 
                 MsjError.EsCorrecto = false;
                 MsjError.Msg = "Ocurrio un error definiendo la moneda";
@@ -276,8 +287,10 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);
             if (respuesta.EsCorrecto)
             {
-                MAEOMResponse Response = JsonConvert.DeserializeObject<MAEOMResponse>(respuesta.Detalle);
+                MAEOMResponse? Response = JsonConvert.DeserializeObject<MAEOMResponse>(respuesta.Detalle);
+                if (Response != null) { 
                 GlobalData.MonedaDolar = Response.Table[0];
+                }
 
 
 
@@ -297,9 +310,11 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);
             if (respuesta.EsCorrecto)
             {
-                MAEOMResponse Response = JsonConvert.DeserializeObject<MAEOMResponse>(respuesta.Detalle);
-                GlobalData.UF = Response.Table[0];
-
+                MAEOMResponse? Response = JsonConvert.DeserializeObject<MAEOMResponse>(respuesta.Detalle);
+                if (Response != null)
+                {
+                    GlobalData.UF = Response.Table[0];
+                }
 
 
 
@@ -319,7 +334,7 @@ namespace BakAppDiego.Components.Modulos_de_funciones
          }
         private async Task<MensajeAsync> Fx_Cargar_Listas_Precios_Por_Usuario() {
 
-            string Usuario_X_Defecto = GlobalData.Usuario_Activo.Kofu;
+            string Usuario_X_Defecto = GlobalData.Usuario_Activo!.Kofu!;
             string Consulta_Sql = $@"
             Select KOLT As Kolt, KOLT + '-' + NOKOLT As Nokolt
             From TABPP
@@ -332,13 +347,17 @@ namespace BakAppDiego.Components.Modulos_de_funciones
 
             MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);
             if (respuesta.EsCorrecto) {
-                PreciosUsuario Response = JsonConvert.DeserializeObject<PreciosUsuario>(respuesta.Detalle);
-                GlobalData.Listas_precios_usuarios = Response.Table;
+                PreciosUsuario? Response = JsonConvert.DeserializeObject<PreciosUsuario>(respuesta.Detalle);
                 MensajeAsync salida = new MensajeAsync();
-                salida.Msg = "PRecios cargados correctamente";
-                salida.EsCorrecto = true;
-                return salida;
+                if (Response != null)
+                {
+                    GlobalData.Listas_precios_usuarios = Response.Table;
+                    
+                    salida.Msg = "PRecios cargados correctamente";
+                    salida.EsCorrecto = true;
+                }
 
+                return salida;
 
             }
             else { 
@@ -354,9 +373,9 @@ namespace BakAppDiego.Components.Modulos_de_funciones
 
         }
         private async Task<MensajeAsync> Fx_Cargar_Configuracion_Estacion_Y_General() {
-            string Empresa = GlobalData.EstacionBk.Empresa_X_Defecto;       
+            string Empresa = GlobalData.EstacionBk!.Empresa_X_Defecto!;       
             string Modalidad = GlobalData.EstacionBk.Modalidad_X_Defecto;    
-            string Global_BaseBk = GlobalData.Global_BaseBk;
+            string? Global_BaseBk = GlobalData.Global_BaseBk;
             string JSONResponse;
             string Consulta_Sql = @$"
             Select Top 1 *, Getdate() As Fecha_Servidor 
@@ -367,8 +386,11 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             MensajeAsync respuesta = await ComunicacionWB.Sb_GetDataSet_Json(Consulta_Sql);
             if (respuesta.EsCorrecto) {
                 JSONResponse = respuesta.Detalle;
-                ResponseConifgEstacion Respuesta = JsonConvert.DeserializeObject<ResponseConifgEstacion>(JSONResponse);
-                GlobalData.ConfiguracionEstacion = Respuesta.Table[0];
+                ResponseConifgEstacion? Respuesta = JsonConvert.DeserializeObject<ResponseConifgEstacion>(JSONResponse);
+                if (Respuesta != null) { 
+                GlobalData.ConfiguracionEstacion = Respuesta!.Table![0];
+
+                }
 
             } else {
 
@@ -429,8 +451,11 @@ namespace BakAppDiego.Components.Modulos_de_funciones
             if (respuesta.EsCorrecto)
             {
                 JSONResponse = respuesta.Detalle;
-                Zw_EstacionesBkpResponse Respuesta = JsonConvert.DeserializeObject<Zw_EstacionesBkpResponse>(JSONResponse);
-                GlobalData.Configuracion_General = Respuesta.Table[0];
+                Zw_EstacionesBkpResponse? Respuesta = JsonConvert.DeserializeObject<Zw_EstacionesBkpResponse>(JSONResponse);
+                if (Respuesta != null)
+                {
+                    GlobalData.Configuracion_General = Respuesta.Table[0];
+                }
 
             }
             else { 
@@ -463,18 +488,26 @@ namespace BakAppDiego.Components.Modulos_de_funciones
                 //Zw_EstacionesBkpResponse JSONResponse = await auxms.Content.ReadFromJsonAsync<Zw_EstacionesBkpResponse>();
                 try
                 {
-                    Zw_EstacionesBkpResponse Respuesta = JsonConvert.DeserializeObject<Zw_EstacionesBkpResponse>(JSONResponse);
-                    Zw_EstacionesBkp aux = Respuesta.Table[0];
-                    GlobalData.EstacionBk = aux;
+                    Zw_EstacionesBkpResponse? Respuesta = JsonConvert.DeserializeObject<Zw_EstacionesBkpResponse>(JSONResponse);
                     MensajeAsync Res = new MensajeAsync();
-                    Res.Msg = "Cargada la tabla Zw_EstacionesBkp con exito";
-                    Res.EsCorrecto = true;
-                    return Res;
+
+                    if (Respuesta != null)
+                    {
+                        Zw_EstacionesBkp aux = Respuesta.Table[0];
+                        GlobalData.EstacionBk = aux;
+                        Res.Msg = "Cargada la tabla Zw_EstacionesBkp con exito";
+                        Res.EsCorrecto = true;
+                        return Res;
+                    }
+                    else {
+                        return Res;
+                    }
+                    
 
                 }
                 catch (Exception ex) {
 
-
+                    Console.WriteLine(ex.ToString());   
                     return respuesta;
 
 

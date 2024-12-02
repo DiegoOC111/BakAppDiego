@@ -13,14 +13,13 @@ namespace BakAppDiego.Components.Pages
     {
         PopUpConfirmar PopUp;
         private bool isTableVisible = false;
-        private bool iniciado = false;
-        InventarioItem inventarioItem;
-        private DialogoService Dialogo;
+        InventarioItem? inventarioItem;
+        private DialogoService? Dialogo;
         // Inyección de NavigationManager
         [Inject]
-        private NavigationManager NavigationManager { get; set; }
+        private NavigationManager? NavigationManager { get; set; }
 
-        private FuncionesWebService ComunicacionWB;
+        private FuncionesWebService? ComunicacionWB;
         
 
         private void ToggleTableVisibility()
@@ -36,7 +35,6 @@ namespace BakAppDiego.Components.Pages
             if (GlobalData.InventarioActivo != null) {
                 inventarioItem = GlobalData.InventarioActivo;
                 isTableVisible = true;
-                iniciado = true;
             }
 
         }
@@ -54,7 +52,6 @@ namespace BakAppDiego.Components.Pages
             {
                 inventarioItems = await ObtenerDatosInventario(ms.Detalle);
                 inventarioItem = inventarioItems.FirstOrDefault();
-                iniciado = true;
                 GlobalData.InventarioActivo = inventarioItem;
                 ToggleTableVisibility();
             }
@@ -92,23 +89,10 @@ namespace BakAppDiego.Components.Pages
         }
         private async Task<bool> MostrarPopUp(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
         {
-            // Configura el popup
             PopUp.crear(titulo, mensaje, btnStr, CancelarStr, Visible);
 
-            // Espera hasta que el usuario presione un botón
             bool resultado = await PopUp.ShowAsync();
 
-            // Aquí puedes manejar el resultado
-            if (resultado)
-            {
-                // El usuario presionó "Aceptar"
-                Console.WriteLine("El usuario aceptó.");
-            }
-            else
-            {
-                // El usuario presionó "Cancelar"
-                Console.WriteLine("El usuario canceló.");
-            }
             return resultado;
         }
     }

@@ -15,7 +15,7 @@ namespace BakAppDiego.Components.Globals.Modelos
 {
     public class FuncionesWebService
     {
-        private string ip_wb;
+        private string? ip_wb;
         [Inject] private HttpClient HttpClient { get; set; }
         public FuncionesWebService()
         {
@@ -147,7 +147,6 @@ namespace BakAppDiego.Components.Globals.Modelos
                 return respuesta;
 
             }
-            return respuesta;
 
 
 
