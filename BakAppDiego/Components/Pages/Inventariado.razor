@@ -7,6 +7,8 @@
 <InputDialog @ref="InDIalog" />
 <InputObjetos @ref="InObj" />
 <ObjInventar @ref="inventar"/>
+<LoadingPopUp @ref="loadingPopup" />
+<PopUpConfirmar @ref="PopUp" />
 
 <body>
 
@@ -45,7 +47,7 @@
                     </ul>
                 </div>
             </nav>
-            <button class="button-docked">Enviar Hoja</button>
+            <button class="button-docked" @onclick="EnviarHoja">Enviar Hoja</button>
         </div>
         @if(ListaProductos != null)
         {
@@ -104,3 +106,4 @@
     }
 
 </body>
+<PopUpConfirmar @ref="PopUp" />

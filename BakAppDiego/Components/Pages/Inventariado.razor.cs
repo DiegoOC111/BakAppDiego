@@ -2,6 +2,7 @@
 using BakAppDiego.Components.Dialogs;
 using BakAppDiego.Components.Globals.Modelos;
 using BakAppDiego.Components.Globals.Modelos.Bakapp;
+using BakAppDiego.Components.Globals.Modelos.Responses;
 using BakAppDiego.Components.Globals.Statics;
 using Newtonsoft.Json;
 using System;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static BakAppDiego.Components.Globals.Modelos.Responses.RespuestaHoja;
 
 namespace BakAppDiego.Components.Pages
 {
@@ -31,7 +33,32 @@ namespace BakAppDiego.Components.Pages
         public required System.Timers.Timer longClickTimer;
         private Zw_Producto_inventariado? selectedProducto;
         private bool menuAbierto;
+        private LoadingPopUp loadingPopup;
+        private PopUpConfirmar PopUp;
 
+
+        private async Task<bool> MostrarPopUp(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible)
+        {
+
+            // Configura el popup
+            PopUp.crear(titulo, mensaje, btnStr, CancelarStr, Visible);
+
+            // Espera hasta que el usuario presione un botón
+            bool resultado = await PopUp.ShowAsync();
+
+            // Aquí puedes manejar el resultado
+            if (resultado)
+            {
+                // El usuario presionó "Aceptar"
+                Console.WriteLine("El usuario aceptó.");
+            }
+            else
+            {
+                // El usuario presionó "Cancelar"
+                Console.WriteLine("El usuario canceló.");
+            }
+            return resultado;
+        }
         private void CerrarMenu()
         {
             menuAbierto = false;
@@ -105,7 +132,43 @@ namespace BakAppDiego.Components.Pages
             }
 
         }
-        
+        private async Task EnviarHoja()
+        {
+            loadingPopup.Show();
+            StateHasChanged();
+
+            MensajeAsync Respuesta = await SerializarLista();
+            if (Respuesta.EsCorrecto) {
+                loadingPopup.Hide();
+                ls_Respuesta datos = JsonConvert.DeserializeObject<ls_Respuesta>(Respuesta.Detalle);
+                if (datos != null) {
+                    Respuesta_Hoja aux = datos.Table[0];
+                    if (aux.EsCorrecto)
+                    {
+                        bool r = await MostrarPopUp("Operacion Exitosa", $"Hoja Nro : {aux.Id} creada con exito", "Continuar", " ", false);
+                        StateHasChanged();
+
+
+                    }
+
+                }
+
+
+            }
+
+            
+            
+                loadingPopup.Hide();
+                StateHasChanged();
+                bool a = await MostrarPopUp("Operacion fallida", "Ocurrio un error creando la hoja", "Continuar", " ", false);
+
+
+         
+
+            StateHasChanged();
+
+
+        }
         private async Task EscanearSector()
         {
             string sector = await MostrarInput("Ingrese el sector", "", "Aceptar", "Cancelar", true);
@@ -412,7 +475,7 @@ namespace BakAppDiego.Components.Pages
         /// <returns>
         /// Un mensaje indicando si la serialización y la preparación para el envío fueron exitosas.
         /// </returns>
-        public MensajeAsync SerializarLista()
+        public async Task<MensajeAsync>  SerializarLista()
         {
             MensajeAsync msg = new MensajeAsync();
             List<HojaDetalle> InventariadoHojaDetalle = new List<HojaDetalle>();
@@ -437,8 +500,9 @@ namespace BakAppDiego.Components.Pages
             Hoja hoja = new Hoja(1,GlobalData.InventarioActivo.Id, "1" , GlobalData.EstacionBk.NombreEquipo, DateTime.Now,GlobalData.InventarioActivo.FuncionarioCargo,c1.Id, id ,DateTime.Now,false);
             string json = JsonConvert.SerializeObject(InventariadoHojaDetalle, Formatting.Indented);
             string json2 = hoja.ToJson();
-            /*EviarJson 1 y 2 */
-            return msg;
+            MensajeAsync Respuesta = await ComunicacionWB.Sb_Inv_IngresarHoja(json2,json);
+           
+            return Respuesta;
         }
 
 
