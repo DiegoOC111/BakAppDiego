@@ -38,6 +38,13 @@ namespace BakAppDiego.Components.Pages
             }
 
         }
+        public async Task historial()
+        {
+            NavigationManager.NavigateTo("/VistaHojasInventariadas");
+
+
+        }
+        
         public async Task<List<InventarioItem>> ObtenerDatosInventario(string json)
         {
             var inventarioData = JsonSerializer.Deserialize<InventarioData>(json);

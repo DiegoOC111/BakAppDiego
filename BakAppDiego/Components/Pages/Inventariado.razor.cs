@@ -4,6 +4,7 @@ using BakAppDiego.Components.Globals.Modelos;
 using BakAppDiego.Components.Globals.Modelos.Bakapp;
 using BakAppDiego.Components.Globals.Modelos.Responses;
 using BakAppDiego.Components.Globals.Statics;
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace BakAppDiego.Components.Pages
 {
     public partial class Inventariado
     {
+        private NavigationManager NavigationManager { get; set; }
 
         private string Sector = "";
         private bool Escaneado;
@@ -146,6 +148,8 @@ namespace BakAppDiego.Components.Pages
                     if (aux.EsCorrecto)
                     {
                         bool r = await MostrarPopUp("Operacion Exitosa", $"Hoja Nro : {aux.Id} creada con exito", "Continuar", " ", false);
+                        NavigationManager.NavigateTo("/InventarioMenu");
+
                         StateHasChanged();
 
 

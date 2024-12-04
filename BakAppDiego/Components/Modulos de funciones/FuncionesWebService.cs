@@ -152,6 +152,60 @@ namespace BakAppDiego.Components.Globals.Modelos
 
 
         }
+
+        public async Task<MensajeAsync> Sb_Inv_BuscarHojas(int _IdInventario)
+        {
+            MensajeAsync respuesta = new MensajeAsync();
+
+            string soapMessage = @$"<?xml version=""1.0"" encoding=""utf-8""?>
+<soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
+  <soap:Body>
+    <Sb_Inv_BuscarHojas xmlns=""http://BakApp"">
+      <IdInventario>{_IdInventario}</IdInventario>
+    </Sb_Inv_BuscarHojas>
+  </soap:Body>
+</soap:Envelope>";
+            var content = new StringContent(soapMessage, Encoding.UTF8, "text/xml");
+            content.Headers.Add("SOAPAction", "\"http://BakApp/Sb_Inv_BuscarHojas\"");
+            HttpResponseMessage httpResponse = await HttpClient.PostAsync(ip_wb + "/Ws_BakApp.asmx", content);
+            var responseContent = await httpResponse.Content.ReadAsStringAsync();
+            string a = "{\"Table\":[]}";
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                if (responseContent == a | responseContent == null)
+                {
+
+
+                    respuesta.EsCorrecto = false;
+                    respuesta.ErrorDeConexionSQL = false;
+                    respuesta.Msg = "Tabla vacia";
+                    return respuesta;
+
+                }
+
+                respuesta.Tag = httpResponse;
+                respuesta.EsCorrecto = true;
+                respuesta.Detalle = responseContent;
+                respuesta.Msg = "Conexion exitosa";
+                return respuesta;
+            }
+            else
+
+            {
+                respuesta.EsCorrecto = false;
+                respuesta.ErrorDeConexionSQL = true;
+
+                respuesta.Msg = "Conexion fallida";
+
+                return respuesta;
+
+            }
+
+
+
+
+        }
         public async Task<MensajeAsync> Sb_Inv_BuscarInventario(string inventario)
         { 
          MensajeAsync respuesta = new MensajeAsync();

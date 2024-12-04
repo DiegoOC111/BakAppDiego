@@ -5,8 +5,20 @@
 
 <PopUpConfirmar @ref="PopUp" />
 
+
+
 @if (isTableVisible)
 {
+    <div class="panel">
+        <h1>Inventario</h1>
+
+    <button class="button-docked" @onclick="historial">Historial</button>
+        
+        
+
+
+    </div>
+
     <body style="background-color: transparent;">
         <div class="container" style="background-color: transparent; overflow-y: auto; margin-bottom: 100px;">
             <div class="row justify-content-center g-1" style="background-color: transparent;">
@@ -14,7 +26,7 @@
                 <div class="col-md-12">
                     <div class="card bg-transparent border-0">
                         <div class="card-body text-center">
-                            <h1 class="display-5" style="color: #E8EDE7;">Inventario Activo</h1>
+                            <h1 class="display-5" style="color: #E8EDE7;"><br /></h1>
                         </div>
                     </div>
                 </div>
