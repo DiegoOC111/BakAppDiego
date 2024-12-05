@@ -2,6 +2,7 @@
 using BakAppDiego.Components.Dialogs;
 using BakAppDiego.Components.Globals.Modelos;
 using BakAppDiego.Components.Globals.Modelos.Bakapp;
+using BakAppDiego.Components.Globals.Modelos.Clases;
 using BakAppDiego.Components.Globals.Modelos.Responses;
 using BakAppDiego.Components.Globals.Statics;
 using Microsoft.AspNetCore.Components;
@@ -9,6 +10,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
 using static BakAppDiego.Components.Globals.Modelos.Responses.RespuestaHoja;
@@ -17,6 +19,7 @@ namespace BakAppDiego.Components.Pages
 {
     public partial class Inventariado
     {
+        [Inject]
         private NavigationManager NavigationManager { get; set; }
 
         private string Sector = "";
@@ -67,6 +70,8 @@ namespace BakAppDiego.Components.Pages
         }
         protected override void OnInitialized()
         {
+            NavigationHistory.AddToHistory(NavigationManager.Uri);
+
             ListaProductos = new List<Zw_Producto_inventariado>();
             ComunicacionWB = new FuncionesWebService();
             Dialogo = new DialogoService();
@@ -75,39 +80,41 @@ namespace BakAppDiego.Components.Pages
         }
         private async Task EscanearObjeto() {
 
-
             List<string> res = await MostrarInputObjeto("Ingrese el objeto", "", "Aceptar", "Cancelar", true);
+
             if (res == null) { return; }
             else
             {
                 string Tipo = res[0];
                 string Codigo = res[1];
                 MensajeAsync msg = await ComunicacionWB!.Sb_Inv_TraerProductoInventario(GlobalData.InventarioActivo!.Id, GlobalData.InventarioActivo.Empresa, GlobalData.InventarioActivo.Sucursal, GlobalData.InventarioActivo.Bodega, Tipo, Codigo);
+
                 if (msg.EsCorrecto)
                 {
                     ls_Zw_Producto response = System.Text.Json.JsonSerializer.Deserialize<ls_Zw_Producto>(msg.Detalle)!;
                     Zw_Producto prod = response.Table[0];
-
                     Zw_Producto_inventariado obj = new Zw_Producto_inventariado(prod);
                     obj.tipo_esc = Tipo;
                     Zw_Producto_inventariado res2 = await MostrarInventarObj("Ingrese el objeto", "", "Aceptar", "Cancelar", true, obj);
+
                     if (res2 != null)
                     {
+
                         ListaProductos!.Add(res2);
                         StateHasChanged();
-
 
                     }
                 }
             }
-
         }
+
         private async Task CambiarContador(int numero) {
 
 
             if (numero == 1)
             {
                 MensajeAsync res = await elijeContador();
+
                 if (res.EsCorrecto)
                 {
                     if (res.Tag != null)
@@ -115,64 +122,75 @@ namespace BakAppDiego.Components.Pages
                         c1 = (Zw_Inv_Contador)res.Tag;
 
                     }
-
                 }
-
             }
             else {
+
                 MensajeAsync res = await elijeContador();
+
                 if (res.EsCorrecto) {
                     if (res.Tag != null) {
+
                         c2 = (Zw_Inv_Contador)res.Tag;
 
-
                     }
-
                 }
-
-
             }
-
         }
+
         private async Task EnviarHoja()
         {
-            loadingPopup.Show();
-            StateHasChanged();
 
-            MensajeAsync Respuesta = await SerializarLista();
-            if (Respuesta.EsCorrecto) {
-                loadingPopup.Hide();
-                ls_Respuesta datos = JsonConvert.DeserializeObject<ls_Respuesta>(Respuesta.Detalle);
-                if (datos != null) {
-                    Respuesta_Hoja aux = datos.Table[0];
+            if (ListaProductos.Count < 1) {
+
+                bool a = await MostrarPopUp("Operacion fallida", "No se puede enviar una hoja vacia", "Continuar", " ", false);
+                return;
+            }
+            else {
+
+                loadingPopup.Show();
+                StateHasChanged();
+
+                MensajeAsync Respuesta = await SerializarLista();
+
+                if (Respuesta.EsCorrecto) {
+
+                    loadingPopup.Hide();
+                    Respuesta_Hoja aux = JsonConvert.DeserializeObject<Respuesta_Hoja>(Respuesta.Detalle);
+
                     if (aux.EsCorrecto)
                     {
-                        bool r = await MostrarPopUp("Operacion Exitosa", $"Hoja Nro : {aux.Id} creada con exito", "Continuar", " ", false);
-                        NavigationManager.NavigateTo("/InventarioMenu");
+                        bool r = await MostrarPopUp("Operacion Exitosa", $"Hoja Nro : {aux.Numero} creada con exito", "Continuar", " ", false);
+                        var previousUrl = NavigationHistory.GetPreviousUrl();
 
+                        if (!string.IsNullOrEmpty(previousUrl))
+                        {
+                            NavigationManager.NavigateTo(previousUrl);
+                        }
+                        else
+                        {
+                            Console.WriteLine("No hay página anterior en el historial.");
+                        }
+                    }
+                    else {
+
+                        loadingPopup.Hide();
                         StateHasChanged();
 
-
+                        bool a = await MostrarPopUp("Operacion fallida", $"{aux.MensajeError}, Numero de hoja {aux.Numero}", "Continuar", " ", false);
+                        return;
                     }
-
                 }
 
-
-            }
-
-            
-            
                 loadingPopup.Hide();
                 StateHasChanged();
-                bool a = await MostrarPopUp("Operacion fallida", "Ocurrio un error creando la hoja", "Continuar", " ", false);
 
+                bool c = await MostrarPopUp("Operacion fallida", "Ocurrio un error creando la hoja", "Continuar", " ", false);
+                StateHasChanged();
 
-         
-
-            StateHasChanged();
-
-
+            }
         }
+
         private async Task EscanearSector()
         {
             string sector = await MostrarInput("Ingrese el sector", "", "Aceptar", "Cancelar", true);
@@ -199,12 +217,13 @@ namespace BakAppDiego.Components.Pages
 
                 MensajeAsync res = await elijeContador();
                 if (res.EsCorrecto) {
+
                     c1 = (Zw_Inv_Contador)res.Tag;
 
-
-
                 }
+
                 bool r = await Dialogo!.DisplayConfirm("Confirmación", "¿Desea agregar un segundo contador ?", "Si", "No");
+
                 if (r)
                 {
                     res = await elijeContador();
@@ -213,41 +232,36 @@ namespace BakAppDiego.Components.Pages
                         c2 = (Zw_Inv_Contador)res.Tag;
 
 
-                      
-
                     }
                 }
+
                 iniciado = true;
                 StateHasChanged();
 
             }
-
         }
+        
         private async Task<MensajeAsync> elijeContador() {
 
             MensajeAsync res = await ComunicacionWB!.Sb_Inv_BuscarContador(c1.Rut, c2.Rut);
             MensajeAsync Retorno = new MensajeAsync();
+
             if (res.EsCorrecto)
             {
-
                 ls_Zw_Inv_Contador contadorResponse = System.Text.Json.JsonSerializer.Deserialize<ls_Zw_Inv_Contador>(res.Detalle)!;
                 List<string> botones = new List<string>();
-
-               
-
                 Zw_Inv_Contador? sel = await MostrarContadores("Elija el contador", "", "Cancelar", "", iniciado, contadorResponse);
+
                 Retorno.EsCorrecto = true;
                 Retorno.Tag = sel!;
                 return Retorno;
 
-              
-
             }
+
             Retorno.EsCorrecto = false;
             Retorno.Msg = res.Msg;
+
             return Retorno;
-
-
         }
         /// <summary>
         /// Muestra en pantalla la lista de contadores.
@@ -264,11 +278,7 @@ namespace BakAppDiego.Components.Pages
         private async Task<Zw_Inv_Contador?> MostrarContadores(string titulo, string mensaje, string btnStr, string CancelarStr, bool Visible, ls_Zw_Inv_Contador contadoress)
         {
             InCon!.Crear(titulo, mensaje, btnStr, CancelarStr, Visible, contadoress);
-
-            
             Zw_Inv_Contador? resultado = await InCon.ShowAsync();
-
-           
 
             return resultado;
         }
@@ -504,7 +514,23 @@ namespace BakAppDiego.Components.Pages
             Hoja hoja = new Hoja(1,GlobalData.InventarioActivo.Id, "1" , GlobalData.EstacionBk.NombreEquipo, DateTime.Now,GlobalData.InventarioActivo.FuncionarioCargo,c1.Id, id ,DateTime.Now,false);
             string json = JsonConvert.SerializeObject(InventariadoHojaDetalle, Formatting.Indented);
             string json2 = hoja.ToJson();
-            MensajeAsync Respuesta = await ComunicacionWB.Sb_Inv_IngresarHoja(json2,json);
+            MensajeAsync creacion = await ComunicacionWB.Sb_Inv_IngresarHojaPrevia(json2);
+            if (creacion.EsCorrecto == false) {
+
+
+                return creacion;
+            }
+            Respuesta_Hoja aux2 = JsonConvert.DeserializeObject<Respuesta_Hoja>(creacion.Detalle);
+            if(aux2.EsCorrecto == false) {
+                MensajeAsync r = new MensajeAsync();
+                r.EsCorrecto = false;
+                r.Msg = aux2.MensajeError;
+                return r;
+                    }
+            int id3 = aux2.Id!.Value;
+            Hoja hoja2 = new Hoja(id3, GlobalData.InventarioActivo.Id, aux2.Numero, GlobalData.EstacionBk.NombreEquipo, DateTime.Now, GlobalData.InventarioActivo.FuncionarioCargo, c1.Id, id, DateTime.Now, false);
+            json2 = hoja2.ToJson();
+            MensajeAsync Respuesta = await ComunicacionWB.Sb_Inv_IngresarHojaFinal(json2,json);
            
             return Respuesta;
         }

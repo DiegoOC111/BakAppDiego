@@ -6,6 +6,7 @@ using System.Text.Json;
 using BakAppDiego.Components.Dialogs;
 using System.Collections.Generic;
 using BakAppDiego.Components.Globals.Statics;
+using BakAppDiego.Components.Globals.Modelos.Clases;
 
 namespace BakAppDiego.Components.Pages
 {
@@ -30,6 +31,7 @@ namespace BakAppDiego.Components.Pages
 
         protected override void OnInitialized()
         {
+            NavigationHistory.AddToHistory(NavigationManager.Uri);
 
             ComunicacionWB = new FuncionesWebService();
             if (GlobalData.InventarioActivo != null) {

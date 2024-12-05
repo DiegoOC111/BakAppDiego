@@ -47,7 +47,12 @@
                     </ul>
                 </div>
             </nav>
-            <button class="button-docked" @onclick="EnviarHoja">Enviar Hoja</button>
+
+            @if (Escaneado)
+            {
+                <button class="button-docked" @onclick="EnviarHoja">Enviar Hoja</button>
+
+            }
         </div>
         @if(ListaProductos != null)
         {

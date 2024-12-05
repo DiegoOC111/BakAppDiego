@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,14 @@ namespace BakAppDiego.Components.Globals.Modelos.Responses
         public class Respuesta_Hoja
         {
             public bool EsCorrecto { get; set; }
-            public string Error { get; set; }
-            public string Version { get; set; }
-            public int Id { get; set; }
-            public string Numero { get; set; }
+
+            public string? Mensaje { get; set; }
+
+            public int? Id { get; set; }
+
+            public string? Numero { get; set; }
+
+            public string? MensajeError { get; set; }
         }
 
         public class ls_Respuesta

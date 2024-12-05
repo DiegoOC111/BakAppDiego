@@ -4,6 +4,8 @@ using System.Text;
 using BakAppDiego.Components.Dialogs;
 using BakAppDiego.Components.Globals.Statics;
 using BakAppDiego.Components.Globals.Modelos;
+using BakAppDiego.Components.Globals.Modelos.Clases;
+
 #if ANDROID
 using AndroidApp = Android.App.Application;
 using Setting = Android.Provider.Settings;
@@ -44,6 +46,7 @@ namespace BakAppDiego.Components.Pages
 
         protected override void OnInitialized()
         {
+            NavigationHistory.AddToHistory(NavigationManager.Uri);
             ComunicacionWB = new FuncionesWebService();
 #if ANDROID
             var context = AndroidApp.Context;

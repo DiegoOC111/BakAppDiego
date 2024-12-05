@@ -1,4 +1,5 @@
-﻿using BakAppDiego.Components.Globals.Statics;
+﻿using BakAppDiego.Components.Globals.Modelos.Clases;
+using BakAppDiego.Components.Globals.Statics;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,10 @@ namespace BakAppDiego.Components.Pages
             NavigationManager.NavigateTo("/Inventario");
 
             
+        }
+        protected override void OnInitialized()
+        {
+            NavigationHistory.AddToHistory(NavigationManager.Uri);
         }
 
     }

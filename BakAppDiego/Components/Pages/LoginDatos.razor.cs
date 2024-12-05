@@ -14,6 +14,7 @@ using BakAppDiego.Components.Dialogs;
 using BakAppDiego.Components.Globals.Modelos;
 using BakAppDiego.Components.Globals.Modelos.Responses;
 using BakAppDiego.Components.Modulos_de_funciones;
+using BakAppDiego.Components.Globals.Modelos.Clases;
 
 
 namespace BakAppDiego.Components.Pages
@@ -38,7 +39,7 @@ namespace BakAppDiego.Components.Pages
         }
         protected override void OnInitialized()
         {
-
+            NavigationHistory.AddToHistory(NavigationManager.Uri);
             Dialogo = new DialogoService();
             
         }

@@ -315,6 +315,116 @@ namespace BakAppDiego.Components.Globals.Modelos
 
 
         }
+        public async Task<MensajeAsync> Sb_Inv_IngresarHojaFinal(string _Inv_Hoja, string _Ls_Inv_Hoja_Detalle)
+        {
+            MensajeAsync respuesta = new MensajeAsync();
+
+            string soapMessage = @$"<?xml version=""1.0"" encoding=""utf-8""?>
+<soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
+  <soap:Body>
+    <Sb_Inv_IngresarHojaFinal  xmlns=""http://BakApp"">
+      <_Inv_Hoja>{_Inv_Hoja}</_Inv_Hoja>
+      <_Ls_Inv_Hoja_Detalle>{_Ls_Inv_Hoja_Detalle}</_Ls_Inv_Hoja_Detalle>
+    </Sb_Inv_IngresarHojaFinal >
+  </soap:Body>
+</soap:Envelope>";
+            var content = new StringContent(soapMessage, Encoding.UTF8, "text/xml");
+            content.Headers.Add("SOAPAction", "\"http://BakApp/Sb_Inv_IngresarHojaFinal\"");
+            HttpResponseMessage httpResponse = await HttpClient.PostAsync(ip_wb + "/Ws_BakApp.asmx", content);
+            var responseContent = await httpResponse.Content.ReadAsStringAsync();
+            string a = "{\"Table\":[]}";
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                if (responseContent == a | responseContent == null)
+                {
+
+
+                    respuesta.EsCorrecto = false;
+                    respuesta.ErrorDeConexionSQL = false;
+                    respuesta.Msg = "Tabla vacia";
+                    return respuesta;
+
+                }
+
+                respuesta.Tag = httpResponse;
+                respuesta.EsCorrecto = true;
+                respuesta.Detalle = responseContent;
+                respuesta.Msg = "Conexion exitosa";
+                return respuesta;
+            }
+            else
+
+            {
+                respuesta.EsCorrecto = false;
+                respuesta.ErrorDeConexionSQL = true;
+
+                respuesta.Msg = "Conexion fallida";
+                respuesta.Msg = $"Conexión fallida: {httpResponse.StatusCode} - {httpResponse.ReasonPhrase}";
+                return respuesta;
+
+            }
+            return respuesta;
+
+
+
+
+        }
+        public async Task<MensajeAsync> Sb_Inv_IngresarHojaPrevia(string _Inv_Hoja)
+        {
+            MensajeAsync respuesta = new MensajeAsync();
+
+            string soapMessage = @$"<?xml version=""1.0"" encoding=""utf-8""?>
+<soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/"">
+  <soap:Body>
+    <Sb_Inv_IngresarHojaPrevia xmlns=""http://BakApp"">
+      <_Inv_Hoja>{_Inv_Hoja}</_Inv_Hoja>
+    </Sb_Inv_IngresarHojaPrevia>
+  </soap:Body>
+</soap:Envelope>";
+            var content = new StringContent(soapMessage, Encoding.UTF8, "text/xml");
+            content.Headers.Add("SOAPAction", "\"http://BakApp/Sb_Inv_IngresarHojaPrevia\"");
+            HttpResponseMessage httpResponse = await HttpClient.PostAsync(ip_wb + "/Ws_BakApp.asmx", content);
+            var responseContent = await httpResponse.Content.ReadAsStringAsync();
+            string a = "{\"Table\":[]}";
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                if (responseContent == a | responseContent == null)
+                {
+
+
+                    respuesta.EsCorrecto = false;
+                    respuesta.ErrorDeConexionSQL = false;
+                    respuesta.Msg = "Tabla vacia";
+                    return respuesta;
+
+                }
+
+                respuesta.Tag = httpResponse;
+                respuesta.EsCorrecto = true;
+                respuesta.Detalle = responseContent;
+                respuesta.Msg = "Conexion exitosa";
+                return respuesta;
+            }
+            else
+
+            {
+                respuesta.EsCorrecto = false;
+                respuesta.ErrorDeConexionSQL = true;
+
+                respuesta.Msg = "Conexion fallida";
+                respuesta.Msg = $"Conexión fallida: {httpResponse.StatusCode} - {httpResponse.ReasonPhrase}";
+                return respuesta;
+
+            }
+            return respuesta;
+
+
+
+
+        }
+
         public async Task<MensajeAsync> Sb_Inv_BuscarContador(string rut1, string rut2)
         {
             MensajeAsync respuesta = new MensajeAsync();

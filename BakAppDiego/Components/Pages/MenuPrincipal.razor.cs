@@ -12,6 +12,8 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using BakAppDiego.Components.Globals.Modelos.Clases;
+
 #if ANDROID
 using Android.App;
 using Android.Content.PM;
@@ -49,7 +51,7 @@ namespace BakAppDiego.Components.Pages
             UsuarioActivo = GlobalData.Usuario_Activo.Kofu + "-" + GlobalData.Usuario_Activo.NoKofu;
             Modalidad = GlobalData.Usuario_Activo.Modalidad;
             Dialogo = new DialogoService();
-            
+            NavigationHistory.AddToHistory(NavigationManager.Uri);
 
         }
         protected override void OnAfterRender(bool firstRender)

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Components;
 using BakAppDiego.Components.Globals.Modelos.Responses;
 using Newtonsoft.Json;
 using static BakAppDiego.Components.Globals.Modelos.Responses.RespuestaHoja;
+using BakAppDiego.Components.Globals.Modelos.Clases;
 
 namespace BakAppDiego.Components.Pages
 {
@@ -27,6 +28,7 @@ namespace BakAppDiego.Components.Pages
         private bool inciado = false;
         protected override async void OnInitialized()
         {
+            NavigationHistory.AddToHistory(NavigationManager.Uri);
             ComunicacionWB = new FuncionesWebService();
             inciado = false;
             Dialogo = new DialogoService();
