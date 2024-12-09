@@ -76,6 +76,8 @@ namespace BakAppDiego.Components.Pages
             ComunicacionWB = new FuncionesWebService();
             Dialogo = new DialogoService();
             GlobalData.menu = true;
+            GlobalData.Volver = true;
+            GlobalData.mensajevolver = "Desea salir de la hoja, los datos se perderan?";
             Escaneado = false;
         }
         private async Task EscanearObjeto() {
@@ -173,12 +175,18 @@ namespace BakAppDiego.Components.Pages
                         }
                     }
                     else {
-
                         loadingPopup.Hide();
-                        StateHasChanged();
+                        StateHasChanged(); 
 
-                        bool a = await MostrarPopUp("Operacion fallida", $"{aux.MensajeError}, Numero de hoja {aux.Numero}", "Continuar", " ", false);
+                        if (aux.MensajeError == "La hoja ya fue levantada y enviada anteriormente") {
+                            bool x = await MostrarPopUp("Operacion fallida", $"{aux.MensajeError}, Numero de hoja: {aux.Numero}", "Continuar", " ", false);
+                            return;
+
+                        }
+                       
+                        bool a = await MostrarPopUp("Operacion fallida", $"{aux.MensajeError}", "Continuar", " ", false);
                         return;
+
                     }
                 }
 
@@ -190,7 +198,7 @@ namespace BakAppDiego.Components.Pages
 
             }
         }
-
+       
         private async Task EscanearSector()
         {
             string sector = await MostrarInput("Ingrese el sector", "", "Aceptar", "Cancelar", true);
@@ -511,7 +519,7 @@ namespace BakAppDiego.Components.Pages
 
                 InventariadoHojaDetalle.Add(Detalle);
             }
-            Hoja hoja = new Hoja(1,GlobalData.InventarioActivo.Id, "1" , GlobalData.EstacionBk.NombreEquipo, DateTime.Now,GlobalData.InventarioActivo.FuncionarioCargo,c1.Id, id ,DateTime.Now,false);
+            Hoja hoja = new Hoja(1,GlobalData.InventarioActivo.Id, "1" , GlobalData.EstacionBk.NombreEquipo, DateTime.Now,GlobalData.InventarioActivo.FuncionarioCargo,c1.Id, id ,DateTime.Now,false,ListaProductos.Count());
             string json = JsonConvert.SerializeObject(InventariadoHojaDetalle, Formatting.Indented);
             string json2 = hoja.ToJson();
             MensajeAsync creacion = await ComunicacionWB.Sb_Inv_IngresarHojaPrevia(json2);
@@ -528,10 +536,12 @@ namespace BakAppDiego.Components.Pages
                 return r;
                     }
             int id3 = aux2.Id!.Value;
-            Hoja hoja2 = new Hoja(id3, GlobalData.InventarioActivo.Id, aux2.Numero, GlobalData.EstacionBk.NombreEquipo, DateTime.Now, GlobalData.InventarioActivo.FuncionarioCargo, c1.Id, id, DateTime.Now, false);
+            Hoja hoja2 = new Hoja(id3, GlobalData.InventarioActivo.Id, aux2.Numero, GlobalData.EstacionBk.NombreEquipo, DateTime.Now, GlobalData.InventarioActivo.FuncionarioCargo, c1.Id, id, DateTime.Now, false, ListaProductos.Count());
             json2 = hoja2.ToJson();
             MensajeAsync Respuesta = await ComunicacionWB.Sb_Inv_IngresarHojaFinal(json2,json);
            
+
+
             return Respuesta;
         }
 

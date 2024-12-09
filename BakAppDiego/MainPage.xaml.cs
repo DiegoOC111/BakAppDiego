@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.Maui.Controls;
+using BakAppDiego.Components.Globals.Statics;
 
 namespace BakAppDiego
 {
@@ -11,10 +12,27 @@ namespace BakAppDiego
             InitializeComponent();
 
         }
+
         //protected override bool OnBackButtonPressed()
         //{
-            
-            
+        //    if (GlobalData.Volver)
+        //    {
+        //        MainThread.BeginInvokeOnMainThread(async () =>
+        //        {
+        //            bool answer = await Shell.Current.DisplayAlert("Confirmación", "¿Deseas salir?", "Sí", "No");
+        //            if (answer)
+        //            {
+        //                await Shell.Current.GoToAsync(".."); // Navegar hacia atrás
+        //            }
+        //        });
+        //        return true; // Bloquear el comportamiento predeterminado
+        //    }
+        //    return base.OnBackButtonPressed();
+        //}
+        //protected override bool OnBackButtonPressed()
+        //{
+
+
         //    // Return true to prevent back button 
         //    return true;
         //}

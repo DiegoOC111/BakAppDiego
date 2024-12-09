@@ -20,10 +20,11 @@ namespace BakAppDiego.Components.Globals.Modelos
         public int IdContador2 { get; private set; }
         public DateTime FechaLevantamiento { get; private set; }
         public bool Reconteo { get; private set; }
+        public int CantItems { get; private set; }
 
         // Constructor para inicializar la clase
         public Hoja(int id, int idInventario, string nro_Hoja, string nombreEquipo, DateTime fechaCreacion,
-                          string codResponsable, int idContador1, int idContador2, DateTime fechaLevantamiento, bool reconteo)
+                          string codResponsable, int idContador1, int idContador2, DateTime fechaLevantamiento, bool reconteo, int cantidad)
         {
             Id = id;
             IdInventario = idInventario;
@@ -35,6 +36,7 @@ namespace BakAppDiego.Components.Globals.Modelos
             IdContador2 = idContador2;
             FechaLevantamiento = fechaLevantamiento;
             Reconteo = reconteo;
+            CantItems = cantidad;
         }
         public Dictionary<string, object> ToMap()
         {

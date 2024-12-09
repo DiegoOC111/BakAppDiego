@@ -13,42 +13,36 @@ namespace BakAppDiego
 
         public override void OnBackPressed()
         {
-            // Comprobamos si la variable global indica que se debe mostrar la confirmación
+            // Comprobar si debemos mostrar el cuadro de confirmación
             if (GlobalData.Volver)
             {
-                // Mostrar un mensaje de confirmación si la variable es true
-                var result = ShowConfirmationDialog();
-
-                if (result) // Si el usuario acepta, se permite el retroceso
-                {
-                    base.OnBackPressed();
-                }
-                else
-                {
-                    // Si el usuario cancela, no hacer nada (mantenerse en la misma página)
-                }
+                // Mostrar cuadro de diálogo y gestionar la respuesta
+                ShowConfirmationDialog();
             }
             else
             {
-                // Si la variable es false, no mostramos el diálogo y procedemos normalmente
+                // Si no se requiere confirmación, proceder con el retroceso
                 base.OnBackPressed();
             }
         }
 
-        // Método para mostrar el diálogo de confirmación
-        private bool ShowConfirmationDialog()
+        // Método para mostrar el cuadro de diálogo de confirmación
+        private void ShowConfirmationDialog()
         {
             var confirmation = new AlertDialog.Builder(this);
-            confirmation.SetMessage("¿Seguro que deseas salir?");
-            confirmation.SetPositiveButton("Sí", (sender, e) => { });
-            confirmation.SetNegativeButton("No", (sender, e) => { });
+            confirmation.SetMessage(GlobalData.mensajevolver);
+            confirmation.SetPositiveButton("Sí", (sender, e) =>
+            {
+                // El usuario confirma, permitir el retroceso
+                base.OnBackPressed();
+            });
+            confirmation.SetNegativeButton("No", (sender, e) =>
+            {
+                // El usuario cancela, no hacer nada
+            });
 
-            var dialog = confirmation.Create();
-            dialog.Show();
-
-            // Este valor debe basarse en la respuesta del usuario.
-            // Lo simulo con un valor temporal para el ejemplo.
-            return true; // Cambiar según lo que el usuario seleccione en el diálogo
+            // Mostrar el diálogo
+            confirmation.Show();
         }
         //public override void OnBackPressed()
         //{

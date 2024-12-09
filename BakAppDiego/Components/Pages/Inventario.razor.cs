@@ -32,6 +32,8 @@ namespace BakAppDiego.Components.Pages
         protected override void OnInitialized()
         {
             NavigationHistory.AddToHistory(NavigationManager.Uri);
+            GlobalData.Volver = true;
+            GlobalData.mensajevolver = "Desea salir del inventario?";
 
             ComunicacionWB = new FuncionesWebService();
             if (GlobalData.InventarioActivo != null) {
