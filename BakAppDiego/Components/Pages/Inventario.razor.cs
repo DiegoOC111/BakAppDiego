@@ -31,7 +31,7 @@ namespace BakAppDiego.Components.Pages
 
         protected override void OnInitialized()
         {
-            NavigationHistory.AddToHistory(NavigationManager.Uri);
+            GlobalData.prev = "/InventarioMenu";
             GlobalData.Volver = true;
             GlobalData.mensajevolver = "Desea salir del inventario?";
 

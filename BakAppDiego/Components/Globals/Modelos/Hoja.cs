@@ -51,7 +51,8 @@ namespace BakAppDiego.Components.Globals.Modelos
             { "IdContador1", IdContador1 },
             { "IdContador2", IdContador2 },
             { "FechaLevantamiento", FechaLevantamiento },
-            { "Reconteo", Reconteo }
+            { "Reconteo", Reconteo },
+            { "CantItems", CantItems },
         };
 
             return mapAux;

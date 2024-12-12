@@ -41,7 +41,8 @@ namespace BakAppDiego.Components.Pages
         {
             NavigationHistory.AddToHistory(NavigationManager.Uri);
             Dialogo = new DialogoService();
-            
+            GlobalData.prev = "/Login";
+
         }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {

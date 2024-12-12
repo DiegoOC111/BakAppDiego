@@ -9,8 +9,11 @@ namespace BakAppDiego.Components.Globals.Statics
     public static class GlobalData
     {
         public static bool menu { get; set; }
+        public static string prev = "";
 
         public static bool Volver = false;
+        public static bool blockBack = false;
+
         public static string mensajevolver = "";
         public static string? Ip_Wb { get; set; }
         public static string? Id_dispositivo { get; set; }

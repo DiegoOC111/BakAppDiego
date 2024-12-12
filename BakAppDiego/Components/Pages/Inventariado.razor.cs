@@ -21,7 +21,7 @@ namespace BakAppDiego.Components.Pages
     {
         [Inject]
         private NavigationManager NavigationManager { get; set; }
-
+        public bool MenuAbierto { get; set; }
         private string Sector = "";
         private bool Escaneado;
         private InputContador? InCon;
@@ -64,13 +64,11 @@ namespace BakAppDiego.Components.Pages
             }
             return resultado;
         }
-        private void CerrarMenu()
-        {
-            menuAbierto = false;
-        }
+       
         protected override void OnInitialized()
         {
             NavigationHistory.AddToHistory(NavigationManager.Uri);
+            GlobalData.prev = "/InventarioMenu";
 
             ListaProductos = new List<Zw_Producto_inventariado>();
             ComunicacionWB = new FuncionesWebService();
@@ -125,6 +123,11 @@ namespace BakAppDiego.Components.Pages
 
                     }
                 }
+                if (res.Msg == "Tabla vacia") {
+
+                    await MostrarPopUp("Error", "No hay más contadores dispoinbles", "Continuar", " ", false);
+                
+                }
             }
             else {
 
@@ -135,6 +138,15 @@ namespace BakAppDiego.Components.Pages
 
                         c2 = (Zw_Inv_Contador)res.Tag;
 
+                    }
+                }
+                if (res.Msg == "Tabla vacia")
+                {
+
+                    bool r = await MostrarPopUp("Advertencia", "No hay más contadores dispoinbles, Desea eliminar al contador 2 ? ", "Eliminar", "Cancelar", true);
+                    if (r) {
+                        c2 = new Zw_Inv_Contador();
+                    
                     }
                 }
             }
@@ -165,14 +177,11 @@ namespace BakAppDiego.Components.Pages
                         bool r = await MostrarPopUp("Operacion Exitosa", $"Hoja Nro : {aux.Numero} creada con exito", "Continuar", " ", false);
                         var previousUrl = NavigationHistory.GetPreviousUrl();
 
-                        if (!string.IsNullOrEmpty(previousUrl))
-                        {
-                            NavigationManager.NavigateTo(previousUrl);
-                        }
-                        else
-                        {
-                            Console.WriteLine("No hay página anterior en el historial.");
-                        }
+                        
+
+                        NavigationManager.NavigateTo("/Inventario",true,true);
+                       
+                       
                     }
                     else {
                         loadingPopup.Hide();

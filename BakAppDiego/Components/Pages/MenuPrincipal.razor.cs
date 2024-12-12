@@ -47,6 +47,8 @@ namespace BakAppDiego.Components.Pages
         }
         protected override void OnInitialized() {
             GlobalData.InventarioActivo = null;
+            GlobalData.prev = "/Login";
+
             ComunicacionWB = new FuncionesWebService();
             UsuarioActivo = GlobalData.Usuario_Activo.Kofu + "-" + GlobalData.Usuario_Activo.NoKofu;
             Modalidad = GlobalData.Usuario_Activo.Modalidad;

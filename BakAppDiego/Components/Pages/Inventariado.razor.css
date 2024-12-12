@@ -60,15 +60,30 @@ main {
 
 
 /* Evitar clics en el contenido debajo del menú */
-#menuToggle input:checked ~ *:not(#menu, #menuOverlay) {
-    pointer-events: none;
+
+#menuOverlay {
+    position: fixed; /* Cubre toda la pantalla */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5); /* Oscurecimiento */
+    z-index: 1000; /* Menor que el menú */
+    display: none; /* Oculto por defecto */
+    /* Bloquea interacciones cuando está oculto */
+}
+
+/* Mostrar el overlay cuando el checkbox está activo */
+#menuToggle input:checked ~ #menuOverlay {
+    display: block;
+    pointer-events: all; /* Permitir clics */
 }
 #menuToggle {
     display: block;
     position: fixed;
     top: 2.5vh; /* Ajusta la posición vertical */
     left: 10px; /* Ajusta la posición horizontal */
-    z-index: 1200; /* Asegura que el botón esté por encima del overlay */
+    z-index: 99999; /* Asegura que el botón esté por encima del overlay */
     -webkit-user-select: none;
     user-select: none;
 }
@@ -93,8 +108,8 @@ main {
         left: -5px;
         cursor: pointer;
         opacity: 0; /* hide this */
-        z-index: 1202;
-         /* and place it over the hamburger */
+        z-index: 99999;
+        /* and place it over the hamburger */
 
         -webkit-touch-callout: none;
     }
@@ -110,7 +125,7 @@ main {
         position: relative;
         background: #cdcdcd;
         border-radius: 3px;
-        z-index: 1100;
+        z-index: 99999;
         transform-origin: 4px 0px;
         transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0), background 0.5s cubic-bezier(0.77,0.2,0.05,1.0), opacity 0.55s ease;
     }
@@ -156,7 +171,7 @@ main {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 70vw;
     height: 100vh;
     margin: 0;
     padding: 50px;
@@ -169,6 +184,7 @@ main {
     transform-origin: 0% 0%;
     transform: translate(-100%, 0);
     transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+    z-index: 1100; /* Más alto que el overlay */
 }
 
     #menu li {
@@ -190,6 +206,7 @@ main {
     padding: 10px;
     width: 100%; /* Asegura que el .menu-item ocupe todo el ancho del li */
     box-sizing: border-box;
+    z-index =99999;
 }
 
     .menu-item a {
@@ -207,6 +224,7 @@ main {
 #menuToggle input:checked ~ ul {
     transform: none;
 }
+
 
 /* Panel intermedio */
 .panel-intermedio {
