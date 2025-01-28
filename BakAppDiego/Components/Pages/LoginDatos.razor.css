@@ -10,17 +10,19 @@
 }
 
 .main2 {
-    width: 70vw; /* 70% del ancho de la ventana */
-    height: 50vh; /* 50% de la altura de la ventana */
+    width: 70vw;
+    height: 50vh;
     background: #012E4A;
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* Elementos dispuestos en columna */
+    justify-content: space-between; /* Espacio entre elementos */
     border-radius: 10px;
     box-shadow: 5px 20px 50px #000;
-    margin-top: 20px; /* Espacio entre el contenedor y el siguiente elemento */
+    margin-top: 20px;
+    padding: 20px; /* Añade un poco de espacio interno */
+    box-sizing: border-box;
 }
-
 #chk {
     display: none;
 }

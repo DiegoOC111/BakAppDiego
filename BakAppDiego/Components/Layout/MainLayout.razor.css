@@ -8,83 +8,141 @@ main {
     flex: 1;
 }
 
-.sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+
+
+
+p {
+    font-size: 18px;
+    line-height: 28px;
 }
 
-.top-row {
-    background-color: transparent;
-    /*border-bottom: 1px solid #d6d5d5;*/
-    justify-content: left;
-    height: 4.5rem;
-    display: flex;
-    align-items: left;
-    overflow: hidden;
-    margin-bottom: 0; /* Asegúrate de que no haya margen inferior */
-    padding-bottom: 0;
+* {
+    scroll-behavior: smooth;
 }
-.content {
-    margin-top: 0; /* Elimina el margen superior */
-    padding-top: 0; /* Elimina el padding superior */
+
+/* Menu code starts here */
+
+#menuToggle {
+    display: block;
+    /* You can also use relative/absolute here if you want to stay on the top */
+    position: fixed;
+    top: 50px;
+    left: 50px;
+    z-index: 1;
+    -webkit-user-select: none;
+    user-select: none;
 }
-    .top-row img {
-        width: auto;
-        height: 4rem; /* Mantiene la proporción de la imagen */
-        object-fit: contain; /* Evita que se deforme */
 
-    }
-
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
+    #menuToggle a {
         text-decoration: none;
+        color: #232323;
+        transition: color 0.3s ease;
     }
 
-        .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-            text-decoration: underline;
+        #menuToggle a:hover {
+            color: tomato;
         }
 
-        .top-row ::deep a:first-child {
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
 
-@media (max-width: 640.98px) {
-    .top-row {
-        justify-content: space-between;
+    #menuToggle input {
+        display: block;
+        width: 40px;
+        height: 32px;
+        position: absolute;
+        top: -7px;
+        left: -5px;
+        cursor: pointer;
+        opacity: 0; /* hide this */
+        z-index: 2; /* and place it over the hamburger */
+
+        -webkit-touch-callout: none;
     }
 
-        .top-row ::deep a, .top-row ::deep .btn-link {
-            margin-left: 0;
+    /*
+ * Just a quick hamburger
+ */
+    #menuToggle span {
+        display: block;
+        width: 33px;
+        height: 4px;
+        margin-bottom: 5px;
+        position: relative;
+        background: #cdcdcd;
+        border-radius: 3px;
+        z-index: 1;
+        transform-origin: 4px 0px;
+        transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0), background 0.5s cubic-bezier(0.77,0.2,0.05,1.0), opacity 0.55s ease;
+    }
+
+        #menuToggle span:first-child {
+            transform-origin: 0% 0%;
         }
+
+        #menuToggle span:nth-last-child(2) {
+            transform-origin: 0% 100%;
+        }
+
+    /* 
+ * Transform all the slices of hamburger
+ * into a crossmark.
+ */
+    #menuToggle input:checked ~ span {
+        opacity: 1;
+        transform: rotate(45deg) translate(-2px, -1px);
+        background: #232323;
+    }
+
+        /*
+ * But let's hide the middle one.
+ */
+        #menuToggle input:checked ~ span:nth-last-child(3) {
+            opacity: 0;
+            transform: rotate(0deg) scale(0.2, 0.2);
+        }
+
+        /*
+ * Ohyeah and the last one should go the other direction
+ */
+        #menuToggle input:checked ~ span:nth-last-child(2) {
+            transform: rotate(-45deg) translate(0, -1px);
+        }
+
+/*
+ * Make this absolute positioned
+ * at the top left of the screen
+ */
+#menu {
+    position: fixed; /* Cambiado a fixed para que ocupe toda la pantalla */
+    top: 0;
+    left: 0;
+    max-width: 400px;
+    width: 100vw;
+    height: 100vh; /* Ajustado para que ocupe toda la altura de la pantalla */
+    margin: 0; /* Ajustado para eliminar cualquier margen */
+    padding: 50px;
+    padding-top: 125px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    background: #ededed;
+    list-style-type: none;
+    -webkit-font-smoothing: antialiased;
+    transform-origin: 0% 0%;
+    transform: translate(-100%, 0);
+    transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
 }
 
-@media (min-width: 641px) {
-    .page {
-        flex-direction: row;
+    #menu li {
+        padding: 10px 0;
+        font-size: 22px;
     }
 
-    .sidebar {
-        width: 250px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
-    }
-
-    .top-row {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-
-        .top-row.auth ::deep a:first-child {
-            flex: 1;
-            text-align: right;
-            width: 0;
+        #menu li label {
+            cursor: pointer;
         }
 
-    .top-row, article {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
-    }
+/*
+ * And let's slide it in from the left
+ */
+#menuToggle input:checked ~ ul {
+    transform: none;
 }

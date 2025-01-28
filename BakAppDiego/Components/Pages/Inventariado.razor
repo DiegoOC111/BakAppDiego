@@ -1,0 +1,118 @@
+﻿@page "/Inventariado"
+@using BakAppDiego.Components.Dialogs
+@using BakAppDiego.Components.Layout
+@using BakAppDiego.Components.Globals.Modelos.Bakapp;
+
+<InputContador @ref="InCon" />
+<InputDialog @ref="InDIalog" />
+<InputObjetos @ref="InObj" />
+<ObjInventar @ref="inventar"/>
+<LoadingPopUp @ref="loadingPopup" />
+<PopUpConfirmar @ref="PopUp" />
+
+<body>
+
+    @if (iniciado)
+    {
+        <div class="panel">
+            <h1>@Sector</h1>
+            <nav role="navigation">
+                <div id="menuToggle">
+                    <input type="checkbox" id="menuCheckbox" @bind="menuAbierto" />
+                    <div id="menuOverlay" onclick="cerrarMenu()"></div>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <ul id="menu">
+                        <li>
+                            <label for="menuCheckbox">
+                                <a class="menu-item">Buscador de productos</a>
+                            </label>
+                        </li>
+                        <li>
+                            <label for="menuCheckbox">
+                                <a class="menu-item" @onclick="() => CambiarContador(1)">Editar Contador 1</a>
+                            </label>
+                        </li>
+                        <li>
+                            <label for="menuCheckbox">
+                                <a class="menu-item" @onclick="() => CambiarContador(2)">Editar Contador 2</a>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+
+            @if (Escaneado)
+            {
+                <button class="button-docked" @onclick="EnviarHoja">Enviar Hoja</button>
+
+            }
+        </div>
+        @if(ListaProductos != null)
+        {
+            
+        @if(ListaProductos.Count>0)
+        {
+
+            <div class="container" style="background-color: transparent; overflow-y: auto; margin-bottom: 150px;">
+                <div class="row justify-content-center g-1" style="background-color: transparent;">
+                    <!-- Cartas -->
+                    @foreach (var producto in ListaProductos.Select((value, index) => new { value, index }))
+                    {
+                        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                            <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;" @onmousedown="@(e => StartLongClick(producto.value, producto.index))"
+                                 @onmouseup="CancelLongClick"
+                                 @onmouseleave="CancelLongClick">
+                                <div class="card-header" style="background-color: #E8EDE7;">
+                                    <!-- Número del objeto en la lista (index + 1) -->
+                                    @(producto.index + 1)
+                                </div>
+                                <div class="card-body" style="background-color: #E8EDE7;">
+                                    <h5 class="card-title">
+                                        <!-- Aquí puedes mostrar alguna propiedad del objeto 'contador.value' -->
+                                        Cod: @producto.value.Principal
+                                        <br />
+                                        @producto.value.Descripcion
+
+                                    </h5>
+                                    <p class="card-text">
+                                        Cantidad : @producto.value.Cantidad
+
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                
+                    <!-- Añade más cartas según sea necesario -->
+                </div>
+            </div>
+        }
+        }
+
+        <!-- El contenido de la página va aquí -->
+    }
+
+    @if(ListaProductos != null)
+    {
+        
+    <div class="footer">
+        <span class="cantidad-texto">Cantidad: @(ListaProductos.Count)</span>
+        <button class="button-19" style="bottom: 20px;" @onclick="Escaneado ? EscanearObjeto : EscanearSector">
+            @(Escaneado ? "Escanear Producto" : "Escanear Sector")
+        </button>
+    </div>
+    }
+
+</body>
+<script>
+
+        function cerrarMenu() {
+        document.getElementById('menuCheckbox').checked = false;
+    }
+
+</script>
+
+<PopUpConfirmar @ref="PopUp" />

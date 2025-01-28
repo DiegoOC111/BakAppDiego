@@ -1,0 +1,161 @@
+﻿
+@using BakAppDiego.Components.Globals.Modelos.Bakapp
+@code {
+    private TaskCompletionSource<Zw_Producto_inventariado> tcs;
+    private string Seleccinado = "Principal";
+    private string cod = "";
+    private double Numero { get; set; } = 0;
+    private string advertencia = "";
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public string mensaje { get; set; } = "";
+
+    [Parameter]
+    public string titulo { get; set; } = "";
+
+    [Parameter]
+    public string BotonStringAceptar { get; set; } = "Aceptar";
+
+    [Parameter]
+    public string BotonStringCancelar { get; set; } = "Cancelar";
+
+    [Parameter]
+    public bool BotonBoolCancelar { get; set; } = true;
+
+    private Zw_Producto_inventariado? producto1;
+    // Método para mostrar el popup
+    public void cambiar(string seleccion)
+    {
+
+        Seleccinado = seleccion;
+
+
+    }
+    public Task<Zw_Producto_inventariado> ShowAsync()
+    {
+        tcs = new TaskCompletionSource<Zw_Producto_inventariado>();
+        IsVisible = true;
+        StateHasChanged();
+        return tcs.Task;
+    }
+
+    // Método para configurar el popup
+    public void Crear(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2, Zw_Producto_inventariado producto)
+    {
+        producto1 = producto;
+        if (producto1.tipo_esc == "Rapido") { cod = producto1.Rapido; }
+        if (producto1.tipo_esc == "Tecnico") { cod = producto1.Tecnico; }
+        if (producto1.tipo_esc == "Principal") { cod = producto1.Principal; }
+        Numero = 0;
+        producto1 = producto;
+        advertencia = null;
+        titulo = Titulo;
+        mensaje = Mensaje;
+        BotonStringAceptar = aceptar;
+        BotonStringCancelar = cancelar;
+        BotonBoolCancelar = visibleBTN2;
+        StateHasChanged();
+    }
+
+    // Lógica cuando se presiona "Aceptar"
+    public void Aceptar()
+    {
+        if (Numero == 0)
+        {
+            // Mostrar una advertencia si el número es 0
+            advertencia = "La cantidad no puede ser 0. Por favor, ingrese un valor válido.";
+            StateHasChanged();
+            return;
+        }
+
+        producto1.Cantidad = Numero;
+
+        tcs?.SetResult(producto1);
+        IsVisible = false;
+        StateHasChanged();
+    }
+    // Lógica cuando se presiona "Cancelar"
+    public void Cancelar()
+    {
+        tcs?.SetResult(null);
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+
+
+    // Método para confirmar la entrada de texto al presionar Enter
+   
+}
+@if (IsVisible)
+{
+    <div class="loading-popup">
+        <div class="overlay">
+            <div class="popup-content">
+                <h3>@titulo</h3>
+                <p>@mensaje</p>
+                @if (!string.IsNullOrEmpty(advertencia))
+                {
+                    <div class="alert alert-danger">
+                        @advertencia
+                    </div>
+                }
+                <div class="container mt-4">
+                    <div class="row">
+                        <!-- Primer elemento -->
+                        <div class="col-md-6 mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Codigo</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="@cod" disabled>
+                            </div>
+                        </div>
+                        <!-- Segundo elemento -->
+                        <div class="col-md-6 mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Tipo</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="@producto1.tipo_esc" disabled>
+                            </div>
+                        </div>
+                        <!-- Tercer elemento -->
+                        <div class="col-md-6 mb-3">
+                            <label for="username3"> @producto1.Descripcion </label>
+                        </div>
+                        <!-- Cuarto elemento -->
+
+                        <div class="col-md-6 mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Stock</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="@producto1.StFisicoUd1" disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Cantidad</span>
+                                </div>
+                                <input type="number" class="form-control" @bind="Numero" placeholder="0" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="popup-buttons">
+
+                    @if (BotonBoolCancelar)
+                    {
+                        <button class="button-19 " @onclick="Aceptar">@BotonStringAceptar</button>
+                        <button class="button-19 " @onclick="Cancelar">@BotonStringCancelar</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+}

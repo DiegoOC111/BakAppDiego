@@ -1,0 +1,142 @@
+﻿@using BakAppDiego.Components.Globals.Modelos.Bakapp
+@code {
+    private TaskCompletionSource<List<string>> tcs;
+    private string Seleccinado = "Principal";
+    [Parameter]
+    public bool IsVisible { get; set; } = false;
+
+    [Parameter]
+    public string mensaje { get; set; } = "";
+
+    [Parameter]
+    public string titulo { get; set; } = "";
+
+    [Parameter]
+    public string BotonStringAceptar { get; set; } = "Aceptar";
+
+    [Parameter]
+    public string BotonStringCancelar { get; set; } = "Cancelar";
+
+    [Parameter]
+    public bool BotonBoolCancelar { get; set; } = true;
+
+    private string inputText = "";  // Variable para almacenar el texto del input
+
+    // Método para mostrar el popup
+    public void cambiar(string seleccion)
+    {
+
+        Seleccinado = seleccion;
+
+
+    }
+    public Task<List<string>> ShowAsync()
+    {
+        tcs = new TaskCompletionSource<List<string>>();
+        IsVisible = true;
+        StateHasChanged();
+        return tcs.Task;
+    }
+
+    // Método para configurar el popup
+    public void Crear(string Titulo, string Mensaje, string aceptar, string cancelar, bool visibleBTN2)
+    {
+        titulo = Titulo;
+        mensaje = Mensaje;
+        BotonStringAceptar = aceptar;
+        BotonStringCancelar = cancelar;
+        BotonBoolCancelar = visibleBTN2;
+        inputText = ""; // Reiniciar el texto del input
+        StateHasChanged();
+    }
+
+    // Lógica cuando se presiona "Aceptar"
+    public void Aceptar()
+    {
+        Console.WriteLine(Seleccinado);
+        List<string> Respuesta = new List<string>();
+        Respuesta.Add(Seleccinado);
+        Respuesta.Add(inputText);
+        tcs?.SetResult(Respuesta);
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+    // Lógica cuando se presiona "Cancelar"
+    public void Cancelar()
+    {
+        tcs?.SetResult(null);
+        IsVisible = false;
+        StateHasChanged();
+    }
+
+
+
+    // Método para confirmar la entrada de texto al presionar Enter
+    private void ConfirmarInputText()
+    {
+        // Aquí puedes manejar el texto ingresado o pasarlo a otra lógica
+        Console.WriteLine($"Texto ingresado: {inputText}");
+        Aceptar();
+    }
+}
+@if (IsVisible)
+{
+    <div class="loading-popup">
+        <div class="overlay">
+            <div class="popup-content">
+                <h3>Agregar Nuevo Item</h3>
+             
+                <table class="table-fill">
+                    <tbody class="table-hover">
+
+
+
+
+                       
+                            <tr >
+
+                                <td class="text-left"> Codigo Producto</td>
+                                <td class="text-left"> aaaaaaaaaaaaa</td>
+
+
+                            </tr>
+                         <tr >
+
+                                <td class="text-left"> Tipo </td>
+                                <td class="text-left"> Rapido</td>
+
+
+                            </tr>  <tr >
+
+                                <td class="text-left"> Descripcion  </td>
+                                
+
+
+                            </tr>
+                        <tr >
+
+                                <td class="text-left"> Stock  </td>
+                                <td class="text-left"> 31  </td>
+                                
+
+
+                            </tr>
+                        
+
+                    </tbody>
+                </table>
+                <input placeholder="Ingrese el numero de items inventariado" type="text" class="text-input" @bind="inputText" @onkeypress="@(e => { if (e.Key == "Enter") Aceptar(); })" />
+
+                <div class="popup-buttons">
+
+                    @if (BotonBoolCancelar)
+                    {
+                        <button class="button-19 " @onclick="Aceptar">@BotonStringAceptar</button>
+                        <button class="button-19 " @onclick="Cancelar">@BotonStringCancelar</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,102 @@
+﻿@page "/Inventario"
+
+@using BakAppDiego.Components.Dialogs
+@inject DialogInterface DialogoService
+
+<PopUpConfirmar @ref="PopUp" />
+
+
+
+@if (isTableVisible)
+{
+    <div class="panel">
+        <h1>Inventario</h1>
+
+    <button class="button-docked" @onclick="historial">Historial</button>
+        
+        
+
+
+    </div>
+
+    <body style="background-color: transparent;">
+        <div class="container" style="background-color: transparent; overflow-y: auto; margin-bottom: 100px;">
+            <div class="row justify-content-center g-1" style="background-color: transparent;">
+                <!-- Título principal -->
+                <div class="col-md-12">
+                    <div class="card bg-transparent border-0">
+                        <div class="card-body text-center">
+                            <h1 class="display-5" style="color: #E8EDE7;"><br /></h1>
+                        </div>
+                    </div>
+                </div>
+                <!-- Cartas -->
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;">
+                        <div class="card-header" style="background-color: #81BECE">ID</div>
+                        <div class="card-body" style="background-color: #81BECE;">
+                            <h5 class="card-title">@inventarioItem.Id</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;">
+                        <div class="card-header" style="background-color: #81BECE">Fecha</div>
+                        <div class="card-body" style="background-color: #81BECE;">
+                            <h5 class="card-title">@inventarioItem.Fecha_Inventario.ToShortDateString()</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;">
+                        <div class="card-header" style="background-color: #81BECE">Empresa</div>
+                        <div class="card-body" style="background-color: #81BECE;">
+                            <h5 class="card-title">@inventarioItem.Nombre_Empresa</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;">
+                        <div class="card-header" style="background-color: #81BECE">Sucursal</div>
+                        <div class="card-body" style="background-color: #81BECE;">
+                            <h5 class="card-title">@inventarioItem.Nombre_Sucursal</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;">
+                        <div class="card-header" style="background-color: #81BECE">Bodega</div>
+                        <div class="card-body" style="background-color: #81BECE;">
+                            <h5 class="card-title">@inventarioItem.Nombre_Bodega</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;">
+                        <div class="card-header" style="background-color: #81BECE">Inventariado</div>
+                        <div class="card-body" style="background-color: #81BECE;">
+                            <h5 class="card-title">@inventarioItem.NombreInventario</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card text-bg-primary h-100" style="--bs-card-border-color: #036280;">
+                        <div class="card-header" style="background-color: #81BECE">Funcionario Encargado</div>
+                        <div class="card-body" style="background-color: #81BECE;">
+                            <h5 class="card-title">@inventarioItem.NombreFuncionario</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <button class="button-19" style="bottom: 20px;" @onclick="boton_inventariado">Crear inventariado</button>
+        </div>
+    </body>
+}
+else
+{
+    <div class="footer">
+        <button class="button-19" style="bottom: 20px;" @onclick ="boton">Ingresar inventario</button>
+    </div>
+}

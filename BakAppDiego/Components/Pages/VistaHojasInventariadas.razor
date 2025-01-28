@@ -1,0 +1,43 @@
+﻿@page "/VistaHojasInventariadas"
+@using BakAppDiego.Components.Globals.Modelos.Responses;
+
+@using BakAppDiego.Components.Dialogs;
+@using BakAppDiego.Components.Globals.Statics;
+@using BakAppDiego.Components.Globals.Modelos;
+
+<div class="panel">
+    <h1>@GlobalData.InventarioActivo.NombreInventario</h1>
+    <button class="button-docked" > Volver </button>
+
+
+
+</div>
+
+
+
+@if(inciado){
+    
+    @if (ListaHojas.Count > 0)
+    {
+        <div class="container">
+    @foreach (var hoja in ListaHojas){
+                <div class="card" style="border: 1px solid black; margin: 10px;">
+                    <div class="card-header">
+                        Hoja: @hoja.Nro_Hoja
+                    </div>
+                    <div class="card-body">
+                        Equipo: @hoja.NombreEquipo <br />
+                        Fecha: @hoja.FechaCreacion.ToString("yyyy-MM-dd HH:mm:ss")
+                    </div>
+                </div>
+            }
+        </div>
+        
+     }
+
+}
+                
+           
+        
+    
+
